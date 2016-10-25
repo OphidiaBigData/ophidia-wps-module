@@ -8,63 +8,85 @@ It implements a process for PyWPS - Python Web Processing Service (http://pywps.
 
 ### Requirements
 
-This software requires PyWPS - Python Web Processing Service (http://pywps.org/).
+This software requires PyWPS 3.2.4 - Python Web Processing Service (http://pywps.org/), which can be built from sources provided that the following packages are installed:
 
-It is recommanded to start the service as module of Apache web server (https://www.apache.org/), so that TLS could be exploited to encrypt Ophidia credentials coded in WPS Requests. In this case, the following packages are required:
+- limxml2-devel
+- libxslt-devel
 
-#. python-lxml
-#. python-setuptools
-#. mod_python
-#. mod_ssl
+It is recommended to start the service as module of Apache web server (https://www.apache.org/), so that TLS could be exploited to encrypt Ophidia credentials coded in WPS Requests. In this case, the following packages are required
+
+- python-lxml
+- python-setuptools
+- mod_ssl
+
+and *mod_python* from http://modpython.org/. This module requires
+
+- python-devel
+- httpd-devel
 
 ### How to Install
 
-Download PyWPS from http://pywps.org/download/ and install it into */usr/local/ophidia/extra/pywps/*.
+Download PyWPS 3.2.4 from https://github.com/geopython/pywps/archive/pywps-3.2.4.tar.gz into */usr/local/ophidia/extra/src/pywps/* and install it.
+
+```
+$ mkdir -p /usr/local/ophidia/extra/src/
+$ cd /usr/local/ophidia/extra/src/
+$ wget https://github.com/geopython/pywps/archive/pywps-3.2.4.tar.gz
+$ tar xzf pywps-3.2.4.tar.gz
+$ mv pywps-3.2.4 pywps
+$ cd pywps
+$ cp /usr/local/ophidia/extra/src/pywps/webservices/mod_python/wps.py .
+$ sudo python setup.py install
+```
 
 Create a folder */usr/local/ophidia/extra/wps* and copy both the folders *processes* and *etc* inside:
 
 ```
 $ mkdir -p /usr/local/ophidia/extra/wps
-$ cp -r processes /usr/local/ophidia/extra/wps/
-$ cp -r etc /usr/local/ophidia/extra/wps/
+$ cp -R processes /usr/local/ophidia/extra/wps/
+$ cp -R etc /usr/local/ophidia/extra/wps/
 ```
 
-Copy Apache module for PyWPS *wps.py* in a folder accessible from the web server as follows:
+Install and configure mod_python by cloning it from https://github.com/grisha/mod_python.git.
 
-```
-$ mkdir -p /var/www/wps/
-$ cp /usr/local/ophidia/extra/pywps/webservices/mod_python/wps.py /var/www/wps/
-```
+Create the folder */var/www/wps*, configure Apache by adding its specification in */etc/httpd/conf.modules.d/10-python.conf* and restart the service:
 
-Configure Apache by adding the specification for the folder */var/www/wps/*:
-
-Alias /wps/ "/var/www/wps/"
-<Directory "/var/www/wps">
-    AllowOverride None
-    Order allow,deny
-    Allow from all
-    SetEnv PYWPS_PROCESSES /usr/local/ophidia/extra/wps/processes/
-    SetEnv PYWPS_CFG /usr/local/ophidia/extra/wps/etc/pywps.cfg
-    SetHandler python-program
-    PythonHandler wps
-    PythonAuthenHandler wps
-    PythonDebug On
-    PythonPath "sys.path+['/usr/local/ophidia/extra/pywps/']"
-    PythonAutoReload On
-</Directory>
+	LoadModule python_module modules/mod_python.so
+	Alias /wps "/var/www/wps"
+	<Directory "/var/www/wps">
+		AllowOverride None
+		Order allow,deny
+		Allow from all
+		SetEnv PYWPS_PROCESSES /usr/local/ophidia/extra/wps/processes/
+		SetEnv PYWPS_CFG /usr/local/ophidia/extra/wps/etc/pywps.cfg
+		SetHandler python-program
+		PythonHandler wps
+		PythonAuthenHandler wps
+		PythonDebug On
+		PythonPath "sys.path+['/usr/local/ophidia/extra/src/pywps/']"
+		PythonAutoReload On
+	</Directory>
 
 By default it is assumed that Ophidia Server is running on the same node where PyWPS works and listening to port 11732. Otherwise, change service address (IP address and port number) by editing /usr/local/ophidia/extra/wps/processes/ophidia.py.
 
-Finally, create the folders for PyWPS log file and WPS Responses (based on parameters set in */usr/local/ophidia/extra/wps/etc/pywps.cfg*):
+Create the folders for PyWPS log file and WPS Responses (based on parameters set in */usr/local/ophidia/extra/wps/etc/pywps.cfg*):
 
 ```
 $ mkdir -p /var/www/html/wpsoutputs
 $ mkdir -p /var/log/wps
-$ chown root:apache /var/www/html/wpsoutputs/
-$ chmod 775 /var/www/html/wpsoutputs/
-$ chown root:apache wps
-$ chmod 775 /var/log/wps/
+$ chown root:apache /var/www/html/wpsoutputs
+$ chmod 775 /var/www/html/wpsoutputs
+$ chown root:apache /var/log/wps
+$ chmod 775 /var/log/wps
 ```
+
+Finally, enable Apache to open new connections
+
+```
+$ sudo setsebool -P httpd_can_network_connect on
+```
+
+and restart the web server.
 
 Further information can be found at [http://ophidia.cmcc.it/documentation](http://ophidia.cmcc.it/documentation).
 

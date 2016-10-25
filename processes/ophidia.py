@@ -29,7 +29,7 @@ class OphExecuteMainProcess(WPSProcess):
             self,
             identifier="ophexecutemain", 
             title="Ophidia",
-            version = "1.7.6",
+            version = "0.10.6",
             metadata = [],
             abstract="Submit a command to Ophidia",
             storeSupported = True,
