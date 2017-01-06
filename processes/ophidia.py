@@ -1,6 +1,6 @@
 #
 #    Ophidia WPS Module
-#    Copyright (C) 2012-2016 CMCC Foundation
+#    Copyright (C) 2012-2017 CMCC Foundation
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -77,7 +77,6 @@ class OphExecuteMainProcess(WPSProcess):
 	self.error.setValue(1)
 	self.jobid.setValue("")
 	self.response.format = self.request.format
-	self.response.setValue("")
 
 	logging.debug("Building request for oph_server")
 	file = open(self.request.getValue(),'r')
@@ -92,20 +91,27 @@ class OphExecuteMainProcess(WPSProcess):
 
 	self.status.set("Running",2)
 	logging.debug("Execute the job")
-	buffer, jobid, newsession, return_value, error = _ophsubmit.submit(self.userid.getValue(),self.passwd.getValue(),"127.0.0.1",11732,buffer)
+	buffer, jobid, return_value, error = _ophsubmit.submit(self.userid.getValue(), self.passwd.getValue(), "127.0.0.1", 11732, buffer)
 
+	logging.debug("Return value: %s" % return_value)
+	logging.debug("JobID: %s" % jobid)
 	logging.debug("Response: %s" % buffer)
+	logging.debug("Error message: %s" % error)
 
 	self.status.set("Post-processing",98)
-	if return_value == 0 and self.request.format["encoding"] == "base64":
+	if return_value == 0 and len(buffer) > 0 and self.request.format["encoding"] == "base64":
 		logging.debug("Encoding response")
 		buffer = buffer.encode("base64")
 
 	self.status.set("Outputting",99)
+	output = StringIO.StringIO()
 	self.error.setValue(return_value)
 	if return_value == 0:
-		self.jobid.setValue(jobid)
-		self.response.setValue(StringIO.StringIO(buffer))
+		if jobid is not None:
+			self.jobid.setValue(jobid)
+		if len(buffer) > 0:
+			output.write(buffer)
+	self.response.setValue(output)
 
 	self.status.set("Succeded",100)
 

@@ -1,6 +1,6 @@
 #
 #    Ophidia WPS Module
-#    Copyright (C) 2012-2016 CMCC Foundation
+#    Copyright (C) 2012-2017 CMCC Foundation
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -86,18 +86,18 @@ def submit(username, password, server, port, query):
 		client.putheader("Content-type", "text/xml; charset=\"UTF-8\"")
 	except Exception as e:
 		print(get_linenumber(),"Something went wrong in connection setup:", e)
-		return (None, None, None, 1, e)
+		return (None, None, 1, e)
 	request = str(query)
 	if not request.lstrip(' \n\t').startswith('{'):
 		wrapped_query = request.lstrip(' \n\t')
 		if not wrapped_query.startswith('operator='):
 			if not wrapped_query.startswith('oph_'):
-				return (None, None, None, 3, "Invalid request")
+				return (None, None, 3, "Invalid request")
 		if wrapped_query.startswith('oph_'):
 			wrapped_query = 'operator=' + wrapped_query[:wrapped_query.find(' ')] + ';' + wrapped_query[wrapped_query.find(' ') + 1:]
 		query_list = wrapped_query.split(';')
 		if not query_list:
-			return (None, None, None, 3, "Invalid request")
+			return (None, None, 3, "Invalid request")
 		# operator
 		for element in query_list:
 			if element:
@@ -107,7 +107,7 @@ def submit(username, password, server, port, query):
 					operator = element_list[1]
 					break
 		else:
-			return (None, None, None, 3, "Invalid request")
+			return (None, None, 3, "Invalid request")
 		# sessionid
 		for element in query_list:
 			if element:
@@ -173,54 +173,46 @@ def submit(username, password, server, port, query):
 
 		if statuscode != 200:
 			print(get_linenumber(),"Something went wrong in submitting the request:", statuscode, statusmessage)
-			return (None, None, None, 1, statusmessage)
+			return (None, None, 1, statusmessage)
 
 		xmldoc = minidom.parseString(reply)
 		response = xmldoc.getElementsByTagName('oph:ophResponse')[0]
 		res_error, res_response, res_jobid = None, None, None
-		if len(response.getElementsByTagName('jobid')) != 0:
+		if len(response.getElementsByTagName('jobid')) > 0 and response.getElementsByTagName('jobid')[0].firstChild is not None:
 			res_jobid = response.getElementsByTagName('jobid')[0].firstChild.data
-		if len(response.getElementsByTagName('error')) != 0:
+		if len(response.getElementsByTagName('error')) > 0 and response.getElementsByTagName('error')[0].firstChild is not None:
 			res_error = int(response.getElementsByTagName('error')[0].firstChild.data)
-		if len(response.getElementsByTagName('response')) != 0:
+		if len(response.getElementsByTagName('response')) > 0 and response.getElementsByTagName('response')[0].firstChild is not None:
 			res_response = response.getElementsByTagName('response')[0].firstChild.data
 	except Exception as e:
 		print(get_linenumber(),"Something went wrong in submitting the request:", e)
-		return (None, None, None, 1, e)
+		return (None, None, 1, e)
 	if res_error is None:
-		return (None, None, None, 1, "Invalid response")
+		return (None, None, 1, "Invalid response")
 	if res_error == OPH_SERVER_OK:
-		response, jobid, newsession, return_value, error = None, None, None, 0, None
+		response, jobid, return_value, error = None, None, res_error, None
 		if res_response is not None:
 			if '[ERROR]' in res_response:
-				return (None, None, None, 2, "There was an error in one or more tasks")
+				error = "There was an error in one or more tasks"
 			response = str(res_response)
 		if res_jobid is not None:
 			if len(res_jobid) != 0:
 				jobid = str(res_jobid)
-				index = jobid.rfind(OPH_WORKFLOW_DELIMITER)
-				if index == -1:
-					return (None, None, None, 3, "Invalid jobid string")
-				newsession = jobid[:index]
-			else:
-				newsession = str()
-		return (response, jobid, newsession, return_value, error)
-	elif res_error == OPH_SERVER_UNKNOWN:
-		return (None, None, None, res_error,"Error on serving request: server unknown")
+		return (response, jobid, return_value, error)
 	elif res_error == OPH_SERVER_NULL_POINTER:
-		return (None, None, None, res_error,"Error on serving request: server null pointer")
+		return (None, None, res_error, "Error on serving request: server null pointer")
 	elif res_error == OPH_SERVER_ERROR:
-		return (None, None, None, res_error, "Error on serving request: server error")
+		return (None, None, res_error, "Error on serving request: server error")
 	elif res_error == OPH_SERVER_IO_ERROR:
-		return (None, None, None, res_error,"Error on serving request: server IO error")
+		return (None, None, res_error, "Error on serving request: server IO error")
 	elif res_error == OPH_SERVER_AUTH_ERROR:
-		return (None, None, None, res_error,"Error on serving request: server authentication error")
+		return (None, None, res_error, "Error on serving request: server authentication error")
 	elif res_error == OPH_SERVER_SYSTEM_ERROR:
-		return (None, None, None, res_error,"Error on serving request: server system error")
+		return (None, None, res_error, "Error on serving request: server system error")
 	elif res_error == OPH_SERVER_WRONG_PARAMETER_ERROR:
-		return (None, None, None, res_error,"Error on serving request: server wrong parameter error")
+		return (None, None, res_error, "Error on serving request: server wrong parameter error")
 	elif res_error == OPH_SERVER_NO_RESPONSE:
-		return (None, None, None, res_error,"Error on serving request: server no response")
+		return (None, None, res_error, "Error on serving request: server no response")
 	else:
-		return (None, None, None, res_error,"Error on serving request: error undefined")
+		return (None, None, res_error, "Error on serving request: undefined error")
 
