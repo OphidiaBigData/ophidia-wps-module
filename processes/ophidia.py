@@ -29,7 +29,7 @@ class OphExecuteMainProcess(WPSProcess):
             self,
             identifier="ophexecutemain", 
             title="Ophidia",
-            version = "0.10.6",
+            version = "0.10.7",
             metadata = [],
             abstract="Submit a command to Ophidia",
             storeSupported = True,
@@ -85,18 +85,21 @@ class OphExecuteMainProcess(WPSProcess):
 	file.close()
 
 	if self.request.format["encoding"] == "base64":
-		logging.debug("Decoding response")
+		logging.debug("Decoding request")
 		buffer = buffer.decode("base64")
-		logging.debug("Response: %s" % buffer)
 
-	logging.debug("Execute the job")
+	logging.debug("Request: %s" % buffer)
+
 	self.status.set("Running",2)
+	logging.debug("Execute the job")
 	buffer, jobid, newsession, return_value, error = _ophsubmit.submit(self.userid.getValue(),self.passwd.getValue(),"127.0.0.1",11732,buffer)
+
+	logging.debug("Response: %s" % buffer)
 
 	self.status.set("Post-processing",98)
 	if return_value == 0 and self.request.format["encoding"] == "base64":
 		logging.debug("Encoding response")
-        	buffer = buffer.encode("base64")
+		buffer = buffer.encode("base64")
 
 	self.status.set("Outputting",99)
 	self.error.setValue(return_value)
