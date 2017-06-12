@@ -53,6 +53,7 @@ Install and configure mod_python by cloning it from https://github.com/grisha/mo
 $ ./configure
 $ make
 $ sudo make install
+```
 
 Create the folder */var/www/wps*, configure mod_python for Apache, by saving the following specification in */etc/httpd/conf.d/python.conf*, and restart the service:
 
