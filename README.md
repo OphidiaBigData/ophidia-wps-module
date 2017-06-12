@@ -24,7 +24,7 @@ and *mod_python* from http://modpython.org/. This module requires
 - python-devel
 - httpd-devel
 
-### How to Install
+### How to install
 
 Download PyWPS 3.2.4 from https://github.com/geopython/pywps/archive/pywps-3.2.4.tar.gz into */usr/local/ophidia/extra/src/pywps/* and install it.
 
@@ -94,4 +94,15 @@ $ sudo setsebool -P httpd_can_network_connect on
 and restart the web server.
 
 Further information can be found at [http://ophidia.cmcc.it/documentation](http://ophidia.cmcc.it/documentation).
+
+### Known problems
+
+In case Apache returns the following error:
+
+	Traceback (most recent call last):
+	  File "/usr/local/ophidia/extra/src/pywps/wps.py", line 75, in handler
+	    wps.parser.isSoap, self.wps.parser.isSoapExecute,contentType = wps.request.contentType)
+	NameError: global name 'self' is not defined
+
+delete the prefix *self.* in */usr/local/ophidia/extra/src/pywps/wps.py*.
 
