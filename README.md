@@ -8,7 +8,7 @@ It implements a process for PyWPS - Python Web Processing Service (http://pywps.
 
 ### Requirements
 
-This software requires PyWPS 3.2.4 - Python Web Processing Service (http://pywps.org/), which can be built from sources provided that the following packages are installed:
+This software requires Python 2.6 and PyWPS 3.2.4 - Python Web Processing Service (http://pywps.org/), which can be built from sources provided that the following packages are installed:
 
 - limxml2-devel
 - libxslt-devel
@@ -33,7 +33,7 @@ $ mkdir -p /usr/local/ophidia/extra/src/
 $ cd /usr/local/ophidia/extra/src/
 $ wget https://github.com/geopython/pywps/archive/pywps-3.2.4.tar.gz
 $ tar xzf pywps-3.2.4.tar.gz
-$ mv pywps-3.2.4 pywps
+$ mv pywps-pywps-3.2.4 pywps
 $ cd pywps
 $ cp /usr/local/ophidia/extra/src/pywps/webservices/mod_python/wps.py .
 $ sudo python setup.py install
@@ -47,9 +47,14 @@ $ cp -R processes /usr/local/ophidia/extra/wps/
 $ cp -R etc /usr/local/ophidia/extra/wps/
 ```
 
-Install and configure mod_python by cloning it from https://github.com/grisha/mod_python.git.
+Install and configure mod_python by cloning it from https://github.com/grisha/mod_python.git. The following command list should be enough:
 
-Create the folder */var/www/wps*, configure Apache by adding its specification in */etc/httpd/conf.modules.d/10-python.conf* and restart the service:
+```
+$ ./configure
+$ make
+$ sudo make install
+
+Create the folder */var/www/wps*, configure mod_python for Apache, by saving the following specification in */etc/httpd/conf.d/python.conf*, and restart the service:
 
 	LoadModule python_module modules/mod_python.so
 	Alias /wps "/var/www/wps"
@@ -67,7 +72,7 @@ Create the folder */var/www/wps*, configure Apache by adding its specification i
 		PythonAutoReload On
 	</Directory>
 
-By default it is assumed that Ophidia Server is running on the same node where PyWPS works and listening to port 11732. Otherwise, change service address (IP address and port number) by editing /usr/local/ophidia/extra/wps/processes/ophidia.py.
+By default it is assumed that Ophidia Server is running on the same node where PyWPS works and listening to port 11732. Otherwise, change service address (IP address and port number) by editing */usr/local/ophidia/extra/wps/processes/ophidia.py*.
 
 Create the folders for PyWPS log file and WPS Responses (based on parameters set in */usr/local/ophidia/extra/wps/etc/pywps.cfg*):
 
@@ -80,7 +85,7 @@ $ chown root:apache /var/log/wps
 $ chmod 775 /var/log/wps
 ```
 
-Finally, enable Apache to open new connections
+Finally, enable Apache to open new connections in case SELinux is enabled as follows:
 
 ```
 $ sudo setsebool -P httpd_can_network_connect on
