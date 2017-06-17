@@ -10,7 +10,7 @@ It implements a process for PyWPS - Python Web Processing Service (http://pywps.
 
 This software requires Python 2.6 and PyWPS 3.2.4 - Python Web Processing Service (http://pywps.org/), which can be built from sources provided that the following packages are installed:
 
-- limxml2-devel
+- libxml2-devel
 - libxslt-devel
 
 It is recommended to start the service as module of Apache web server (https://www.apache.org/), so that TLS could be exploited to encrypt Ophidia credentials coded in WPS Requests. In this case, the following packages are required
@@ -26,30 +26,41 @@ and *mod_python* from http://modpython.org/. This module requires
 
 ### How to install
 
-Download PyWPS 3.2.4 from https://github.com/geopython/pywps/archive/pywps-3.2.4.tar.gz into */usr/local/ophidia/extra/src/pywps/* and install it.
+Download PyWPS 3.2.4 from https://github.com/geopython/pywps/archive/pywps-3.2.4.tar.gz into */usr/local/ophidia/extra/src/pywps/*.
 
 ```
-$ mkdir -p /usr/local/ophidia/extra/src/
-$ cd /usr/local/ophidia/extra/src/
+$ mkdir -p /usr/local/ophidia/extra/src
+$ cd /usr/local/ophidia/extra/src
 $ wget https://github.com/geopython/pywps/archive/pywps-3.2.4.tar.gz
-$ tar xzf pywps-3.2.4.tar.gz
-$ mv pywps-pywps-3.2.4 pywps
-$ cd pywps
-$ cp /usr/local/ophidia/extra/src/pywps/webservices/mod_python/wps.py .
+$ tar xzf /usr/local/ophidia/extra/src/pywps-3.2.4.tar.gz
+$ mv /usr/local/ophidia/extra/src/pywps-pywps-3.2.4 /usr/local/ophidia/extra/src/pywps
+```
+
+Replace the main Python script */usr/local/ophidia/extra/src/pywps/wps.py* with the script */usr/local/ophidia/extra/src/pywps/webservices/mod_python/wps.py* adapted for mod_python and, then, install PyWPS (see section below for known issues).
+
+```
+$ cd /usr/local/ophidia/extra/src/pywps
+$ cp /usr/local/ophidia/extra/src/pywps/webservices/mod_python/wps.py /usr/local/ophidia/extra/src/pywps
 $ sudo python setup.py install
 ```
 
 Create a folder */usr/local/ophidia/extra/wps* and copy both the folders *processes* and *etc* inside:
 
 ```
+$ mkdir -p /usr/local/ophidia/extra/src
+$ cd /usr/local/ophidia/extra/src
+$ git clone https://github.com/OphidiaBigData/ophidia-wps-module.git
 $ mkdir -p /usr/local/ophidia/extra/wps
-$ cp -R processes /usr/local/ophidia/extra/wps/
-$ cp -R etc /usr/local/ophidia/extra/wps/
+$ cp -R /usr/local/ophidia/extra/src/ophidia-wps-module/processes /usr/local/ophidia/extra/wps/
+$ cp -R /usr/local/ophidia/extra/src/ophidia-wps-module/etc /usr/local/ophidia/extra/wps/
 ```
 
 Install and configure mod_python by cloning it from https://github.com/grisha/mod_python.git. The following command list should be enough:
 
 ```
+$ mkdir -p /usr/local/ophidia/extra/src
+$ git clone https://github.com/grisha/mod_python.git
+$ cd /usr/local/ophidia/extra/src/mod_python
 $ ./configure
 $ make
 $ sudo make install
