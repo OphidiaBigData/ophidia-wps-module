@@ -40,7 +40,7 @@ Replace the main Python script */usr/local/ophidia/extra/src/pywps/wps.py* with 
 
 ```
 $ cd /usr/local/ophidia/extra/src/pywps
-$ cp /usr/local/ophidia/extra/src/pywps/webservices/mod_python/wps.py /usr/local/ophidia/extra/src/pywps
+$ cp -f /usr/local/ophidia/extra/src/pywps/webservices/mod_python/wps.py /usr/local/ophidia/extra/src/pywps
 $ sudo python setup.py install
 ```
 
@@ -89,12 +89,12 @@ By default it is assumed that Ophidia Server is running on the same node where P
 Create the folders for PyWPS log file and WPS Responses (based on parameters set in */usr/local/ophidia/extra/wps/etc/pywps.cfg*):
 
 ```
-$ mkdir -p /var/www/html/wpsoutputs
-$ mkdir -p /var/log/wps
-$ chown root:apache /var/www/html/wpsoutputs
-$ chmod 775 /var/www/html/wpsoutputs
-$ chown root:apache /var/log/wps
-$ chmod 775 /var/log/wps
+$ sudo mkdir -p /var/www/html/wpsoutputs
+$ sudo mkdir -p /var/log/wps
+$ sudo chown root:apache /var/www/html/wpsoutputs
+$ sudo chmod 775 /var/www/html/wpsoutputs
+$ sudo chown root:apache /var/log/wps
+$ sudo chmod 775 /var/log/wps
 ```
 
 Finally, enable Apache to open new connections in case SELinux is enabled as follows:
