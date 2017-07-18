@@ -79,7 +79,6 @@ class OphExecuteMainProcess(WPSProcess):
 
 		self.error.setValue(1)
 		self.jobid.setValue("")
-		self.response.format = self.request.format
 
 		logging.debug("Building request for oph_server")
 		file = open(self.request.getValue(),'r')
@@ -102,7 +101,7 @@ class OphExecuteMainProcess(WPSProcess):
 		logging.debug("Error message: %s" % error)
 
 		self.status.set("Post-processing",98)
-		if return_value == 0 and len(buffer) > 0 and self.request.format["encoding"] == "base64":
+		if return_value == 0 and len(buffer) > 0 and self.response.format["encoding"] == "base64":
 			logging.debug("Encoding response")
 			buffer = buffer.encode("base64")
 
@@ -242,7 +241,7 @@ class oph_subset(WPSProcess):
 			identifier = "response",
 			title = "JSON Response",
 			metadata = [],
-			formats = [{"mimeType":"text/json", "encoding": "base64"}])
+			formats = [{"mimeType":"text/json", "encoding": "base64"}, {"mimeType":"text/plain", "encoding": "utf-8"}])
 
 		self.error = self.addLiteralOutput(
             identifier = "return",
@@ -298,7 +297,7 @@ class oph_subset(WPSProcess):
 		logging.debug("Error message: %s" % error)
 
 		self.status.set("Post-processing",98)
-		if return_value == 0 and self.exec_mode.getValue() == "sync" and len(buffer) > 0:
+		if return_value == 0 and self.exec_mode.getValue() == "sync" and len(buffer) > 0 and self.response.format["encoding"] == "base64":
 			logging.debug("Encoding response")
 			buffer = buffer.encode("base64")
 
