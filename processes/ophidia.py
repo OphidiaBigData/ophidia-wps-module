@@ -250,14 +250,12 @@ class oph_subset(WPSProcess):
 
 	def execute(self):
 
-		operator = self.identifier
-
 		self.status.set("Pre-processing",1)
 
 		self.error.setValue(1)
 		self.jobid.setValue("")
 
-		self.status.set("Running",2)
+		self.status.set("Running", 2)
 
 		logging.debug("Create Ophidia client")
 		cube.Cube.setclient(self.userid.getValue(), self.passwd.getValue(), _host, _port)
@@ -284,12 +282,12 @@ class oph_subset(WPSProcess):
 		logging.debug("Response: %s" % buffer)
 		logging.debug("Error message: %s" % error)
 
-		self.status.set("Post-processing",98)
+		self.status.set("Post-processing", 98)
 		if return_value == 0 and self.exec_mode.getValue() == "sync" and len(buffer) > 0 and self.response.format["encoding"] == "base64":
 			logging.debug("Encoding response")
 			buffer = buffer.encode("base64")
 
-		self.status.set("Outputting",99)
+		self.status.set("Outputting", 99)
 		output = StringIO.StringIO()
 		self.error.setValue(return_value)
 		if return_value == 0:
@@ -299,5 +297,5 @@ class oph_subset(WPSProcess):
 				output.write(buffer)
 		self.response.setValue(output)
 
-		self.status.set("Succeded",100)
+		self.status.set("Succeded", 100)
 
