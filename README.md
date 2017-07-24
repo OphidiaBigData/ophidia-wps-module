@@ -8,7 +8,7 @@ It implements a process for PyWPS - Python Web Processing Service (http://pywps.
 
 ### Requirements
 
-This software requires Python 2.6 and PyWPS 3.2.4 - Python Web Processing Service (http://pywps.org/), which can be built from sources provided that the following packages are installed:
+This software requires Python 2.6, PyOphidia and PyWPS 3.2.4 - Python Web Processing Service (http://pywps.org/), which can be built from sources provided that the following packages are installed:
 
 - libxml2-devel
 - libxslt-devel
@@ -95,6 +95,12 @@ $ sudo chown root:apache /var/www/html/wpsoutputs
 $ sudo chmod 775 /var/www/html/wpsoutputs
 $ sudo chown root:apache /var/log/wps
 $ sudo chmod 775 /var/log/wps
+```
+
+Install PyOphidia as follows:
+
+```
+$ sudo pip install PyOphidia
 ```
 
 Finally, enable Apache to open new connections in case SELinux is enabled as follows:
