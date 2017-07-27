@@ -118,7 +118,7 @@ curl -k https://server.hostname/wps/?service=WPS&version=1.0.0&request=getcapabi
 curl -k https://server.hostname/wps/?service=WPS&version=1.0.0&request=describeprocess&identifier=ophexecutemain
 ```
 
-Requested resources are XML documents with a number of details about the service and the process *ophexecutemain*, which is used by Ophidia Terminal to submit commands to Ophidia Server. See `Ophidia Terminal Installation <install_terminal.html>`_ for additional information about the installation and configuration of Ophidia Terminal in order to submit commands to WPS interface.
+Requested resources are XML documents with a number of details about the service and the process *ophexecutemain*.
 
 ### Known problems
 
