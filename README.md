@@ -105,7 +105,20 @@ $ sudo setsebool -P httpd_can_network_connect on
 
 and restart the web server.
 
+If PyWPS runs as an extension of Apache, default port to access Ophidia WPS is 443.
+
 Further information can be found at [http://ophidia.cmcc.it/documentation](http://ophidia.cmcc.it/documentation).
+
+### Test
+
+Check the WPS interface by sending the requests "GetCababilities" and "DescribeProcess" as follows:
+
+```
+curl -k https://server.hostname/wps/?service=WPS&version=1.0.0&request=getcapabilities
+curl -k https://server.hostname/wps/?service=WPS&version=1.0.0&request=describeprocess&identifier=ophexecutemain
+```
+
+Requested resources are XML documents with a number of details about the service and the process *ophexecutemain*, which is used by Ophidia Terminal to submit commands to Ophidia Server. See `Ophidia Terminal Installation <install_terminal.html>`_ for additional information about the installation and configuration of Ophidia Terminal in order to submit commands to WPS interface.
 
 ### Known problems
 
