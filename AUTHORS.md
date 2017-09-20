@@ -6,3 +6,5 @@ Alessandro D'Anca</br>
 Donatello Elia</br>
 
 <h4>Other Contributors</h4>
+Giacomo Brunetta</br>
+
