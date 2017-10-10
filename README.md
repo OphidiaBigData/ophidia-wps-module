@@ -21,6 +21,8 @@ It is recommended to start the service as module of Apache web server (https://w
 
 and *mod_python* from http://modpython.org/. This module requires
 
+- gcc
+- flex
 - python-devel
 - httpd-devel
 
