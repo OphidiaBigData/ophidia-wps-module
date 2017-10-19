@@ -6649,7 +6649,7 @@ class oph_metadata(WPSProcess):
             title="Ophidia oph metadata",
             version="1.0.0",
             metadata=[],
-            abstract="It provides CRUD operations (Create, Read, Update and Delete) on OphidiaDB methadata",
+            abstract="It provides CRUD operations (Create, Read, Update and Delete) on OphidiaDB metadata",
             storeSupported=True,
             statusSupported=True)
 
