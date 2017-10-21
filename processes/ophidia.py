@@ -661,7 +661,7 @@ class oph_aggregate2(WPSProcess):
             default="24",
             type=type(''))
 
-        self.missingvalue = self.addLiteralOutput(
+        self.missingvalue = self.addLiteralInput(
             identifier="missingvalue",
             title="Missingvalue",
             abstract="Value to be considered as missing value",
