@@ -309,7 +309,7 @@ class oph_subset(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -506,7 +506,7 @@ class oph_aggregate(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -723,7 +723,7 @@ class oph_aggregate2(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -959,7 +959,7 @@ class oph_apply(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -1096,7 +1096,7 @@ class oph_delete(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -1266,7 +1266,7 @@ class oph_drilldown(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -1425,7 +1425,7 @@ class oph_duplicate(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -1613,7 +1613,7 @@ class oph_intercube(WPSProcess):
         query += 'cube2=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -1805,7 +1805,7 @@ class oph_mergecubes(WPSProcess):
         query += 'cubes=' + str(self.pids.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -1985,7 +1985,7 @@ class oph_mergecubes2(WPSProcess):
         query += 'cubes=' + str(self.pids.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -2152,7 +2152,7 @@ class oph_merge(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -2318,7 +2318,7 @@ class oph_permute(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -2526,7 +2526,7 @@ class oph_reduce(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -2753,7 +2753,7 @@ class oph_reduce2(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -2923,7 +2923,7 @@ class oph_rollup(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -3097,7 +3097,7 @@ class oph_script(WPSProcess):
             query += 'list=' + str(self.list.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
@@ -3264,7 +3264,7 @@ class oph_split(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -3477,7 +3477,7 @@ class oph_subset2(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -3757,7 +3757,7 @@ class oph_explorecube(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -4111,7 +4111,7 @@ class oph_explorenc(WPSProcess):
         query += 'src_path=' + str(self.src_path.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -4314,7 +4314,7 @@ class oph_exportnc(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -4517,7 +4517,7 @@ class oph_exportnc2(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -4868,7 +4868,7 @@ class oph_importfits(WPSProcess):
         query += 'src_path=' + str(self.src_path.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -5367,7 +5367,7 @@ class oph_importnc(WPSProcess):
         query += 'src_path=' + str(self.src_path.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -5548,7 +5548,7 @@ class oph_publish(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -5863,7 +5863,7 @@ class oph_randcube(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -5990,7 +5990,7 @@ class oph_unpublish(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -6138,7 +6138,7 @@ class oph_cubeelements(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -6276,7 +6276,7 @@ class oph_cubeio(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -6458,7 +6458,7 @@ class oph_cubeschema(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -6606,7 +6606,7 @@ class oph_cubesize(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -6832,7 +6832,7 @@ class oph_metadata(WPSProcess):
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -7003,7 +7003,7 @@ class oph_search(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -7170,7 +7170,7 @@ class oph_showgrid(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -7341,7 +7341,7 @@ class oph_tasks(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -7592,7 +7592,7 @@ class oph_createcontainer(WPSProcess):
         query += 'dim=' + str(self.dim.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -7748,7 +7748,7 @@ class oph_deletecontainer(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -7893,7 +7893,7 @@ class oph_folder(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -8152,7 +8152,7 @@ class oph_list(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -8286,7 +8286,7 @@ class oph_movecontainer(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -8420,7 +8420,7 @@ class oph_restorecontainer(WPSProcess):
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -8584,7 +8584,7 @@ class oph_input(WPSProcess):
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -8723,7 +8723,7 @@ class oph_set(WPSProcess):
         query += 'key=' + str(self.key.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -8920,7 +8920,7 @@ class oph_wait(WPSProcess):
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -9049,7 +9049,7 @@ class oph_cancel(WPSProcess):
         query += 'id=' + str(self.id.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -9169,7 +9169,7 @@ class oph_get_config(WPSProcess):
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -9365,7 +9365,7 @@ class oph_instances(WPSProcess):
             query += 'level=' + str(self.level.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -9649,7 +9649,7 @@ class oph_loggingbk(WPSProcess):
             query += 'nlines=' + str(self.nlines.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -9812,7 +9812,7 @@ class oph_log_info(WPSProcess):
             query += 'nlines=' + str(self.nlines.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -9972,7 +9972,7 @@ class oph_manage_session(WPSProcess):
         query += 'action=' + str(self.action.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -10179,7 +10179,7 @@ class oph_resume(WPSProcess):
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -10310,7 +10310,7 @@ class oph_service(WPSProcess):
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -10506,7 +10506,7 @@ class oph_fs(WPSProcess):
             query += 'realpath=' + str(self.realpath.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -10647,7 +10647,7 @@ class oph_hierarchy(WPSProcess):
             query += 'hierarchy_version=' + str(self.hierarchy_version.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -10796,7 +10796,7 @@ class oph_man(WPSProcess):
         query += 'function=' + str(self.function.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -10937,7 +10937,7 @@ class oph_operators_list(WPSProcess):
             query += 'limit_filter=' + str(self.limit_filter.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
@@ -11122,7 +11122,7 @@ class oph_primitives_list(WPSProcess):
             query += 'limit_filter=' + str(self.limit_filter.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port, False)
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
         logging.debug("Submit the query: "+ query)
