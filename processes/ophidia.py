@@ -780,6 +780,128 @@ class oph_apply(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+class oph_b2drop(WPSProcess):
+
+    def __init__(self):
+        WPSProcess.__init__(
+            self,
+            identifier="oph_b2drop",
+            title="Ophidia B2DROP",
+            version="1.0.0",
+            metadata=[],
+            abstract="It uploads a file onto a B2DROP remote folder. Note that in order to be able to use the operator, a netrc file with the credentials to B2DROP is required. Commonly the hidden .netrc file resides in the user's home directory",
+            storeSupported=True,
+            statusSupported=True)
+
+        self.userid = self.addLiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            type=type(''))
+
+        self.passwd = self.addLiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            type=type(''))
+
+        self.ncores = self.addLiteralInput(
+            identifier="ncores",
+            title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.exec_mode = self.addLiteralInput(
+            identifier="exec_mode",
+            title="Execution mode",
+            abstract="Possible values are async (default) for asynchronous mode, sync for synchronous mode",
+            minOccurs=0,
+            maxOccurs=1,
+            default="async",
+            type=type(''))
+
+        self.type = self.addLiteralInput(
+            identifier="",
+            title="",
+            abstract="",
+            minOccurs=0,
+            maxOccurs=1,
+            default="",
+            type=type(''))
+
+        self.jobid = self.addLiteralOutput(
+            identifier="jobid",
+            title="Ophidia JobID",
+            type=type(''))
+
+        self.response = self.addComplexOutput(
+            identifier="response",
+            title="JSON Response",
+            metadata=[],
+            formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
+
+        self.error = self.addLiteralOutput(
+            identifier="return",
+            title="Return code",
+            type=type(1))
+
+    def execute(self):
+
+        self.status.set("Pre-processing", 1)
+
+        self.error.setValue(1)
+        self.jobid.setValue("")
+
+        self.status.set("Running", 2)
+
+        logging.debug("Build the query")
+        query = 'oph_cancel '
+        if self.type.getValue() is not None:
+            query += 'type=' + str(self.type.getValue()) + ';'
+        if self.exec_mode.getValue() is not None:
+            query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
+        if self.ncores.getValue() is not None:
+            query += 'ncores=' + str(self.ncores.getValue()) + ';'
+
+        query += 'id=' + str(self.id.getValue()) + ';'
+
+        logging.debug("Create Ophidia client")
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
+        oph_client.api_mode = False
+
+        logging.debug("Submit the query: "+ query)
+        oph_client.submit(query)
+
+        logging.debug("Get the return values")
+        response = oph_client.last_response
+        jobid = oph_client.last_jobid
+        return_value = oph_client.last_return_value
+        error = oph_client.last_error
+
+        logging.debug("Return value: %s" % return_value)
+        logging.debug("JobID: %s" % jobid)
+        logging.debug("Response: %s" % response)
+        logging.debug("Error message: %s" % error)
+
+        self.status.set("Post-processing", 98)
+        if return_value == 0 and self.exec_mode.getValue() == "sync" and len(response) > 0 and self.response.format["encoding"] == "base64":
+            logging.debug("Encoding response")
+            response = response.encode("base64")
+
+        self.status.set("Outputting", 99)
+        output = StringIO.StringIO()
+        self.error.setValue(return_value)
+        if return_value == 0:
+            if jobid is not None:
+                self.jobid.setValue(jobid)
+            if self.exec_mode.getValue() == "sync" and len(response) > 0:
+                output.write(response)
+        self.response.setValue(output)
+
+        self.status.set("Succeded", 100)
+
 class oph_cancel(WPSProcess):
 
     def __init__(self):
@@ -822,20 +944,37 @@ class oph_cancel(WPSProcess):
             default="async",
             type=type(''))
 
-        self.id = self.addLiteralInput(
-            identifier="id",
-            title="Id",
-            abstract="Identifier of the workflow to be stopped",
-            minOccurs=1,
-            type=type(1))
-
-        self.type = self.addLiteralInput(
-            identifier="type",
-            title="Type",
-            abstract="Use one of the following types: 'kill' (default value, workflow and submitted tasks are aborted); 'abort' (workflow and pending tasks are aborted, running tasks continue); 'stop' (workflow is aborted, submitted tasks continue)",
+        self.auth_path = self.addLiteralInput(
+            identifier="auth_path",
+            title="Authorization data",
+            abstract="Absolute path to the netrc file containing the B2DROP login information; note that it is not possible to use double dots (..) within the path; if no path is provided, the user's home will be used (default)",
             minOccurs=0,
             maxOccurs=1,
-            default="kill",
+            default="-",
+            type=type(''))
+
+        self.src_path = self.addLiteralInput(
+            identifier="src_path",
+            title="Source path",
+            abstract="Path to the file to be uploaded to B2DROP. The path can be absolute or relative; in case of relative path the cdd argument will be pre-pended; note that it is not possible to use double dots (..) within the path",
+            type=type(''))
+
+        self.dest_path = self.addLiteralInput(
+            identifier="dest_path",
+            title="Destination path",
+            abstract="Path where the file will be uploaded on B2DROP. In case no path is specified, the base path and the input file name will be used (default)",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
+        self.cdd = self.addLiteralInput(
+            identifier="cdd,
+            title="Current Data Directory",
+            abstract="Absolute path corresponding to the current directory on data repository",
+            minOccurs=0,
+            maxOccurs=1,
+            default="/",
             type=type(''))
 
         self.jobid = self.addLiteralOutput(
@@ -864,15 +1003,19 @@ class oph_cancel(WPSProcess):
         self.status.set("Running", 2)
 
         logging.debug("Build the query")
-        query = 'oph_cancel '
-        if self.type.getValue() is not None:
-            query += 'type=' + str(self.type.getValue()) + ';'
+        query = 'oph_b2drop '
+        if self.auth_path.getValue() is not None:
+            query += 'auth_path=' + str(self.auth_path.getValue()) + ';'
+        if self.dest_path.getValue() is not None:
+            query += 'dest_path=' + str(self.dest_path.getValue()) + ';'
+        if self.cdd.getValue() is not None:
+            query += 'cdd=' + str(self.cdd.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
 
-        query += 'id=' + str(self.id.getValue()) + ';'
+        query += 'src_path=' + str(self.src_path.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
@@ -1138,7 +1281,7 @@ class oph_containerschema(WPSProcess):
         self.status.set("Running", 2)
 
         logging.debug("Build the query")
-        query = 'oph_cubeschema '
+        query = 'oph_containerschema '
         if self.sessionid.getValue() is not None:
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
@@ -3421,7 +3564,7 @@ class oph_exportnc(WPSProcess):
             type=type(''))
 
         self.misc = self.addLiteralInput(
-            identifier="",
+            identifier="misc",
             title="Misc",
             abstract="If 'yes', data are saved in session folder called 'export/misc'; if 'no', data are saved within 'export/nc' in a subfolder associated with the PID of the cube (default)",
             minOccurs=0,
@@ -3432,7 +3575,7 @@ class oph_exportnc(WPSProcess):
         self.output_path = self.addLiteralInput(
             identifier="output_path",
             title="Output path",
-            abstract="Absolute path of the NetCDF output files. By default, all the files will be saved in session folder 'export/nc/containerid/datacubeid'",
+            abstract="Absolute path of the NetCDF output files. By default, all the files will be saved in session folder 'export/nc/containerid/datacubeid; in case it is set to 'local' the file will be saved in current directory on data repository (see 'cdd')",
             minOccurs=0,
             maxOccurs=1,
             default="default",
@@ -3441,7 +3584,7 @@ class oph_exportnc(WPSProcess):
         self.output_name = self.addLiteralInput(
             identifier="output_name",
             title="Output name",
-            abstract="FIlename of the NetCDF output files. In case of multiple fragments, filenames will be 'output_name0.nc', 'output_name1.nc', etc. The default value is the measure name of the input datacube",
+            abstract="Filename of the NetCDF output files. In case of multiple fragments, filenames will be 'output_name0.nc', 'output_name1.nc', etc. The default value is the measure name of the input datacube",
             default="default",
             type=type(''))
 
@@ -3622,7 +3765,7 @@ class oph_exportnc2(WPSProcess):
             type=type(''))
 
         self.misc = self.addLiteralInput(
-            identifier="",
+            identifier="misc",
             title="Misc",
             abstract="If 'yes', data are saved in session folder called 'export/misc'; if 'no', data are saved within 'export/nc' in a subfolder associated with the PID of the cube (default)",
             minOccurs=0,
@@ -3633,7 +3776,7 @@ class oph_exportnc2(WPSProcess):
         self.output_path = self.addLiteralInput(
             identifier="output_path",
             title="Output path",
-            abstract="Absolute path of the NetCDF output files. By default, all the files will be saved in session folder 'export/nc/containerid/datacubeid'",
+            abstract="Absolute path of the NetCDF output files. By default, all the files will be saved in session folder 'export/nc/containerid/datacubeid; in case it is set to 'local' the file will be saved in current directory on data repository (see 'cdd')",
             minOccurs=0,
             maxOccurs=1,
             default="default",
@@ -3642,7 +3785,7 @@ class oph_exportnc2(WPSProcess):
         self.output_name = self.addLiteralInput(
             identifier="output_name",
             title="Output name",
-            abstract="FIlename of the NetCDF output files. In case of multiple fragments, filenames will be 'output_name0.nc', 'output_name1.nc', etc. The default value is the measure name of the input datacube",
+            abstract="Filename of the NetCDF output files. In case of multiple fragments, filenames will be 'output_name0.nc', 'output_name1.nc', etc. The default value is the measure name of the input datacube",
             minOccurs=0,
             maxOccurs=1,
             default="default",
