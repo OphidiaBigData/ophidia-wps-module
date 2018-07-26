@@ -32,7 +32,7 @@ class OphExecuteMainProcess(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="ophexecutemain",
-            title="Ophidia",
+            title="Ophidia execute",
             version="1.0.0",
             metadata=[],
             abstract="Submit a generic workflow",
@@ -125,10 +125,10 @@ class oph_aggregate(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_aggregate",
-            title="Ophidia oph aggregate",
+            title="Ophidia aggregate",
             version="1.0.0",
             metadata=[],
-            abstract="Aggregate cubes",
+            abstract="Aggregate cubes along explicit dimensions",
             storeSupported=True,
             statusSupported=True)
 
@@ -147,6 +147,15 @@ class oph_aggregate(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -263,6 +272,8 @@ class oph_aggregate(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -322,10 +333,10 @@ class oph_aggregate2(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_aggregate2",
-            title="Ophidia oph aggregate2",
+            title="Ophidia aggregate2",
             version="1.0.0",
             metadata=[],
-            abstract="It executes an aggregation operation based on hierarchy on a datacube",
+            abstract="Execute an aggregation operation based on hierarchy on a datacube",
             storeSupported=True,
             statusSupported=True)
 
@@ -344,6 +355,15 @@ class oph_aggregate2(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -477,6 +497,8 @@ class oph_aggregate2(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -539,10 +561,10 @@ class oph_apply(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_apply",
-            title="Ophidia oph apply",
+            title="Ophidia apply",
             version="1.0.0",
             metadata=[],
-            abstract="It executes a query on a datacube",
+            abstract="Execute a query on a datacube",
             storeSupported=True,
             statusSupported=True)
 
@@ -561,6 +583,15 @@ class oph_apply(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -718,6 +749,8 @@ class oph_apply(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -789,7 +822,7 @@ class oph_b2drop(WPSProcess):
             title="Ophidia B2DROP",
             version="1.0.0",
             metadata=[],
-            abstract="It uploads a file onto a B2DROP remote folder. Note that in order to be able to use the operator, a netrc file with the credentials to B2DROP is required. Commonly the hidden .netrc file resides in the user's home directory",
+            abstract="Upload a file onto a B2DROP remote folder; note that in order to be able to use the operator, a netrc file with the credentials to B2DROP is required. Commonly the hidden .netrc file resides in the user's home directory",
             storeSupported=True,
             statusSupported=True)
 
@@ -908,7 +941,7 @@ class oph_cancel(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_cancel",
-            title="Ophidia oph cancel",
+            title="Ophidia cancel",
             version="1.0.0",
             metadata=[],
             abstract="Stop the execution of a running workflow",
@@ -1058,7 +1091,7 @@ class oph_cluster(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_cluster",
-            title="Ophidia oph input",
+            title="Ophidia input",
             version="1.0.0",
             metadata=[],
             abstract="Start and stop a cluster of I/O servers",
@@ -1199,10 +1232,10 @@ class oph_containerschema(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_containerschema",
-            title="Ophidia container schema",
+            title="Ophidia containerschema",
             version="1.0.0",
             metadata=[],
-            abstract="It shows some information about a container: description, vocabulary, dimension list, etc.",
+            abstract="Show some information about a container: description, vocabulary, dimension list, etc.",
             storeSupported=True,
             statusSupported=True)
 
@@ -1333,10 +1366,10 @@ class oph_createcontainer(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_createcontainer",
-            title="Ophidia oph createcontainer",
+            title="Ophidia createcontainer",
             version="1.0.0",
             metadata=[],
-            abstract="It creates an empty container",
+            abstract="Create an empty container",
             storeSupported=True,
             statusSupported=True)
 
@@ -1595,10 +1628,10 @@ class oph_cubeelements(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_cubeelements",
-            title="Ophidia oph cubeelements",
+            title="Ophidia cubeelements",
             version="1.0.0",
             metadata=[],
-            abstract="It computes and displays the number of elements stored in the input datacube",
+            abstract="Compute and display the number of elements stored in the input datacube",
             storeSupported=True,
             statusSupported=True)
 
@@ -1743,10 +1776,10 @@ class oph_cubeio(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_cubeio",
-            title="Ophidia oph cubeio",
+            title="Ophidia cubeio",
             version="1.0.0",
             metadata=[],
-            abstract="It shows the hierarchy of all datacubes used to generate the input datacube and of those derived from it",
+            abstract="Show the hierarchy of all datacubes used to generate the input datacube and of those derived from it",
             storeSupported=True,
             statusSupported=True)
 
@@ -1884,7 +1917,7 @@ class oph_cubeschema(WPSProcess):
             title="Ophidia cubeschema",
             version="1.0.0",
             metadata=[],
-            abstract="It shows metadata information about a datacube and the dimensions related to it",
+            abstract="Show metadata information about a datacube and the dimensions related to it",
             storeSupported=True,
             statusSupported=True)
 
@@ -2107,10 +2140,10 @@ class oph_cubesize(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_cubesize",
-            title="Ophidia oph cubesize",
+            title="Ophidia cubesize",
             version="1.0.0",
             metadata=[],
-            abstract="It computes and displays the size of the input datacube",
+            abstract="Compute and display the size of the input datacube",
             storeSupported=True,
             statusSupported=True)
 
@@ -2255,10 +2288,10 @@ class oph_delete(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_delete",
-            title="Ophidia oph delete",
+            title="Ophidia delete",
             version="1.0.0",
             metadata=[],
-            abstract="It removes a datacube",
+            abstract="Remove a datacube",
             storeSupported=True,
             statusSupported=True)
 
@@ -2277,6 +2310,15 @@ class oph_delete(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -2344,6 +2386,8 @@ class oph_delete(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -2392,10 +2436,10 @@ class oph_deletecontainer(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_deletecontainer",
-            title="Ophidia oph deletecontainer",
+            title="Ophidia deletecontainer",
             version="1.0.0",
             metadata=[],
-            abstract="It creates an empty container",
+            abstract="Remove a container with related dimensions and grids. The container can be deleted logically or physically",
             storeSupported=True,
             statusSupported=True)
 
@@ -2419,6 +2463,15 @@ class oph_deletecontainer(WPSProcess):
             default=1,
             type=type(1))
 
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used; used only when the force argument is set to 'yes'",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
         self.exec_mode = self.addLiteralInput(
             identifier="exec_mode",
             title="Execution mode",
@@ -2434,6 +2487,15 @@ class oph_deletecontainer(WPSProcess):
             minOccurs=0,
             maxOccurs=1,
             default="null",
+            type=type(''))
+
+        self.force = self.addLiteralInput(
+            identifier="force",
+            title="Force",
+            abstract="Flag used to force the removal of a non-empy container, note that with 'yes' all datacubes inside the container will be deleted, whereas with 'no' (default) the container will be removed only if it is already empty",
+            minOccurs=0,
+            maxOccurs=1,
+            default="no",
             type=type(''))
 
         self.delete_type = self.addLiteralInput(
@@ -2497,8 +2559,12 @@ class oph_deletecontainer(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
+        if self.force.getValue() is not None:
+            query += 'force=' + str(self.force.getValue()) + ';'
         if self.delete_type.getValue() is not None:
             query += 'delete_type=' + str(self.delete_type.getValue()) + ';'
         if self.hidden.getValue() is not None:
@@ -2548,10 +2614,10 @@ class oph_drilldown(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_drilldown",
-            title="Ophidia oph drilldown",
+            title="Ophidia drilldown",
             version="1.0.0",
             metadata=[],
-            abstract="It performs a drill-down on a datacube, i.e. it transforms dimensions from implicit to explicit",
+            abstract="Perform a drill-down on a datacube, i.e. it transforms dimensions from implicit to explicit",
             storeSupported=True,
             statusSupported=True)
 
@@ -2718,10 +2784,10 @@ class oph_duplicate(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_duplicate",
-            title="Ophidia oph duplicate",
+            title="Ophidia duplicate",
             version="1.0.0",
             metadata=[],
-            abstract="It duplicates a datacube creating an exact copy of the input one",
+            abstract="Duplicate a datacube creating an exact copy of the input one",
             storeSupported=True,
             statusSupported=True)
 
@@ -2740,6 +2806,15 @@ class oph_duplicate(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -2825,6 +2900,8 @@ class oph_duplicate(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -2877,10 +2954,10 @@ class oph_explorecube(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_explorecube",
-            title="Ophidia oph explorecube",
+            title="Ophidia explorecube",
             version="1.0.0",
             metadata=[],
-            abstract="It prints a data stored into a datacube, and offers to subset the data along its dimensions. Dimensions values are used as input filters for subsetting",
+            abstract="Print a data stored into a datacube, and offer to subset the data along its dimensions; dimensions values are used as input filters for subsetting",
             storeSupported=True,
             statusSupported=True)
 
@@ -3157,10 +3234,10 @@ class oph_explorenc(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_explorenc",
-            title="Ophidia oph explorenc",
+            title="Ophidia explorenc",
             version="1.0.0",
             metadata=[],
-            abstract="It read a NetCDF file (both measure and dimensions)",
+            abstract="Read a NetCDF file (both measure and dimensions)",
             storeSupported=True,
             statusSupported=True)
 
@@ -3511,10 +3588,10 @@ class oph_exportnc(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_exportnc",
-            title="Ophidia oph exportnc",
+            title="Ophidia exportnc",
             version="1.0.0",
             metadata=[],
-            abstract="It exports data of a datacube into multiple NetCDF files",
+            abstract="Export data of a datacube into multiple NetCDF files",
             storeSupported=True,
             statusSupported=True)
 
@@ -3714,10 +3791,10 @@ class oph_exportnc2(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_exportnc2",
-            title="Ophidia oph exportnc2",
+            title="Ophidia exportnc2",
             version="1.0.0",
             metadata=[],
-            abstract="It exports data of a datacube into a single NetCDF file",
+            abstract="Export data of a datacube into a single NetCDF file",
             storeSupported=True,
             statusSupported=True)
 
@@ -3917,10 +3994,10 @@ class oph_folder(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_folder",
-            title="Ophidia oph folder",
+            title="Ophidia folder",
             version="1.0.0",
             metadata=[],
-            abstract="It manages folder of the Ophidia filesystem",
+            abstract="Manage folder of the Ophidia filesystem",
             storeSupported=True,
             statusSupported=True)
 
@@ -4062,10 +4139,10 @@ class oph_fs(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_fs",
-            title="Ophidia oph fs",
+            title="Ophidia fs",
             version="1.0.0",
             metadata=[],
-            abstract="It manage folders of the real Ophidia filesystem",
+            abstract="Manage folders of the real Ophidia filesystem",
             storeSupported=True,
             statusSupported=True)
 
@@ -4258,7 +4335,7 @@ class oph_get_config(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_get_config",
-            title="Ophidia oph get_config",
+            title="Ophidia get_config",
             version="1.0.0",
             metadata=[],
             abstract="Request the configuration parameters",
@@ -4378,10 +4455,10 @@ class oph_hierarchy(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_hierarchy",
-            title="Ophidia oph hierarchy",
+            title="Ophidia hierarchy",
             version="1.0.0",
             metadata=[],
-            abstract="It shows the list of the hierarchies or the description of a specified hierarchy",
+            abstract="Show the list of the hierarchies or the description of a specified hierarchy",
             storeSupported=True,
             statusSupported=True)
 
@@ -4519,10 +4596,10 @@ class oph_importfits(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_importfits",
-            title="Ophidia oph importfits",
+            title="Ophidia importfits",
             version="1.0.0",
             metadata=[],
-            abstract="It imports a FITS file into a datacube (both data and axis). Support s provided only for images FITS files",
+            abstract="Imports a FITS file into a datacube (both data and axis); support is provided only for FITS images",
             storeSupported=True,
             statusSupported=True)
 
@@ -4870,10 +4947,10 @@ class oph_importnc(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_importnc",
-            title="Ophidia oph importnc",
+            title="Ophidia importnc",
             version="1.0.0",
             metadata=[],
-            abstract="It imports a NetCDF file into a datacube (both measure and dimensions",
+            abstract="Import a NetCDF file into a datacube (both measure and dimensions)",
             storeSupported=True,
             statusSupported=True)
 
@@ -5369,10 +5446,10 @@ class oph_importnc2(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_importnc2",
-            title="Ophidia oph importnc2",
+            title="Ophidia importnc2",
             version="1.0.0",
             metadata=[],
-            abstract="It imports a NetCDF file into a datacube (both measure and dimensions; optimized version of oph_importnc",
+            abstract="Import a NetCDF file into a datacube (both measure and dimensions); optimized version of oph_importnc",
             storeSupported=True,
             statusSupported=True)
 
@@ -5396,9 +5473,10 @@ class oph_importnc2(WPSProcess):
             default=1,
             type=type(1))
 
-        self.threads = self.addLiteralInput(
+        self.nthreads = self.addLiteralInput(
             identifier="nthreads",
             title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -5878,10 +5956,10 @@ class oph_input(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_input",
-            title="Ophidia oph input",
+            title="Ophidia input",
             version="1.0.0",
             metadata=[],
-            abstract="Send commands or data to an interactive task ('OPH_WAIT'). Set parameters in a workflow environment",
+            abstract="Send commands or data to an interactive task ('OPH_WAIT'); set parameters in a workflow environment",
             storeSupported=True,
             statusSupported=True)
 
@@ -6042,10 +6120,10 @@ class oph_instances(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_instances",
-            title="Ophidia oph instances",
+            title="Ophidia instances",
             version="1.0.0",
             metadata=[],
-            abstract="It shows information about host partitions, hosts and dbms instances",
+            abstract="Show information about host partitions, hosts and dbms instances",
             storeSupported=True,
             statusSupported=True)
 
@@ -6260,10 +6338,10 @@ class oph_intercube(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_intercube",
-            title="Ophidia oph intercube",
+            title="Ophidia intercube",
             version="1.0.0",
             metadata=[],
-            abstract="It executes an operation between two datacubes with the same fragmentation structure and returns a new datacube as result of the specified operation applied element by element",
+            abstract="Execute an operation between two datacubes with the same fragmentation structure and return a new datacube as result of the specified operation applied element by element",
             storeSupported=True,
             statusSupported=True)
 
@@ -6448,10 +6526,10 @@ class oph_list(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_list",
-            title="Ophidia oph list",
+            title="Ophidia list",
             version="1.0.0",
             metadata=[],
-            abstract="It shows information about folders, container and datacubes fragmentation (file system)",
+            abstract="Show information about folders, container and datacubes fragmentation (file system)",
             storeSupported=True,
             statusSupported=True)
 
@@ -6707,10 +6785,10 @@ class oph_log_info(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_log_info",
-            title="Ophidia oph log_info",
+            title="Ophidia log_info",
             version="1.0.0",
             metadata=[],
-            abstract="It reads the last lines from the server log or from a specific container log. This operator requires administrator privileges",
+            abstract="Read the last lines from the server log or from a specific container log; this operator requires administrator privileges",
             storeSupported=True,
             statusSupported=True)
 
@@ -6870,10 +6948,10 @@ class oph_loggingbk(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_loggingbk",
-            title="Ophidia oph loggingbk",
+            title="Ophidia loggingbk",
             version="1.0.0",
             metadata=[],
-            abstract="It shows info about",
+            abstract="Show info about sumbitted jobs",
             storeSupported=True,
             statusSupported=True)
 
@@ -7154,10 +7232,10 @@ class oph_man(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_man",
-            title="Ophidia oph man",
+            title="Ophidia man",
             version="1.0.0",
             metadata=[],
-            abstract="It shows a description of the behaviour of an operator/primitive",
+            abstract="Show a description of the behaviour of an operator/primitive",
             storeSupported=True,
             statusSupported=True)
 
@@ -7303,7 +7381,7 @@ class oph_manage_session(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_manage_session",
-            title="Ophidia oph manage_session",
+            title="Ophidia manage_session",
             version="1.0.0",
             metadata=[],
             abstract="Request or set session data: session list, session creation date, authorized users, etc. Only session owner and administrators can submit the command",
@@ -7463,10 +7541,10 @@ class oph_merge(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_merge",
-            title="Ophidia oph merge",
+            title="Ophidia merge",
             version="1.0.0",
             metadata=[],
-            abstract="It creates a new datacube grouping nmerge input fragments in a new output fragment",
+            abstract="Create a new datacube grouping nmerge input fragments in a new output fragment",
             storeSupported=True,
             statusSupported=True)
 
@@ -7485,6 +7563,7 @@ class oph_merge(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
             minOccurs=1,
             default=1,
             type=type(1))
@@ -7630,10 +7709,10 @@ class oph_mergecubes(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_mergecubes",
-            title="Ophidia oph mergecubes",
+            title="Ophidia mergecubes",
             version="1.0.0",
             metadata=[],
-            abstract="It merges the measures of n input datacubes with the same fragmentation structure and creates a new datacube with the union of the n measures. Only single measure data cubes can be merged",
+            abstract="Merge the measures of n input datacubes with the same fragmentation structure and creates a new datacube with the union of the n measures; only single measure data cubes can be merged",
             storeSupported=True,
             statusSupported=True)
 
@@ -7822,10 +7901,10 @@ class oph_mergecubes2(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_mergecubes2",
-            title="Ophidia oph mergecubes2",
+            title="Ophidia mergecubes2",
             version="1.0.0",
             metadata=[],
-            abstract="It merges the measures of n input datacubes with the same fragmentation structure and creates a new datacube with the union of the n measures. Only single measure data cubes can be merged and a new implicit dimension will be created",
+            abstract="Merge the measures of n input datacubes with the same fragmentation structure and creates a new datacube with the union of the n measures; only single measure data cubes can be merged and a new implicit dimension will be created",
             storeSupported=True,
             statusSupported=True)
 
@@ -8013,10 +8092,10 @@ class oph_metadata(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_metadata",
-            title="Ophidia oph metadata",
+            title="Ophidia metadata",
             version="1.0.0",
             metadata=[],
-            abstract="It provides CRUD operations (Create, Read, Update and Delete) on OphidiaDB metadata",
+            abstract="Provide CRUD operations (Create, Read, Update and Delete) on OphidiaDB metadata",
             storeSupported=True,
             statusSupported=True)
 
@@ -8250,10 +8329,10 @@ class oph_movecontainer(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_movecontainer",
-            title="Ophidia oph movecontainer",
+            title="Ophidia movecontainer",
             version="1.0.0",
             metadata=[],
-            abstract="It moves/renames a visible container",
+            abstract="Move/rename a visible container",
             storeSupported=True,
             statusSupported=True)
 
@@ -8384,10 +8463,10 @@ class oph_operators_list(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_operators_list",
-            title="Ophidia oph operators_list",
+            title="Ophidia operators_list",
             version="1.0.0",
             metadata=[],
-            abstract="It shows the list of all active operators",
+            abstract="Show the list of all active operators",
             storeSupported=True,
             statusSupported=True)
 
@@ -8525,10 +8604,10 @@ class oph_permute(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_permute",
-            title="Ophidia oph permute",
+            title="Ophidia permute",
             version="1.0.0",
             metadata=[],
-            abstract="It performs a permutation of the dimension of a datacube. This version operates only on implicit dimensions",
+            abstract="Perform a permutation of the dimension of a datacube; this version operates only on implicit dimensions",
             storeSupported=True,
             statusSupported=True)
 
@@ -8547,6 +8626,15 @@ class oph_permute(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -8638,6 +8726,8 @@ class oph_permute(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -8691,10 +8781,10 @@ class oph_primitives_list(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_primitives_list",
-            title="Ophidia oph primitives_list",
+            title="Ophidia primitives_list",
             version="1.0.0",
             metadata=[],
-            abstract="It shows a list with info about active Ophidia Primitives loaded into a specifiv DBMS instance",
+            abstract="Show a list with info about active Ophidia Primitives loaded into a specifiv DBMS instance",
             storeSupported=True,
             statusSupported=True)
 
@@ -8876,10 +8966,10 @@ class oph_publish(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_publish",
-            title="Ophidia oph publish",
+            title="Ophidia publish",
             version="1.0.0",
             metadata=[],
-            abstract="It creates HTML pages with data and other information from a datacube",
+            abstract="Create HTML pages with data and other information from a datacube",
             storeSupported=True,
             statusSupported=True)
 
@@ -9057,10 +9147,10 @@ class oph_randcube(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_randcube",
-            title="Ophidia oph randcube",
+            title="Ophidia randcube",
             version="1.0.0",
             metadata=[],
-            abstract="It creates a new datacube with random data and dimensions",
+            abstract="Create a new datacube with random data and dimensions",
             storeSupported=True,
             statusSupported=True)
 
@@ -9372,10 +9462,10 @@ class oph_reduce(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_reduce",
-            title="Ophidia oph reduce",
+            title="Ophidia reduce",
             version="1.0.0",
             metadata=[],
-            abstract="It performs a reduction operation on a datacube with respect to implicit dimensions",
+            abstract="Perform a reduction operation on a datacube with respect to implicit dimensions",
             storeSupported=True,
             statusSupported=True)
 
@@ -9394,6 +9484,15 @@ class oph_reduce(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -9519,6 +9618,8 @@ class oph_reduce(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -9580,10 +9681,10 @@ class oph_reduce2(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_reduce2",
-            title="Ophidia oph reduce2",
+            title="Ophidia reduce2",
             version="1.0.0",
             metadata=[],
-            abstract="It performs a reduction operation based on hierarchy on a datacube",
+            abstract="Perform a reduction operation based on hierarchy on a datacube",
             storeSupported=True,
             statusSupported=True)
 
@@ -9607,9 +9708,10 @@ class oph_reduce2(WPSProcess):
             default=1,
             type=type(1))
 
-        self.ncores = self.addLiteralInput(
+        self.nthreads = self.addLiteralInput(
             identifier="nthreads",
             title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -9817,10 +9919,10 @@ class oph_restorecontainer(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_restorecontainer",
-            title="Ophidia oph restorecontainer",
+            title="Ophidia restorecontainer",
             version="1.0.0",
             metadata=[],
-            abstract="It restores a hidden container",
+            abstract="Restore a hidden container",
             storeSupported=True,
             statusSupported=True)
 
@@ -9951,7 +10053,7 @@ class oph_resume(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_resume",
-            title="Ophidia oph resume",
+            title="Ophidia resume",
             version="1.0.0",
             metadata=[],
             abstract="Request the list of the commands submitted within a session or the output of a command",
@@ -10158,10 +10260,10 @@ class oph_rollup(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_rollup",
-            title="Ophidia oph rollup",
+            title="Ophidia rollup",
             version="1.0.0",
             metadata=[],
-            abstract="It performs a roll-up on a datacube, i.e. it transforms dimensions from explicit to implicit",
+            abstract="Perform a roll-up on a datacube, i.e. it transform dimensions from explicit to implicit",
             storeSupported=True,
             statusSupported=True)
 
@@ -10180,6 +10282,15 @@ class oph_rollup(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -10274,6 +10385,8 @@ class oph_rollup(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -10328,10 +10441,10 @@ class oph_script(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_script",
-            title="Ophidia oph script",
+            title="Ophidia script",
             version="1.0.0",
             metadata=[],
-            abstract="It executes a bash script",
+            abstract="Execute a bash script",
             storeSupported=True,
             statusSupported=True)
 
@@ -10355,14 +10468,14 @@ class oph_script(WPSProcess):
             default=1,
             type=type(1))
 
-        self.script = self.addLiteralInput(
-            identifier="script",
-            title="Script",
-            abstract="Name of the script to be executed; by default no operation is performed. The script has to be registered at server side",
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
-            default=":",
-            type=type(''))
+            default=1,
+            type=type(1))
 
         self.exec_mode = self.addLiteralInput(
             identifier="exec_mode",
@@ -10373,6 +10486,23 @@ class oph_script(WPSProcess):
             default="async",
             type=type(''))
 
+        self.sessionid = self.addLiteralInput(
+            identifier="sessionid",
+            title="Session identifier",
+            minOccurs=0,
+            maxOccurs=1,
+            default="null",
+            type=type(''))
+
+        self.script = self.addLiteralInput(
+            identifier="script",
+            title="Script",
+            abstract="Name of the script to be executed; by default no operation is performed. The script has to be registered at server side",
+            minOccurs=0,
+            maxOccurs=1,
+            default=":",
+            type=type(''))
+
         self.args = self.addLiteralInput(
             identifier="args",
             title="Input arguments",
@@ -10380,14 +10510,6 @@ class oph_script(WPSProcess):
             minOccurs=0,
             maxOccurs=1,
             default="",
-            type=type(''))
-
-        self.sessionid = self.addLiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            minOccurs=0,
-            maxOccurs=1,
-            default="null",
             type=type(''))
 
         self.stdout = self.addLiteralInput(
@@ -10448,6 +10570,8 @@ class oph_script(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.script.getValue() is not None:
@@ -10502,10 +10626,10 @@ class oph_search(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_search",
-            title="Ophidia oph search",
+            title="Ophidia search",
             version="1.0.0",
             metadata=[],
-            abstract="It provides enhanced searching on metadata",
+            abstract="Provide enhanced searching on metadata",
             storeSupported=True,
             statusSupported=True)
 
@@ -10673,7 +10797,7 @@ class oph_service(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_service",
-            title="Ophidia oph service",
+            title="Ophidia service",
             version="1.0.0",
             metadata=[],
             abstract="Request or set the service status",
@@ -10804,7 +10928,7 @@ class oph_set(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_set",
-            title="Ophidia oph set",
+            title="Ophidia set",
             version="1.0.0",
             metadata=[],
             abstract="Set parameters in the workflow environment",
@@ -10943,10 +11067,10 @@ class oph_showgrid(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_showgrid",
-            title="Ophidia oph showgrid",
+            title="Ophidia showgrid",
             version="1.0.0",
             metadata=[],
-            abstract="It shows information about one or more grids related to the specified container",
+            abstract="Show information about one or more grids related to the specified container",
             storeSupported=True,
             statusSupported=True)
 
@@ -11110,10 +11234,10 @@ class oph_split(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_split",
-            title="Ophidia oph split",
+            title="Ophidia split",
             version="1.0.0",
             metadata=[],
-            abstract="It creates a new datacube by splitting input fragments in nsplit output fragments in the same origin database",
+            abstract="Create a new datacube by splitting input fragments in nsplit output fragments in the same origin database",
             storeSupported=True,
             statusSupported=True)
 
@@ -11132,6 +11256,15 @@ class oph_split(WPSProcess):
         self.ncores = self.addLiteralInput(
             identifier="ncores",
             title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
             minOccurs=0,
             maxOccurs=1,
             default=1,
@@ -11223,6 +11356,8 @@ class oph_split(WPSProcess):
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.schedule.getValue() is not None:
@@ -11277,7 +11412,7 @@ class oph_subset(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_subset",
-            title="Ophidia",
+            title="Ophidia subset",
             version="1.0.0",
             metadata=[],
             abstract="Subset a cube",
@@ -11500,10 +11635,10 @@ class oph_subset2(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_subset2",
-            title="Ophidia oph subset2",
+            title="Ophidia subset2",
             version="1.0.0",
             metadata=[],
-            abstract="It performs a subsetting along dimensions of a datacube. Dimension values are used as input filters",
+            abstract="Perform a subsetting along dimensions of a datacube; dimension values are used as input filters",
             storeSupported=True,
             statusSupported=True)
 
@@ -11713,10 +11848,10 @@ class oph_tasks(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_tasks",
-            title="Ophidia oph tasks",
+            title="Ophidia tasks",
             version="1.0.0",
             metadata=[],
-            abstract="It shows information about executed tasks. Default arguments allow to show all the tasks executed. If a container is given, then only tasks that involve the container as shown",
+            abstract="Show information about executed tasks; default arguments allow to show all the tasks executed; if a container is given, then only tasks that involve the container as shown",
             storeSupported=True,
             statusSupported=True)
 
@@ -11884,10 +12019,10 @@ class oph_unpublish(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_unpublish",
-            title="Ophidia oph unpublish",
+            title="Ophidia unpublish",
             version="1.0.0",
             metadata=[],
-            abstract="It removes the HTML pages created by the PUBLISH2 operator. NOTE: it doesn't remove the container folder",
+            abstract="Remove the HTML pages created by the PUBLISH2 operator; note that it doesn't remove the container folder",
             storeSupported=True,
             statusSupported=True)
 
@@ -12011,10 +12146,10 @@ class oph_wait(WPSProcess):
         WPSProcess.__init__(
             self,
             identifier="oph_wait",
-            title="Ophidia oph wait",
+            title="Ophidia wait",
             version="1.0.0",
             metadata=[],
-            abstract="Wait until an event occurs. The task can be unlocked by means of the command 'OPH_INPUT'",
+            abstract="Wait until an event occurs; the task can be unlocked by means of the command 'OPH_INPUT'",
             storeSupported=True,
             statusSupported=True)
 
