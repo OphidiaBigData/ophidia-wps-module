@@ -1002,7 +1002,7 @@ class oph_cancel(WPSProcess):
             type=type(''))
 
         self.cdd = self.addLiteralInput(
-            identifier="cdd,
+            identifier="cdd",
             title="Current Data Directory",
             abstract="Absolute path corresponding to the current directory on data repository",
             minOccurs=0,
@@ -7564,7 +7564,7 @@ class oph_merge(WPSProcess):
             identifier="ncores",
             title="Number of cores",
             minOccurs=0,
-            minOccurs=1,
+            maxOccurs=1,
             default=1,
             type=type(1))
 
