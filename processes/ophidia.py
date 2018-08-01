@@ -10964,6 +10964,15 @@ class oph_set(WPSProcess):
             default="async",
             type=type(''))
 
+        self.subset_filter = self.addLiteralInput(
+            identifier="subset_filter",
+            title="Subsetting filter",
+            abstract="Set to 'yes' in case 'value' is an index array and subset string has to be stored on behalf of the list of numbers",
+            minOccurs=0,
+            maxOccurs=1,
+            default="no",
+            type=type(''))
+
         self.id = self.addLiteralInput(
             identifier="id",
             title="Id",
@@ -11015,6 +11024,8 @@ class oph_set(WPSProcess):
 
         logging.debug("Build the query")
         query = 'oph_set '
+        if self.subset_filter.getValue() is not None:
+            query += 'subset_filter=' + str(self.subset_filter.getValue()) + ';'
         if self.id.getValue() is not None:
             query += 'id=' + str(self.id.getValue()) + ';'
         if self.value.getValue() is not None:
