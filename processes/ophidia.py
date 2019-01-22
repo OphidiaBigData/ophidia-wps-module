@@ -11623,7 +11623,7 @@ class oph_set(WPSProcess):
         self.offset = self.addLiteralInput(
             identifier="offset",
             title="Offset",
-            abstract="Expected difference between two consecutive items of input array in case subset strings have to be evaluated; by default, it will se to '1'"
+            abstract="Expected difference between two consecutive items of input array in case subset strings have to be evaluated; by default, it will se to '1'",
             minOccurs=0,
             maxOccurs=1,
             default=1,
