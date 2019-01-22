@@ -119,6 +119,7 @@ class OphExecuteMainProcess(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+
 class oph_aggregate(WPSProcess):
 
     def __init__(self):
@@ -326,6 +327,7 @@ class oph_aggregate(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_aggregate2(WPSProcess):
 
@@ -554,6 +556,7 @@ class oph_aggregate2(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_apply(WPSProcess):
 
@@ -813,6 +816,7 @@ class oph_apply(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+
 class oph_b2drop(WPSProcess):
 
     def __init__(self):
@@ -904,7 +908,7 @@ class oph_b2drop(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -934,6 +938,7 @@ class oph_b2drop(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_cancel(WPSProcess):
 
@@ -1054,7 +1059,7 @@ class oph_cancel(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -1084,6 +1089,7 @@ class oph_cancel(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_cluster(WPSProcess):
 
@@ -1209,7 +1215,7 @@ class oph_cluster(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -1239,6 +1245,546 @@ class oph_cluster(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
+
+class oph_concatnc(WPSProcess):
+
+    def __init__(self):
+        WPSProcess.__init__(
+            self,
+            identifier="oph_concatnc",
+            title="Ophidia concatnc",
+            version="1.0.0",
+            metadata=[],
+            abstract="Creates a new datacube concatenating a NetCDF file to an existing datacube (both measure and dimensions)",
+            storeSupported=True,
+            statusSupported=True)
+
+        self.userid = self.addLiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            type=type(''))
+
+        self.passwd = self.addLiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            type=type(''))
+
+        self.ncores = self.addLiteralInput(
+            identifier="ncores",
+            title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.exec_mode = self.addLiteralInput(
+            identifier="exec_mode",
+            title="Execution mode",
+            abstract="Possible values are async (default) for asynchronous mode, sync for synchronous mode",
+            minOccurs=0,
+            maxOccurs=1,
+            default="async",
+            type=type(''))
+
+        self.sessionid = self.addLiteralInput(
+            identifier="sessionid",
+            title="Session identifier",
+            minOccurs=0,
+            maxOccurs=1,
+            default="null",
+            type=type(''))
+
+        self.schedule = self.addLiteralInput(
+            identifier="schedule",
+            title="Schedule",
+            minOccurs=0,
+            maxOccurs=1,
+            default=0,
+            type=type(1))
+
+        self.src_path = self.addLiteralInput(
+            identifier="src_path",
+            title="Path of the NetCDF file",
+            abstract="Path or OPeNDAP URL of the NetCDF file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders",
+            type=type(''))
+
+        self.cdd = self.addLiteralInput(
+            identifier="cdd",
+            title="Absolute path of the current directory on data repository",
+            abstract="Absolute path corresponding to the current directory on data repository. It is appened to BASE_SRC_PATH to build the effective path to files",
+            minOccurs=0,
+            maxOccurs=1,
+            default="/",
+            type=type(''))
+
+        self.pid = self.addLiteralInput(
+            identifier="cube",
+            title="Input cube",
+            abstract="Name of the input datacube in PID format",
+            type=type(''))
+
+        self.check_exp_dim = self.addLiteralInput(
+            identifier="check_exp_dim",
+            title="Check explicit dimensions",
+            abstract="If set to 'yes' (default) explicit dimensions of the two sources (NetCDF file and datacube) will be compared to assure they have the same values, if set to 'no' the check will not be performed",
+            minOccurs=0,
+            maxOccurs=1,
+            default="yes",
+            type=type(''))
+
+        self.subset_dims = self.addLiteralInput(
+            identifier="subset_dims",
+            title="Dimension names",
+            abstract="Dimension names of the cube used for the subsetting. Multi value field: list of dimensions separated by '|' can be provided",
+            minOccurs=0,
+            maxOccurs=1,
+            default="none",
+            type=type(''))
+
+        self.subset_filter = self.addLiteralInput(
+            identifier="subset_filter",
+            title="Subsetting filter",
+            abstract="Enumeration of comma-separated elementary filters (1 series of filters for each dimension)",
+            minOccurs=0,
+            maxOccurs=1,
+            default="all",
+            type=type(''))
+
+        self.subset_type = self.addLiteralInput(
+            identifier="subset_type",
+            title="Subset Type",
+            abstract="Possibile values are: index, coord. If set to 'index' (default), the subset_filter is considered on a dimension index; otherwise on dimension values",
+            minOccurs=0,
+            maxOccurs=1,
+            default="index",
+            type=type(''))
+
+        self.time_filter = self.addLiteralInput(
+            identifier="time_filter",
+            title="Time filter",
+            abstract="Enable filters using dates for time dimensions; enabled by default",
+            minOccurs=0,
+            maxOccurs=1,
+            default="yes",
+            type=type(''))
+
+        self.offset = self.addLiteralInput(
+            identifier="offset",
+            title="Offset",
+            abstract="It is added to the bounds of subset intervals defined with 'subset_filter' in case of 'coord' filter type is used",
+            minOccurs=0,
+            maxOccurs=1,
+            default=0,
+            type=type(1.0))
+
+        self.dim_offset = self.addLiteralInput(
+            identifier="dim_offset",
+            title="Dimension Offset",
+            abstract="Offset to be added to dimension values of imported data; default setting aims to held the difference between consecutive values",
+            minOccurs=0,
+            maxOccurs=1,
+            default=0,
+            type=type(1.0))
+
+        self.dim_continue = self.addLiteralInput(
+            identifier="dim_continue",
+            title="Dimension Continue Flag",
+            abstract="If enabled the last value of implicit dimension of input cube is used to evaluate the new values of the dimension",
+            minOccurs=0,
+            maxOccurs=1,
+            default="no",
+            type=type(''))
+
+        self.grid = self.addLiteralInput(
+            identifier="grid",
+            title="Grid name",
+            abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created",
+            default="-",
+            type=type(''))
+
+        self.description = self.addLiteralInput(
+            identifier="description",
+            title="Output description",
+            abstract="Additional description to be associated with the output cube",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
+        self.jobid = self.addLiteralOutput(
+            identifier="jobid",
+            title="Ophidia JobID",
+            type=type(''))
+
+        self.response = self.addComplexOutput(
+            identifier="response",
+            title="JSON Response",
+            metadata=[],
+            formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
+
+        self.error = self.addLiteralOutput(
+            identifier="return",
+            title="Return code",
+            type=type(1))
+
+    def execute(self):
+
+        self.status.set("Pre-processing", 1)
+
+        self.error.setValue(1)
+        self.jobid.setValue("")
+
+        self.status.set("Running", 2)
+
+        logging.debug("Build the query")
+        query = 'oph_concatnc '
+        if self.sessionid.getValue() is not None:
+            query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
+        if self.ncores.getValue() is not None:
+            query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.exec_mode.getValue() is not None:
+            query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
+        if self.schedule.getValue() is not None:
+            query += 'schedule=' + str(self.schedule.getValue()) + ';'
+        if self.cdd.getValue() is not None:
+            query += 'cdd=' + str(self.cdd.getValue()) + ';'
+        if self.check_exp_dim.getValue() is not None:
+            query += 'check_exp_dim=' + str(self.check_exp_dim.getValue()) + ';'
+        if self.subset_dims.getValue() is not None:
+            query += 'subset_dims=' + str(self.subset_dims.getValue()) + ';'
+        if self.subset_filter.getValue() is not None:
+            query += 'subset_filter=' + str(self.subset_filter.getValue()) + ';'
+        if self.subset_type.getValue() is not None:
+            query += 'subset_type=' + str(self.subset_type.getValue()) + ';'
+        if self.time_filter.getValue() is not None:
+            query += 'time_filter=' + str(self.time_filter.getValue()) + ';'
+        if self.offset.getValue() is not None:
+            query += 'offset=' + str(self.offset.getValue()) + ';'
+        if self.dim_offset.getValue() is not None:
+            query += 'dim_offset=' + str(self.dim_offset.getValue()) + ';'
+        if self.dim_continue.getValue() is not None:
+            query += 'dim_continue=' + str(self.dim_continue.getValue()) + ';'
+        if self.grid.getValue() is not None:
+            query += 'grid=' + str(self.grid.getValue()) + ';'
+        if self.description.getValue() is not None:
+            query += 'description=' + str(self.description.getValue()) + ';'
+
+        query += 'src_path=' + str(self.src_path.getValue()) + ';'
+        query += 'cube=' + str(self.pid.getValue()) + ';'
+
+        logging.debug("Create Ophidia client")
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
+        oph_client.api_mode = False
+
+        logging.debug("Submit the query: " + query)
+        oph_client.submit(query)
+
+        logging.debug("Get the return values")
+        response = oph_client.last_response
+        jobid = oph_client.last_jobid
+        return_value = oph_client.last_return_value
+        error = oph_client.last_error
+
+        logging.debug("Return value: %s" % return_value)
+        logging.debug("JobID: %s" % jobid)
+        logging.debug("Response: %s" % response)
+        logging.debug("Error message: %s" % error)
+
+        self.status.set("Post-processing", 98)
+        if return_value == 0 and self.exec_mode.getValue() == "sync" and len(response) > 0 and self.response.format["encoding"] == "base64":
+            logging.debug("Encoding response")
+            response = response.encode("base64")
+
+        self.status.set("Outputting", 99)
+        output = StringIO.StringIO()
+        self.error.setValue(return_value)
+        if return_value == 0:
+            if jobid is not None:
+                self.jobid.setValue(jobid)
+            if self.exec_mode.getValue() == "sync" and len(response) > 0:
+                output.write(response)
+        self.response.setValue(output)
+
+        self.status.set("Succeded", 100)
+
+
+class oph_concatnc2(WPSProcess):
+
+    def __init__(self):
+        WPSProcess.__init__(
+            self,
+            identifier="oph_concatnc2",
+            title="Ophidia concatnc2",
+            version="1.0.0",
+            metadata=[],
+            abstract="Creates a new datacube concatenating a NetCDF file to an existing datacube (both measure and dimensions)",
+            storeSupported=True,
+            statusSupported=True)
+
+        self.userid = self.addLiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            type=type(''))
+
+        self.passwd = self.addLiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            type=type(''))
+
+        self.ncores = self.addLiteralInput(
+            identifier="ncores",
+            title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.exec_mode = self.addLiteralInput(
+            identifier="exec_mode",
+            title="Execution mode",
+            abstract="Possible values are async (default) for asynchronous mode, sync for synchronous mode",
+            minOccurs=0,
+            maxOccurs=1,
+            default="async",
+            type=type(''))
+
+        self.sessionid = self.addLiteralInput(
+            identifier="sessionid",
+            title="Session identifier",
+            minOccurs=0,
+            maxOccurs=1,
+            default="null",
+            type=type(''))
+
+        self.schedule = self.addLiteralInput(
+            identifier="schedule",
+            title="Schedule",
+            minOccurs=0,
+            maxOccurs=1,
+            default=0,
+            type=type(1))
+
+        self.src_path = self.addLiteralInput(
+            identifier="src_path",
+            title="Path of the NetCDF file",
+            abstract="Path or OPeNDAP URL of the NetCDF file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders",
+            type=type(''))
+
+        self.cdd = self.addLiteralInput(
+            identifier="cdd",
+            title="Absolute path of the current directory on data repository",
+            abstract="Absolute path corresponding to the current directory on data repository. It is appened to BASE_SRC_PATH to build the effective path to files",
+            minOccurs=0,
+            maxOccurs=1,
+            default="/",
+            type=type(''))
+
+        self.pid = self.addLiteralInput(
+            identifier="cube",
+            title="Input cube",
+            abstract="Name of the input datacube in PID format",
+            type=type(''))
+
+        self.check_exp_dim = self.addLiteralInput(
+            identifier="check_exp_dim",
+            title="Check explicit dimensions",
+            abstract="If set to 'yes' (default) explicit dimensions of the two sources (NetCDF file and datacube) will be compared to assure they have the same values, if set to 'no' the check will not be performed",
+            minOccurs=0,
+            maxOccurs=1,
+            default="yes",
+            type=type(''))
+
+        self.subset_dims = self.addLiteralInput(
+            identifier="subset_dims",
+            title="Dimension names",
+            abstract="Dimension names of the cube used for the subsetting. Multi value field: list of dimensions separated by '|' can be provided",
+            minOccurs=0,
+            maxOccurs=1,
+            default="none",
+            type=type(''))
+
+        self.subset_filter = self.addLiteralInput(
+            identifier="subset_filter",
+            title="Subsetting filter",
+            abstract="Enumeration of comma-separated elementary filters (1 series of filters for each dimension)",
+            minOccurs=0,
+            maxOccurs=1,
+            default="all",
+            type=type(''))
+
+        self.subset_type = self.addLiteralInput(
+            identifier="subset_type",
+            title="Subset Type",
+            abstract="Possibile values are: index, coord. If set to 'index' (default), the subset_filter is considered on a dimension index; otherwise on dimension values",
+            minOccurs=0,
+            maxOccurs=1,
+            default="index",
+            type=type(''))
+
+        self.time_filter = self.addLiteralInput(
+            identifier="time_filter",
+            title="Time filter",
+            abstract="Enable filters using dates for time dimensions; enabled by default",
+            minOccurs=0,
+            maxOccurs=1,
+            default="yes",
+            type=type(''))
+
+        self.offset = self.addLiteralInput(
+            identifier="offset",
+            title="Offset",
+            abstract="It is added to the bounds of subset intervals defined with 'subset_filter' in case of 'coord' filter type is used",
+            minOccurs=0,
+            maxOccurs=1,
+            default=0,
+            type=type(1.0))
+
+        self.dim_offset = self.addLiteralInput(
+            identifier="dim_offset",
+            title="Dimension Offset",
+            abstract="Offset to be added to dimension values of imported data; default setting aims to held the difference between consecutive values",
+            minOccurs=0,
+            maxOccurs=1,
+            default=0,
+            type=type(1.0))
+
+        self.dim_continue = self.addLiteralInput(
+            identifier="dim_continue",
+            title="Dimension Continue Flag",
+            abstract="If enabled the last value of implicit dimension of input cube is used to evaluate the new values of the dimension",
+            minOccurs=0,
+            maxOccurs=1,
+            default="no",
+            type=type(''))
+
+        self.grid = self.addLiteralInput(
+            identifier="grid",
+            title="Grid name",
+            abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created",
+            default="-",
+            type=type(''))
+
+        self.description = self.addLiteralInput(
+            identifier="description",
+            title="Output description",
+            abstract="Additional description to be associated with the output cube",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
+        self.jobid = self.addLiteralOutput(
+            identifier="jobid",
+            title="Ophidia JobID",
+            type=type(''))
+
+        self.response = self.addComplexOutput(
+            identifier="response",
+            title="JSON Response",
+            metadata=[],
+            formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
+
+        self.error = self.addLiteralOutput(
+            identifier="return",
+            title="Return code",
+            type=type(1))
+
+    def execute(self):
+
+        self.status.set("Pre-processing", 1)
+
+        self.error.setValue(1)
+        self.jobid.setValue("")
+
+        self.status.set("Running", 2)
+
+        logging.debug("Build the query")
+        query = 'oph_concatnc2 '
+        if self.sessionid.getValue() is not None:
+            query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
+        if self.ncores.getValue() is not None:
+            query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
+        if self.exec_mode.getValue() is not None:
+            query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
+        if self.schedule.getValue() is not None:
+            query += 'schedule=' + str(self.schedule.getValue()) + ';'
+        if self.cdd.getValue() is not None:
+            query += 'cdd=' + str(self.cdd.getValue()) + ';'
+        if self.check_exp_dim.getValue() is not None:
+            query += 'check_exp_dim=' + str(self.check_exp_dim.getValue()) + ';'
+        if self.subset_dims.getValue() is not None:
+            query += 'subset_dims=' + str(self.subset_dims.getValue()) + ';'
+        if self.subset_filter.getValue() is not None:
+            query += 'subset_filter=' + str(self.subset_filter.getValue()) + ';'
+        if self.subset_type.getValue() is not None:
+            query += 'subset_type=' + str(self.subset_type.getValue()) + ';'
+        if self.time_filter.getValue() is not None:
+            query += 'time_filter=' + str(self.time_filter.getValue()) + ';'
+        if self.offset.getValue() is not None:
+            query += 'offset=' + str(self.offset.getValue()) + ';'
+        if self.dim_offset.getValue() is not None:
+            query += 'dim_offset=' + str(self.dim_offset.getValue()) + ';'
+        if self.dim_continue.getValue() is not None:
+            query += 'dim_continue=' + str(self.dim_continue.getValue()) + ';'
+        if self.grid.getValue() is not None:
+            query += 'grid=' + str(self.grid.getValue()) + ';'
+        if self.description.getValue() is not None:
+            query += 'description=' + str(self.description.getValue()) + ';'
+
+        query += 'src_path=' + str(self.src_path.getValue()) + ';'
+        query += 'cube=' + str(self.pid.getValue()) + ';'
+
+        logging.debug("Create Ophidia client")
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
+        oph_client.api_mode = False
+
+        logging.debug("Submit the query: " + query)
+        oph_client.submit(query)
+
+        logging.debug("Get the return values")
+        response = oph_client.last_response
+        jobid = oph_client.last_jobid
+        return_value = oph_client.last_return_value
+        error = oph_client.last_error
+
+        logging.debug("Return value: %s" % return_value)
+        logging.debug("JobID: %s" % jobid)
+        logging.debug("Response: %s" % response)
+        logging.debug("Error message: %s" % error)
+
+        self.status.set("Post-processing", 98)
+        if return_value == 0 and self.exec_mode.getValue() == "sync" and len(response) > 0 and self.response.format["encoding"] == "base64":
+            logging.debug("Encoding response")
+            response = response.encode("base64")
+
+        self.status.set("Outputting", 99)
+        output = StringIO.StringIO()
+        self.error.setValue(return_value)
+        if return_value == 0:
+            if jobid is not None:
+                self.jobid.setValue(jobid)
+            if self.exec_mode.getValue() == "sync" and len(response) > 0:
+                output.write(response)
+        self.response.setValue(output)
+
+        self.status.set("Succeded", 100)
+
 
 class oph_containerschema(WPSProcess):
 
@@ -1343,7 +1889,7 @@ class oph_containerschema(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -1373,6 +1919,7 @@ class oph_containerschema(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_createcontainer(WPSProcess):
 
@@ -1605,7 +2152,7 @@ class oph_createcontainer(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -1635,6 +2182,7 @@ class oph_createcontainer(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_cubeelements(WPSProcess):
 
@@ -1753,7 +2301,7 @@ class oph_cubeelements(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -1783,6 +2331,7 @@ class oph_cubeelements(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_cubeio(WPSProcess):
 
@@ -1891,7 +2440,7 @@ class oph_cubeio(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -1921,6 +2470,7 @@ class oph_cubeio(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_cubeschema(WPSProcess):
 
@@ -2117,7 +2667,7 @@ class oph_cubeschema(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -2147,6 +2697,7 @@ class oph_cubeschema(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_cubesize(WPSProcess):
 
@@ -2276,7 +2827,7 @@ class oph_cubesize(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -2306,6 +2857,7 @@ class oph_cubesize(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_delete(WPSProcess):
 
@@ -2455,6 +3007,7 @@ class oph_delete(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+
 class oph_deletecontainer(WPSProcess):
 
     def __init__(self):
@@ -2591,7 +3144,7 @@ class oph_deletecontainer(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -2621,6 +3174,7 @@ class oph_deletecontainer(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_drilldown(WPSProcess):
 
@@ -2792,6 +3346,7 @@ class oph_drilldown(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+
 class oph_duplicate(WPSProcess):
 
     def __init__(self):
@@ -2961,6 +3516,7 @@ class oph_duplicate(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_explorecube(WPSProcess):
 
@@ -3211,7 +3767,7 @@ class oph_explorecube(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -3241,6 +3797,7 @@ class oph_explorecube(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_explorenc(WPSProcess):
 
@@ -3565,7 +4122,7 @@ class oph_explorenc(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -3595,6 +4152,7 @@ class oph_explorenc(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_exportnc(WPSProcess):
 
@@ -3768,7 +4326,7 @@ class oph_exportnc(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -3798,6 +4356,7 @@ class oph_exportnc(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_exportnc2(WPSProcess):
 
@@ -3971,7 +4530,7 @@ class oph_exportnc2(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -4001,6 +4560,7 @@ class oph_exportnc2(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_folder(WPSProcess):
 
@@ -4116,7 +4676,7 @@ class oph_folder(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -4146,6 +4706,7 @@ class oph_folder(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_fs(WPSProcess):
 
@@ -4312,7 +4873,7 @@ class oph_fs(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -4342,6 +4903,7 @@ class oph_fs(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_get_config(WPSProcess):
 
@@ -4432,7 +4994,7 @@ class oph_get_config(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -4462,6 +5024,7 @@ class oph_get_config(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_hierarchy(WPSProcess):
 
@@ -4573,7 +5136,7 @@ class oph_hierarchy(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -4603,6 +5166,7 @@ class oph_hierarchy(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_importfits(WPSProcess):
 
@@ -4891,7 +5455,7 @@ class oph_importfits(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -4921,6 +5485,7 @@ class oph_importfits(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_importnc(WPSProcess):
 
@@ -5137,7 +5702,7 @@ class oph_importnc(WPSProcess):
             identifier="offset",
             title="Offset",
             abstract="It is added to the bounds of subset intervals defined with 'subset_filter' in case of 'coord' filter type is used",
-             minOccurs=0,
+            minOccurs=0,
             maxOccurs=1,
             default=0,
             type=type(1.0))
@@ -5357,7 +5922,7 @@ class oph_importnc(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -5387,6 +5952,7 @@ class oph_importnc(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_importnc2(WPSProcess):
 
@@ -5612,7 +6178,7 @@ class oph_importnc2(WPSProcess):
             identifier="offset",
             title="Offset",
             abstract="It is added to the bounds of subset intervals defined with 'subset_filter' in case of 'coord' filter type is used",
-             minOccurs=0,
+            minOccurs=0,
             maxOccurs=1,
             default=0,
             type=type(1.0))
@@ -5834,7 +6400,7 @@ class oph_importnc2(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -5864,6 +6430,7 @@ class oph_importnc2(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_input(WPSProcess):
 
@@ -5998,7 +6565,7 @@ class oph_input(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -6028,6 +6595,7 @@ class oph_input(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_instances(WPSProcess):
 
@@ -6216,7 +6784,7 @@ class oph_instances(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -6246,6 +6814,7 @@ class oph_instances(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_intercube(WPSProcess):
 
@@ -6434,6 +7003,7 @@ class oph_intercube(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_list(WPSProcess):
 
@@ -6628,7 +7198,7 @@ class oph_list(WPSProcess):
         if self.container_filter.getValue() is not None:
             query += 'container_filter=' + str(self.container_filter.getValue()) + ';'
         if self.pid.getValue() is not None:
-             query += 'cube=' + str(self.pid.getValue()) + ';'
+            query += 'cube=' + str(self.pid.getValue()) + ';'
         if self.host_filter.getValue() is not None:
             query += 'host_filter=' + str(self.host_filter.getValue()) + ';'
         if self.dbms_filter.getValue() is not None:
@@ -6652,7 +7222,7 @@ class oph_list(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -6682,6 +7252,7 @@ class oph_list(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_log_info(WPSProcess):
 
@@ -6815,7 +7386,7 @@ class oph_log_info(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -6845,6 +7416,7 @@ class oph_log_info(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_loggingbk(WPSProcess):
 
@@ -7099,7 +7671,7 @@ class oph_loggingbk(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -7129,6 +7701,7 @@ class oph_loggingbk(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_man(WPSProcess):
 
@@ -7248,7 +7821,7 @@ class oph_man(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -7278,6 +7851,7 @@ class oph_man(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_manage_session(WPSProcess):
 
@@ -7408,7 +7982,7 @@ class oph_manage_session(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -7438,6 +8012,7 @@ class oph_manage_session(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_merge(WPSProcess):
 
@@ -7606,6 +8181,7 @@ class oph_merge(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_mergecubes(WPSProcess):
 
@@ -7799,6 +8375,7 @@ class oph_mergecubes(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+
 class oph_mergecubes2(WPSProcess):
 
     def __init__(self):
@@ -7989,6 +8566,7 @@ class oph_mergecubes2(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_metadata(WPSProcess):
 
@@ -8196,7 +8774,7 @@ class oph_metadata(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -8226,6 +8804,7 @@ class oph_metadata(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_movecontainer(WPSProcess):
 
@@ -8330,7 +8909,7 @@ class oph_movecontainer(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -8360,6 +8939,7 @@ class oph_movecontainer(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_operators_list(WPSProcess):
 
@@ -8471,7 +9051,7 @@ class oph_operators_list(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -8501,6 +9081,7 @@ class oph_operators_list(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_permute(WPSProcess):
 
@@ -8679,6 +9260,7 @@ class oph_permute(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+
 class oph_primitives_list(WPSProcess):
 
     def __init__(self):
@@ -8833,7 +9415,7 @@ class oph_primitives_list(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -8863,6 +9445,7 @@ class oph_primitives_list(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_publish(WPSProcess):
 
@@ -9014,7 +9597,7 @@ class oph_publish(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -9044,6 +9627,7 @@ class oph_publish(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_randcube(WPSProcess):
 
@@ -9308,7 +9892,7 @@ class oph_randcube(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -9338,6 +9922,313 @@ class oph_randcube(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
+
+class oph_randcube2(WPSProcess):
+
+    def __init__(self):
+        WPSProcess.__init__(
+            self,
+            identifier="oph_randcube2",
+            title="Ophidia randcube2",
+            version="1.0.0",
+            metadata=[],
+            abstract="Create a new datacube with random data and dimensions",
+            storeSupported=True,
+            statusSupported=True)
+
+        self.userid = self.addLiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            type=type(''))
+
+        self.passwd = self.addLiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            type=type(''))
+
+        self.ncores = self.addLiteralInput(
+            identifier="ncores",
+            title="Number of cores",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.nthreads = self.addLiteralInput(
+            identifier="nthreads",
+            title="Number of threads",
+            abstract="Number of parallel threads per process to be used",
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1))
+
+        self.exec_mode = self.addLiteralInput(
+            identifier="exec_mode",
+            title="Execution mode",
+            abstract="Possible values are async (default) for asynchronous mode, sync for synchronous mode",
+            minOccurs=0,
+            maxOccurs=1,
+            default="async",
+            type=type(''))
+
+        self.sessionid = self.addLiteralInput(
+            identifier="sessionid",
+            title="Session identifier",
+            minOccurs=0,
+            maxOccurs=1,
+            default="null",
+            type=type(''))
+
+        self.cwd = self.addLiteralInput(
+            identifier="cwd",
+            title="Absolute path of the current working directory",
+            abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
+            type=type(''))
+
+        self.container = self.addLiteralInput(
+            identifier="container",
+            title="Output container",
+            abstract="PID of the container to be used to store the output cube",
+            type=type(''))
+
+        self.host_partition = self.addLiteralInput(
+            identifier="host_partition",
+            title="Host Partition",
+            abstract="Name of I/O host partition used to store data. By default the first available host partition will be used",
+            minOccurs=0,
+            maxOccurs=1,
+            default="auto",
+            type=type(''))
+
+        self.ioserver = self.addLiteralInput(
+            identifier="ioserver",
+            title="I/O Server",
+            abstract="Type of I/O server used to store data. Possible values are: 'mysql_table' (default) or 'ophidiaio_memory'",
+            minOccurs=0,
+            maxOccurs=1,
+            default="mysql_table",
+            type=type(''))
+
+        self.nhost = self.addLiteralInput(
+            identifier="nhost",
+            title="Number of output hosts",
+            abstract="Number of output hosts. With defaylt value '0', all host available in the host partition are used",
+            minOccurs=0,
+            maxOccurs=1,
+            default=0,
+            type=type(1))
+
+        self.nfrag = self.addLiteralInput(
+            identifier="nfrag",
+            title="Number of fragments per database",
+            abstract="Number of fragments per database",
+            minOccurs=0,
+            maxOccurs=1,
+            type=type(1))
+
+        self.ntuple = self.addLiteralInput(
+            identifier="ntuple",
+            title="Number of tuples per fragment",
+            abstract="Number of tuples per fragment",
+            type=type(1))
+
+        self.measure = self.addLiteralInput(
+            identifier="measure",
+            title="Measure",
+            abstract="Name of the measure used in the datacube",
+            type=type(''))
+
+        self.measure_type = self.addLiteralInput(
+            identifier="measure_type",
+            title="Measure type",
+            abstract="Type of measures. Possible values are 'double', 'float' or 'int'",
+            type=type(''))
+
+        self.exp_ndim = self.addLiteralInput(
+            identifier="exp_ndim",
+            title="Exp ndim",
+            abstract="Used to specify how many dimensions in dim argument, starting from the first one, must be considered as explicit dimensions",
+            type=type(1))
+
+        self.dim = self.addLiteralInput(
+            identifier="dim",
+            title="Dim",
+            abstract="Name of the dimension. Multi-value field: list of dimensions separated by '|' can be provided",
+            type=type(''))
+
+        self.concept_level = self.addLiteralInput(
+            identifier="concept_level",
+            title="Concept Level",
+            abstract="Concept level short name (must be a singe char). Default value is 'c'. Multi-value field: list of concept levels separated by '|' can be provided",
+            minOccurs=0,
+            maxOccurs=1,
+            default="c",
+            type=type(''))
+
+        self.dim_size = self.addLiteralInput(
+            identifier="dim_size",
+            title="Dim size",
+            abstract="Size of random dimension. Multi-value field: list of dimensions separated by '|' can be provided",
+            type=type(''))
+
+        self.run = self.addLiteralInput(
+            identifier="run",
+            title="Run",
+            abstract="If set to 'no', the operator simulates the creation and computes the fragmentation parameters that would be used else. If set to 'yes', the actual cube creation is executed",
+            minOccurs=0,
+            maxOccurs=1,
+            default="yes",
+            type=type(''))
+
+        self.schedule = self.addLiteralInput(
+            identifier="schedule",
+            title="Schedule",
+            minOccurs=0,
+            maxOccurs=1,
+            default=0,
+            type=type(1))
+
+        self.compressed = self.addLiteralInput(
+            identifier="compressed",
+            title="Compressed",
+            abstract="Two possible values: 'yes' and 'no'.If 'yes', it will save compressed data; if 'no', it will save original data",
+            minOccurs=0,
+            maxOccurs=1,
+            default="no",
+            type=type(''))
+
+        self.grid = self.addLiteralInput(
+            identifier="grid",
+            title="Grid name",
+            abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
+        self.description = self.addLiteralInput(
+            identifier="description",
+            title="Output description",
+            abstract="Additional description to be associated with the output cube",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
+        self.algorithm = self.addLiteralInput(
+            identifier="algorithm",
+            title="Algorithm adopted to generate pseudo-random values",
+            abstract="It can be used to specify the type of emulation schema used to generate data. By default values are sampled indipendently from a uniform distribution in the range [0, 1000]. If 'temperatures' is used, then values are generated with a first order auto-regressive model to be consistent with temperature values (in Celsius).",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
+        self.jobid = self.addLiteralOutput(
+            identifier="jobid",
+            title="Ophidia JobID",
+            type=type(''))
+
+        self.response = self.addComplexOutput(
+            identifier="response",
+            title="JSON Response",
+            metadata=[],
+            formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
+
+        self.error = self.addLiteralOutput(
+            identifier="return",
+            title="Return code",
+            type=type(1))
+
+    def execute(self):
+
+        self.status.set("Pre-processing", 1)
+
+        self.error.setValue(1)
+        self.jobid.setValue("")
+
+        self.status.set("Running", 2)
+
+        logging.debug("Build the query")
+        query = 'oph_randcube2 '
+        if self.sessionid.getValue() is not None:
+            query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
+        if self.ncores.getValue() is not None:
+            query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.nthreads.getValue() is not None:
+            query += 'nthreads=' + str(self.nthreads.getValue()) + ';'
+        if self.exec_mode.getValue() is not None:
+            query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
+        if self.schedule.getValue() is not None:
+            query += 'schedule=' + str(self.schedule.getValue()) + ';'
+        if self.host_partition.getValue() is not None:
+            query += 'host_partition=' + str(self.host_partition.getValue()) + ';'
+        if self.ioserver.getValue() is not None:
+            query += 'ioserver=' + str(self.ioserver.getValue()) + ';'
+        if self.nhost.getValue() is not None:
+            query += 'nhost=' + str(self.nhost.getValue()) + ';'
+        if self.run.getValue() is not None:
+            query += 'run=' + str(self.run.getValue()) + ';'
+        if self.concept_level.getValue() is not None:
+            query += 'concept_level=' + str(self.concept_level.getValue()) + ';'
+        if self.compressed.getValue() is not None:
+            query += 'compressed=' + str(self.compressed.getValue()) + ';'
+        if self.grid.getValue() is not None:
+            query += 'grid=' + str(self.grid.getValue()) + ';'
+        if self.description.getValue() is not None:
+            query += 'description=' + str(self.description.getValue()) + ';'
+        if self.algorithm.getValue() is not None:
+            query += 'algorithm=' + str(self.algorithm.getValue()) + ';'
+
+        query += 'container=' + str(self.container.getValue()) + ';'
+        query += 'nfrag=' + str(self.nfrag.getValue()) + ';'
+        query += 'ntuple=' + str(self.ntuple.getValue()) + ';'
+        query += 'measure=' + str(self.measure.getValue()) + ';'
+        query += 'measure_type=' + str(self.measure_type.getValue()) + ';'
+        query += 'dim=' + str(self.dim.getValue()) + ';'
+        query += 'exp_ndim=' + str(self.exp_ndim.getValue()) + ';'
+        query += 'dim_size=' + str(self.dim_size.getValue()) + ';'
+        query += 'cwd=' + str(self.cwd.getValue()) + ';'
+
+        logging.debug("Create Ophidia client")
+        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
+        oph_client.api_mode = False
+
+        logging.debug("Submit the query: " + query)
+        oph_client.submit(query)
+
+        logging.debug("Get the return values")
+        response = oph_client.last_response
+        jobid = oph_client.last_jobid
+        return_value = oph_client.last_return_value
+        error = oph_client.last_error
+
+        logging.debug("Return value: %s" % return_value)
+        logging.debug("JobID: %s" % jobid)
+        logging.debug("Response: %s" % response)
+        logging.debug("Error message: %s" % error)
+
+        self.status.set("Post-processing", 98)
+        if return_value == 0 and self.exec_mode.getValue() == "sync" and len(response) > 0 and self.response.format["encoding"] == "base64":
+            logging.debug("Encoding response")
+            response = response.encode("base64")
+
+        self.status.set("Outputting", 99)
+        output = StringIO.StringIO()
+        self.error.setValue(return_value)
+        if return_value == 0:
+            if jobid is not None:
+                self.jobid.setValue(jobid)
+            if self.exec_mode.getValue() == "sync" and len(response) > 0:
+                output.write(response)
+        self.response.setValue(output)
+
+        self.status.set("Succeded", 100)
+
 
 class oph_reduce(WPSProcess):
 
@@ -9557,6 +10448,7 @@ class oph_reduce(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_reduce2(WPSProcess):
 
@@ -9796,6 +10688,7 @@ class oph_reduce2(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+
 class oph_resume(WPSProcess):
 
     def __init__(self):
@@ -9972,7 +10865,7 @@ class oph_resume(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -10002,6 +10895,7 @@ class oph_resume(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_rollup(WPSProcess):
 
@@ -10183,6 +11077,7 @@ class oph_rollup(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_script(WPSProcess):
 
@@ -10369,6 +11264,7 @@ class oph_script(WPSProcess):
 
         self.status.set("Succeded", 100)
 
+
 class oph_search(WPSProcess):
 
     def __init__(self):
@@ -10509,7 +11405,7 @@ class oph_search(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -10539,6 +11435,7 @@ class oph_search(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_service(WPSProcess):
 
@@ -10640,7 +11537,7 @@ class oph_service(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -10670,6 +11567,7 @@ class oph_service(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_set(WPSProcess):
 
@@ -10801,7 +11699,7 @@ class oph_set(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -10831,6 +11729,7 @@ class oph_set(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_showgrid(WPSProcess):
 
@@ -10968,7 +11867,7 @@ class oph_showgrid(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -10998,6 +11897,7 @@ class oph_showgrid(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_split(WPSProcess):
 
@@ -11146,7 +12046,7 @@ class oph_split(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -11176,6 +12076,7 @@ class oph_split(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_subset(WPSProcess):
 
@@ -11370,7 +12271,7 @@ class oph_subset(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -11400,6 +12301,7 @@ class oph_subset(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_subset2(WPSProcess):
 
@@ -11584,7 +12486,7 @@ class oph_subset2(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -11614,6 +12516,7 @@ class oph_subset2(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_tasks(WPSProcess):
 
@@ -11755,7 +12658,7 @@ class oph_tasks(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -11785,6 +12688,7 @@ class oph_tasks(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_unpublish(WPSProcess):
 
@@ -11882,7 +12786,7 @@ class oph_unpublish(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -11912,6 +12816,7 @@ class oph_unpublish(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
+
 
 class oph_wait(WPSProcess):
 
@@ -12079,7 +12984,7 @@ class oph_wait(WPSProcess):
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
         oph_client.api_mode = False
 
-        logging.debug("Submit the query: "+ query)
+        logging.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -12109,4 +13014,3 @@ class oph_wait(WPSProcess):
         self.response.setValue(output)
 
         self.status.set("Succeded", 100)
-

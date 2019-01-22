@@ -27,7 +27,7 @@
 - arguments 'filesystem', 'ndbms' and 'ndb' from OPH_IMPORTFITS
 - arguments 'filesystem', 'ndbms' and 'ndb' from OPH_IMPORTNC
 - arguments 'filesystem', 'ndbms' and 'ndb' from OPH_IMPORTNC2
-- arguments 'hidden' from OPH_LIST
+- argument 'hidden' from OPH_LIST
 - arguments 'filesystem', 'ndbms' and 'ndb' from OPH_RANDCUBE
 - process associated with OPH_RESTORECONTAINER
 
