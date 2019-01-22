@@ -1,6 +1,6 @@
 #
 #    Ophidia WPS Module
-#    Copyright (C) 2015-2018 CMCC Foundation
+#    Copyright (C) 2015-2019 CMCC Foundation
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -890,7 +890,7 @@ class oph_b2drop(WPSProcess):
         self.status.set("Running", 2)
 
         logging.debug("Build the query")
-        query = 'oph_cancel '
+        query = 'oph_b2drop '
         if self.type.getValue() is not None:
             query += 'type=' + str(self.type.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
@@ -1036,7 +1036,7 @@ class oph_cancel(WPSProcess):
         self.status.set("Running", 2)
 
         logging.debug("Build the query")
-        query = 'oph_b2drop '
+        query = 'oph_cancel '
         if self.auth_path.getValue() is not None:
             query += 'auth_path=' + str(self.auth_path.getValue()) + ';'
         if self.dest_path.getValue() is not None:
@@ -1094,7 +1094,7 @@ class oph_cluster(WPSProcess):
             title="Ophidia input",
             version="1.0.0",
             metadata=[],
-            abstract="Start and stop a cluster of I/O servers",
+            abstract="Start, stop and get information about clusters of I/O servers",
             storeSupported=True,
             statusSupported=True)
 
@@ -1130,10 +1130,10 @@ class oph_cluster(WPSProcess):
         self.action = self.addLiteralInput(
             identifier="action",
             title="Action",
-            abstract="Two possibile actions are available: 'deploy' and 'undeploy'. 'deploy': try to reserve hosts and starts I/O servers (default); 'undeploy': stop reservation and I/O servers",
+            abstract="Four possibile actions are available: 'info' (default) returns information about user-defined clusters; 'info_cluster' returns global information about clusters (reserved to administrators); 'deploy' tries to reserve hosts and starts I/O servers (default); 'undeploy' stops reservation and I/O servers",
             minOccurs=0,
             maxOccurs=1,
-            default="deploy",
+            default="info",
             type=type(''))
 
         self.nhost = self.addLiteralInput(
@@ -1142,13 +1142,25 @@ class oph_cluster(WPSProcess):
             abstract="Number of hosts to be reserved as well as number of I/O servers to be started over them",
             minOccurs=0,
             maxOccurs=1,
-            default="1",
+            default="0",
             type=type(1))
 
         self.host_partition = self.addLiteralInput(
             identifier="host_partititon",
             title="Host partition",
             abstract="Name of user-defined partition to be used to group hosts in the cluster",
+            minOccurs=0,
+            maxOccurs=1,
+            default="all",
+            type=type(''))
+
+        self.user_filter = self.addLiteralInput(
+            identifier="user_filter",
+            title="User Filter",
+            abstract="Filter on username in case action 'info_cluster' is selected (reserved to administrators)",
+            minOccurs=0,
+            maxOccurs=1,
+            default="all",
             type=type(''))
 
         self.jobid = self.addLiteralOutput(
@@ -1177,7 +1189,7 @@ class oph_cluster(WPSProcess):
         self.status.set("Running", 2)
 
         logging.debug("Build the query")
-        query = 'oph_input '
+        query = 'oph_cluster '
         if self.id.getValue() is not None:
             query += 'id=' + str(self.id.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
@@ -1188,8 +1200,10 @@ class oph_cluster(WPSProcess):
             query += 'nhost=' + str(self.nhost.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
-
-        query += 'host_partition=' + str(self.host_partition.getValue()) + ';'
+        if self.host_partition.getValue() is not None:
+            query += 'host_partition=' + str(self.host_partition.getValue()) + ';'
+        if self.user_filter.getValue() is not None:
+            query += 'user_filter=' + str(self.user_filter.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
@@ -2207,6 +2221,15 @@ class oph_cubesize(WPSProcess):
             default="no",
             type=type(''))
 
+        self.algorithm = self.addLiteralInput(
+            identifier="algorithm",
+            title="Algorithm to evaluate cube size",
+            abstract="Algorithm used to compute the size. Possible values are: 'euristic' (default) to estimate the size with an euristic method; 'count' to get the actual size of each fragment",
+            minOccurs=0,
+            maxOccurs=1,
+            default="euristic",
+            type=type(''))
+
         self.jobid = self.addLiteralOutput(
             identifier="jobid",
             title="Ophidia JobID",
@@ -2244,6 +2267,8 @@ class oph_cubesize(WPSProcess):
             query += 'schedule=' + str(self.schedule.getValue()) + ';'
         if self.byte_unit.getValue() is not None:
             query += 'byte_unit=' + str(self.byte_unit.getValue()) + ';'
+        if self.algorithm.getValue() is not None:
+            query += 'algorithm=' + str(self.algorithm.getValue()) + ';'
 
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
@@ -2498,24 +2523,6 @@ class oph_deletecontainer(WPSProcess):
             default="no",
             type=type(''))
 
-        self.delete_type = self.addLiteralInput(
-            identifier="delete_type",
-            title="Delete type",
-            abstract="Type of removal: 'logical' (logical cancellation that set the container status to hidden); 'physical' (physical cancellation)",
-            minOccurs=0,
-            maxOccurs=1,
-            default="logical",
-            type=type(''))
-
-        self.hidden = self.addLiteralInput(
-            identifier="hidden",
-            title="Hidden",
-            abstract="Status of the container to be deleted, considered only when delete_type is 'physical': 'yes' (container to be removed is hidden); 'no' (container to be removed isn't hidden)",
-            minOccurs=0,
-            maxOccurs=1,
-            default="yes",
-            type=type(''))
-
         self.cwd = self.addLiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
@@ -2526,6 +2533,15 @@ class oph_deletecontainer(WPSProcess):
             identifier="container",
             title="Container",
             abstract="Name of the container to be removed",
+            type=type(''))
+
+        self.force = self.addLiteralInput(
+            identifier="container_pid",
+            title="Container PID",
+            abstract="PID of the input container. If it is set, arguments 'container' and 'cwd' are negleted",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
             type=type(''))
 
         self.jobid = self.addLiteralOutput(
@@ -2565,10 +2581,8 @@ class oph_deletecontainer(WPSProcess):
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.force.getValue() is not None:
             query += 'force=' + str(self.force.getValue()) + ';'
-        if self.delete_type.getValue() is not None:
-            query += 'delete_type=' + str(self.delete_type.getValue()) + ';'
-        if self.hidden.getValue() is not None:
-            query += 'hidden=' + str(self.hidden.getValue()) + ';'
+        if self.container_pid.getValue() is not None:
+            query += 'container_pid=' + str(self.container_pid.getValue()) + ';'
 
         query += 'container=' + str(self.container.getValue()) + ';'
         query += 'cwd=' + str(self.cwd.getValue()) + ';'
@@ -4658,16 +4672,7 @@ class oph_importfits(WPSProcess):
         self.host_partition = self.addLiteralInput(
             identifier="host_partition",
             title="Host Partition",
-            abstract="Name of I/O host partition used to store data. Default value 'auto' indicates that the first host partition availble is used",
-            minOccurs=0,
-            maxOccurs=1,
-            default="auto",
-            type=type(''))
-
-        self.filesystem = self.addLiteralInput(
-            identifier="filesystem",
-            title="Filesystem",
-            abstract="Type of filesystem used to store data. Possible values are 'locl', 'global' or 'auto' (default). In the laswt case the first filesystem available will be used",
+            abstract="name of I/O host partition used to store data. By default the first available host partition will be used",
             minOccurs=0,
             maxOccurs=1,
             default="auto",
@@ -4698,24 +4703,6 @@ class oph_importfits(WPSProcess):
             minOccurs=0,
             maxOccurs=1,
             default=0,
-            type=type(1))
-
-        self.ndbms = self.addLiteralInput(
-            identifier="ndbms",
-            title="Number of output DBMS per host",
-            abstract="Number of output DBMS per host. With default value '0', all DBMS instance available per host are used",
-            minOccurs=0,
-            maxOccurs=1,
-            default=1,
-            type=type(1))
-
-        self.ndb = self.addLiteralInput(
-            identifier="ndb",
-            title="Number of output database per host",
-            abstract="Number of output database per host. Default value is '1'",
-            minOccurs=0,
-            maxOccurs=1,
-            default=1,
             type=type(1))
 
         self.nfrag = self.addLiteralInput(
@@ -4868,18 +4855,12 @@ class oph_importfits(WPSProcess):
             query += 'host_partition=' + str(self.host_partition.getValue()) + ';'
         if self.container.getValue() is not None:
             query += 'container=' + str(self.container.getValue()) + ';'
-        if self.filesystem.getValue() is not None:
-            query += 'filesystem=' + str(self.filesystem.getValue()) + ';'
         if self.ioserver.getValue() is not None:
             query += 'ioserver=' + str(self.ioserver.getValue()) + ';'
         if self.import_metadata.getValue() is not None:
             query += 'import_metadata=' + str(self.import_metadata.getValue()) + ';'
         if self.nhost.getValue() is not None:
             query += 'nhost=' + str(self.nhost.getValue()) + ';'
-        if self.ndbms.getValue() is not None:
-            query += 'ndbms=' + str(self.ndbms.getValue()) + ';'
-        if self.ndb.getValue() is not None:
-            query += 'ndb=' + str(self.ndb.getValue()) + ';'
         if self.nfrag.getValue() is not None:
             query += 'nfrag=' + str(self.nfrag.getValue()) + ';'
         if self.run.getValue() is not None:
@@ -5009,16 +4990,7 @@ class oph_importnc(WPSProcess):
         self.host_partition = self.addLiteralInput(
             identifier="host_partition",
             title="Host Partition",
-            abstract="Name of I/O host partition used to store data. Default value 'auto' indicates that the first host partition availble is used",
-            minOccurs=0,
-            maxOccurs=1,
-            default="auto",
-            type=type(''))
-
-        self.filesystem = self.addLiteralInput(
-            identifier="filesystem",
-            title="Filesystem",
-            abstract="Type of filesystem used to store data. Possible values are 'locl', 'global' or 'auto' (default). In the laswt case the first filesystem available will be used",
+            abstract="Name of I/O host partition used to store data. By default the first available host partition will be used",
             minOccurs=0,
             maxOccurs=1,
             default="auto",
@@ -5058,24 +5030,6 @@ class oph_importnc(WPSProcess):
             minOccurs=0,
             maxOccurs=1,
             default=0,
-            type=type(1))
-
-        self.ndbms = self.addLiteralInput(
-            identifier="ndbms",
-            title="Number of output DBMS per host",
-            abstract="Number of output DBMS per host. With default value '0', all DBMS instance available per host are used",
-            minOccurs=0,
-            maxOccurs=1,
-            default=1,
-            type=type(1))
-
-        self.ndb = self.addLiteralInput(
-            identifier="ndb",
-            title="Number of output database per host",
-            abstract="Number of output database per host. Default value is '1'",
-            minOccurs=0,
-            maxOccurs=1,
-            default=1,
             type=type(1))
 
         self.nfrag = self.addLiteralInput(
@@ -5342,18 +5296,12 @@ class oph_importnc(WPSProcess):
             query += 'check_compliance=' + str(self.check_compliance.getValue()) + ';'
         if self.container.getValue() is not None:
             query += 'container=' + str(self.container.getValue()) + ';'
-        if self.filesystem.getValue() is not None:
-            query += 'filesystem=' + str(self.filesystem.getValue()) + ';'
         if self.ioserver.getValue() is not None:
             query += 'ioserver=' + str(self.ioserver.getValue()) + ';'
         if self.import_metadata.getValue() is not None:
             query += 'import_metadata=' + str(self.import_metadata.getValue()) + ';'
         if self.nhost.getValue() is not None:
             query += 'nhost=' + str(self.nhost.getValue()) + ';'
-        if self.ndbms.getValue() is not None:
-            query += 'ndbms=' + str(self.ndbms.getValue()) + ';'
-        if self.ndb.getValue() is not None:
-            query += 'ndb=' + str(self.ndb.getValue()) + ';'
         if self.nfrag.getValue() is not None:
             query += 'nfrag=' + str(self.nfrag.getValue()) + ';'
         if self.run.getValue() is not None:
@@ -5517,16 +5465,7 @@ class oph_importnc2(WPSProcess):
         self.host_partition = self.addLiteralInput(
             identifier="host_partition",
             title="Host Partition",
-            abstract="Name of I/O host partition used to store data. Default value 'auto' indicates that the first host partition availble is used",
-            minOccurs=0,
-            maxOccurs=1,
-            default="auto",
-            type=type(''))
-
-        self.filesystem = self.addLiteralInput(
-            identifier="filesystem",
-            title="Filesystem",
-            abstract="Type of filesystem used to store data. Possible values are 'locl', 'global' or 'auto' (default). In the laswt case the first filesystem available will be used",
+            abstract="Name of I/O host partition used to store data. By default the first available host partition will be used",
             minOccurs=0,
             maxOccurs=1,
             default="auto",
@@ -5566,24 +5505,6 @@ class oph_importnc2(WPSProcess):
             minOccurs=0,
             maxOccurs=1,
             default=0,
-            type=type(1))
-
-        self.ndbms = self.addLiteralInput(
-            identifier="ndbms",
-            title="Number of output DBMS per host",
-            abstract="Number of output DBMS per host. With default value '0', all DBMS instance available per host are used",
-            minOccurs=0,
-            maxOccurs=1,
-            default=1,
-            type=type(1))
-
-        self.ndb = self.addLiteralInput(
-            identifier="ndb",
-            title="Number of output database per host",
-            abstract="Number of output database per host. Default value is '1'",
-            minOccurs=0,
-            maxOccurs=1,
-            default=1,
             type=type(1))
 
         self.nfrag = self.addLiteralInput(
@@ -5835,7 +5756,7 @@ class oph_importnc2(WPSProcess):
         self.status.set("Running", 2)
 
         logging.debug("Build the query")
-        query = 'oph_importnc '
+        query = 'oph_importnc2 '
         if self.sessionid.getValue() is not None:
             query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
         if self.ncores.getValue() is not None:
@@ -5852,18 +5773,12 @@ class oph_importnc2(WPSProcess):
             query += 'check_compliance=' + str(self.check_compliance.getValue()) + ';'
         if self.container.getValue() is not None:
             query += 'container=' + str(self.container.getValue()) + ';'
-        if self.filesystem.getValue() is not None:
-            query += 'filesystem=' + str(self.filesystem.getValue()) + ';'
         if self.ioserver.getValue() is not None:
             query += 'ioserver=' + str(self.ioserver.getValue()) + ';'
         if self.import_metadata.getValue() is not None:
             query += 'import_metadata=' + str(self.import_metadata.getValue()) + ';'
         if self.nhost.getValue() is not None:
             query += 'nhost=' + str(self.nhost.getValue()) + ';'
-        if self.ndbms.getValue() is not None:
-            query += 'ndbms=' + str(self.ndbms.getValue()) + ';'
-        if self.ndb.getValue() is not None:
-            query += 'ndb=' + str(self.ndb.getValue()) + ';'
         if self.nfrag.getValue() is not None:
             query += 'nfrag=' + str(self.nfrag.getValue()) + ';'
         if self.run.getValue() is not None:
@@ -6435,7 +6350,7 @@ class oph_intercube(WPSProcess):
             minOccurs=0,
             maxOccurs=1,
             default="sub",
-            abstract="Indicates the operation. Possible values are sum, sub, mul, div, abs, arg, corr, mask, max, min",
+            abstract="Indicates the operation. Possible values are: sum, sub, mul, div, abs, arg, corr, mask, max, min, arg_max, arg_min",
             type=type(''))
 
         self.jobid = self.addLiteralOutput(
@@ -6675,15 +6590,6 @@ class oph_list(WPSProcess):
             default="no",
             type=type(''))
 
-        self.hidden = self.addLiteralInput(
-            identifier="hidden",
-            title="Hidden",
-            abstract="Types of containers to be shown. The argument is considered only for the first three levels and may have the following values: 'no' (only visible containers are shown); 'yes' both hidden and visible containers are shown",
-            minOccurs=0,
-            maxOccurs=1,
-            default="no",
-            type=type(''))
-
         self.jobid = self.addLiteralOutput(
             identifier="jobid",
             title="Ophidia JobID",
@@ -6737,8 +6643,6 @@ class oph_list(WPSProcess):
             query += 'db_filter=' + str(self.db_filter.getValue()) + ';'
         if self.recursive.getValue() is not None:
             query += 'recursive=' + str(self.recursive.getValue()) + ';'
-        if self.hidden.getValue() is not None:
-            query += 'hidden=' + str(self.hidden.getValue()) + ';'
         if self.level.getValue() is not None:
             query += 'level=' + str(self.level.getValue()) + ';'
 
@@ -9206,16 +9110,7 @@ class oph_randcube(WPSProcess):
         self.host_partition = self.addLiteralInput(
             identifier="host_partition",
             title="Host Partition",
-            abstract="Name of I/O host partition used to store data. Default value 'auto' indicates that the first host partition availble is used",
-            minOccurs=0,
-            maxOccurs=1,
-            default="auto",
-            type=type(''))
-
-        self.filesystem = self.addLiteralInput(
-            identifier="filesystem",
-            title="Filesystem",
-            abstract="Type of filesystem used to store data. Possible values are 'locl', 'global' or 'auto' (default). In the laswt case the first filesystem available will be used",
+            abstract="Name of I/O host partition used to store data. By default the first available host partition will be used",
             minOccurs=0,
             maxOccurs=1,
             default="auto",
@@ -9237,23 +9132,6 @@ class oph_randcube(WPSProcess):
             minOccurs=0,
             maxOccurs=1,
             default=0,
-            type=type(1))
-
-        self.ndbms = self.addLiteralInput(
-            identifier="ndbms",
-            title="Number of output DBMS per host",
-            abstract="Number of output DBMS per host. With default value '0', all DBMS instance available per host are used",
-            minOccurs=0,
-            maxOccurs=1,
-            default=1,
-            type=type(1))
-
-        self.ndb = self.addLiteralInput(
-            identifier="ndb",
-            title="Number of output database per host",
-            abstract="Number of output database per host. Default value is '1'",
-            minOccurs=1,
-            default=1,
             type=type(1))
 
         self.nfrag = self.addLiteralInput(
@@ -9353,6 +9231,15 @@ class oph_randcube(WPSProcess):
             default="-",
             type=type(''))
 
+        self.algorithm = self.addLiteralInput(
+            identifier="algorithm",
+            title="Algorithm adopted to generate pseudo-random values",
+            abstract="It can be used to specify the type of emulation schema used to generate data. By default values are sampled indipendently from a uniform distribution in the range [0, 1000]. If 'temperatures' is used, then values are generated with a first order auto-regressive model to be consistent with temperature values (in Celsius).",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
         self.jobid = self.addLiteralOutput(
             identifier="jobid",
             title="Ophidia JobID",
@@ -9390,16 +9277,10 @@ class oph_randcube(WPSProcess):
             query += 'schedule=' + str(self.schedule.getValue()) + ';'
         if self.host_partition.getValue() is not None:
             query += 'host_partition=' + str(self.host_partition.getValue()) + ';'
-        if self.filesystem.getValue() is not None:
-            query += 'filesystem=' + str(self.filesystem.getValue()) + ';'
         if self.ioserver.getValue() is not None:
             query += 'ioserver=' + str(self.ioserver.getValue()) + ';'
         if self.nhost.getValue() is not None:
             query += 'nhost=' + str(self.nhost.getValue()) + ';'
-        if self.ndbms.getValue() is not None:
-            query += 'ndbms=' + str(self.ndbms.getValue()) + ';'
-        if self.ndb.getValue() is not None:
-            query += 'ndb=' + str(self.ndb.getValue()) + ';'
         if self.run.getValue() is not None:
             query += 'run=' + str(self.run.getValue()) + ';'
         if self.concept_level.getValue() is not None:
@@ -9410,6 +9291,8 @@ class oph_randcube(WPSProcess):
             query += 'grid=' + str(self.grid.getValue()) + ';'
         if self.description.getValue() is not None:
             query += 'description=' + str(self.description.getValue()) + ';'
+        if self.algorithm.getValue() is not None:
+            query += 'algorithm=' + str(self.algorithm.getValue()) + ';'
 
         query += 'container=' + str(self.container.getValue()) + ';'
         query += 'nfrag=' + str(self.nfrag.getValue()) + ';'
@@ -9883,140 +9766,6 @@ class oph_reduce2(WPSProcess):
         oph_client.api_mode = False
 
         logging.debug("Submit the query")
-        oph_client.submit(query)
-
-        logging.debug("Get the return values")
-        response = oph_client.last_response
-        jobid = oph_client.last_jobid
-        return_value = oph_client.last_return_value
-        error = oph_client.last_error
-
-        logging.debug("Return value: %s" % return_value)
-        logging.debug("JobID: %s" % jobid)
-        logging.debug("Response: %s" % response)
-        logging.debug("Error message: %s" % error)
-
-        self.status.set("Post-processing", 98)
-        if return_value == 0 and self.exec_mode.getValue() == "sync" and len(response) > 0 and self.response.format["encoding"] == "base64":
-            logging.debug("Encoding response")
-            response = response.encode("base64")
-
-        self.status.set("Outputting", 99)
-        output = StringIO.StringIO()
-        self.error.setValue(return_value)
-        if return_value == 0:
-            if jobid is not None:
-                self.jobid.setValue(jobid)
-            if self.exec_mode.getValue() == "sync" and len(response) > 0:
-                output.write(response)
-        self.response.setValue(output)
-
-        self.status.set("Succeded", 100)
-
-class oph_restorecontainer(WPSProcess):
-
-    def __init__(self):
-        WPSProcess.__init__(
-            self,
-            identifier="oph_restorecontainer",
-            title="Ophidia restorecontainer",
-            version="1.0.0",
-            metadata=[],
-            abstract="Restore a hidden container",
-            storeSupported=True,
-            statusSupported=True)
-
-        self.userid = self.addLiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            type=type(''))
-
-        self.passwd = self.addLiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            type=type(''))
-
-        self.ncores = self.addLiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            minOccurs=0,
-            maxOccurs=1,
-            default=1,
-            type=type(1))
-
-        self.exec_mode = self.addLiteralInput(
-            identifier="exec_mode",
-            title="Execution mode",
-            abstract="Possible values are async (default) for asynchronous mode, sync for synchronous mode",
-            minOccurs=0,
-            maxOccurs=1,
-            default="async",
-            type=type(''))
-
-        self.sessionid = self.addLiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            minOccurs=0,
-            maxOccurs=1,
-            default="null",
-            type=type(''))
-
-        self.container = self.addLiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="Name of the output container to restore",
-            type=type(''))
-
-        self.cwd = self.addLiteralInput(
-            identifier="cwd",
-            title="Absolute path of the current working directory",
-            abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            type=type(''))
-
-        self.jobid = self.addLiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            type=type(''))
-
-        self.response = self.addComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            metadata=[],
-            formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
-
-        self.error = self.addLiteralOutput(
-            identifier="return",
-            title="Return code",
-            type=type(1))
-
-    def execute(self):
-
-        self.status.set("Pre-processing", 1)
-
-        self.error.setValue(1)
-        self.jobid.setValue("")
-
-        self.status.set("Running", 2)
-
-        logging.debug("Build the query")
-        query = 'oph_restorecontainer '
-        if self.sessionid.getValue() is not None:
-            query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
-        if self.ncores.getValue() is not None:
-            query += 'ncores=' + str(self.ncores.getValue()) + ';'
-        if self.exec_mode.getValue() is not None:
-            query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
-
-        query += 'container=' + str(self.container.getValue()) + ';'
-        query += 'cwd=' + str(self.cwd.getValue()) + ';'
-
-        logging.debug("Create Ophidia client")
-        oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
-        oph_client.api_mode = False
-
-        logging.debug("Submit the query: "+ query)
         oph_client.submit(query)
 
         logging.debug("Get the return values")
@@ -10967,11 +10716,20 @@ class oph_set(WPSProcess):
         self.subset_filter = self.addLiteralInput(
             identifier="subset_filter",
             title="Subsetting filter",
-            abstract="Set to 'yes' in case 'value' is an index array and subset string has to be stored on behalf of the list of numbers",
+            abstract="Set to 'yes' in case 'value' is an index array and subset string has to be stored on behalf of the list of numbers; use 'real' in case 'value' contains real numbers",
             minOccurs=0,
             maxOccurs=1,
             default="no",
             type=type(''))
+
+        self.offset = self.addLiteralInput(
+            identifier="offset",
+            title="Offset",
+            abstract="Expected difference between two consecutive items of input array in case subset strings have to be evaluated; by default, it will se to '1'"
+            minOccurs=0,
+            maxOccurs=1,
+            default=1,
+            type=type(1.0))
 
         self.id = self.addLiteralInput(
             identifier="id",
@@ -11034,6 +10792,8 @@ class oph_set(WPSProcess):
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
+        if self.offset.getValue() is not None:
+            query += 'offset=' + str(self.offset.getValue()) + ';'
 
         query += 'key=' + str(self.key.getValue()) + ';'
 
@@ -11603,6 +11363,7 @@ class oph_subset(WPSProcess):
             query += 'time_filter=' + str(self.time_filter.getValue()) + ';'
         if self.offset.getValue() is not None:
             query += 'offset=' + str(self.offset.getValue()) + ';'
+
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
@@ -11816,6 +11577,7 @@ class oph_subset2(WPSProcess):
             query += 'time_filter=' + str(self.time_filter.getValue()) + ';'
         if self.offset.getValue() is not None:
             query += 'offset=' + str(self.offset.getValue()) + ';'
+
         query += 'cube=' + str(self.pid.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
