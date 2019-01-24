@@ -2,7 +2,7 @@
 
 ### Description
 
-WPS module is a Python package enabling a WPS interface for Ophidia Server. This version is compatible with Ophidia Server v1.4.0.
+WPS module is a Python package enabling a WPS interface for Ophidia Server. This version is compatible with Ophidia Server v1.5.0.
 
 It implements a process for PyWPS - Python Web Processing Service (http://pywps.org/), which translates WPS Requests into JSON Requests for Ophidia Web Service and, vice versa, replies to WPS clients with WPS Responses encapsulating the releted JSON Responses.
 

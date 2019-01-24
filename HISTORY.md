@@ -1,5 +1,9 @@
 
-## Next release
+## v1.1.0 - 2019-01-24
+
+### Fixed:
+
+- command name associated with OPH_CLUSTER
 
 ### Added:
 
@@ -11,10 +15,6 @@
 - argument 'algorithm' to OPH_RANDCUBE
 - process associated with OPH_RANDCUBE2
 - arguments 'subset_filter' and 'offset' to OPH_SET
-
-### Fixed:
-
-- command name associated with OPH_CLUSTER
 
 ### Changed:
 
