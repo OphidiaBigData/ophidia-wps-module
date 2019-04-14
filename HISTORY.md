@@ -1,4 +1,10 @@
 
+## New features
+
+### Changed:
+
+- process format for PyWPS 4.3
+
 ## v1.1.0 - 2019-01-24
 
 ### Fixed:
