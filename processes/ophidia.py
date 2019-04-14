@@ -30,6 +30,7 @@ _host = "127.0.0.1"
 _port = 11732
 _version = "2.0.0"
 
+
 class OphExecuteMain(Process):
 
     def __init__(self):
@@ -37,51 +38,51 @@ class OphExecuteMain(Process):
         outputs = []
 
         userid = LiteralInput(
-        'userid',
-        'Username',
-        abstract="User identifier for Ophidia system",
-        data_type=type(''))
-        
+            'userid',
+            'Username',
+            abstract="User identifier for Ophidia system",
+            data_type=type(''))
+
         passwd = LiteralInput(
-        'passwd',
-        'Password',
-        abstract="Password to access Ophidia",
-        data_type=type(''))
+            'passwd',
+            'Password',
+            abstract="Password to access Ophidia",
+            data_type=type(''))
 
         request = ComplexInput(
-        'request',
-        'JSON Request',
-        supported_formats=[FORMATS('text/json', encoding='base64'), FORMATS('text/plain', encoding='utf-8')])
-        #maxmegabites=1 ?-> max_occurrence=1
+            'request',
+            'JSON Request',
+            supported_formats=[FORMATS('text/json', encoding='base64'), FORMATS('text/plain', encoding='utf-8')])
+        # maxmegabites=1 ?-> max_occurrence=1
 
         jobid = LiteralOutput(
-        'jobid',        
-        'Ophidia JobID',
-        data_type=type(''))         
+            'jobid',
+            'Ophidia JobID',
+            data_type=type(''))
 
         response = ComplexOutput(
-        'response',
-        'JSON Response',
-        supported_formats=[FORMATS('text/json', encoding='base64'), FORMATS('text/plain', encoding='utf-8')])
-        
+            'response',
+            'JSON Response',
+            supported_formats=[FORMATS('text/json', encoding='base64'), FORMATS('text/plain', encoding='utf-8')])
+
         error = LiteralOutput(
-        'return',       
-        'Return code',  
-        data_type=type(1))
+            'return',
+            'Return code',
+            data_type=type(1))
 
         inputs = [userid, passwd, request]
         outputs = [jobid, response, error]
 
         super(OphExecuteMain, self).__init__(
-        self._handler,
-        identifier='ophexecutemain',
-        title='Ophidia Execute Main Process',
-        abstract="Submit a generic workflow",
-        version=_version,
-        inputs=inputs,
-        outputs=outputs,
-        store_supported=True,   #or False??
-        status_supported=True   #or False??
+            self._handler,
+            identifier='ophexecutemain',
+            title='Ophidia Execute Main Process',
+            abstract="Submit a generic workflow",
+            version=_version,
+            inputs=inputs,
+            outputs=outputs,
+            store_supported=True,  # or False??
+            status_supported=True  # or False??
         )
 
     def _handler(self, request, response):
@@ -129,4 +130,3 @@ class OphExecuteMain(Process):
         response.outputs['response'].file = output
 
         self.status.set("Succeded", 100)
-
