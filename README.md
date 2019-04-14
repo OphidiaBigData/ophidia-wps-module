@@ -8,7 +8,7 @@ It implements a process for PyWPS - Python Web Processing Service (http://pywps.
 
 ### Requirements
 
-This software requires Python 2.7, PyOphidia and PyWPS 4.3 - Python Web Processing Service (http://pywps.org/), which can be built from sources provided that requirements are met as reported in PyWPS official documentation (https://pywps.readthedocs.io/en/latest/install.html). In particulat, install the following modules:
+This software requires Python 2.7, PyOphidia and PyWPS 4.2 - Python Web Processing Service (http://pywps.org/), which can be built from sources provided that requirements are met as reported in PyWPS official documentation (https://pywps.readthedocs.io/en/latest/install.html). In particulat, install the following modules:
 
 - gdal-python
 
@@ -21,7 +21,7 @@ It is recommended to start the service as module of Apache web server (https://w
 
 ### How to install
 
-Download PyWPS 4.3 and copy it in */usr/local/ophidia/extra/src/pywps/*.
+Download PyWPS sources and copy them in */usr/local/ophidia/extra/src/pywps/*.
 
 ```
 mkdir -p /usr/local/ophidia/extra/src
@@ -39,7 +39,7 @@ sudo pip install -r requirements-dev.txt # Skip in case of errors
 sudo python setup.py install
 ```
 
-Download the sources in /usr/local/ophidia/extra/src, create a folder */usr/local/ophidia/extra/wps* and copy the sources inside:
+Download Ophidia WPS sources in /usr/local/ophidia/extra/src, create a folder */usr/local/ophidia/extra/wps* and copy the sources inside:
 
 ```
 mkdir -p /usr/local/ophidia/extra/src

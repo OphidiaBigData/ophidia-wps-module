@@ -3,7 +3,7 @@
 
 ### Changed:
 
-- process format for PyWPS 4.3
+- process format for PyWPS 4
 
 ## v1.1.0 - 2019-01-24
 
