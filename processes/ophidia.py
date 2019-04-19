@@ -253,7 +253,7 @@ class oph_aggregate(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, group_size, missingvalue, schedule, operation]
         outputs = [jobid, response, error]
 
         super(oph_aggregate, self).__init__(
@@ -484,7 +484,7 @@ class oph_aggregate2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, operation, dim, concept_level, midnight, missingvalue]
         outputs = [jobid, response, error]
 
         super(oph_aggregate2, self).__init__(
@@ -742,7 +742,7 @@ class oph_apply(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, description, schedule, query, dim_query, measure, measure_type, dim_type, check_type, on_reduce, compressed]
         outputs = [jobid, response, error]
 
         super(oph_apply, self).__init__(
@@ -894,7 +894,7 @@ class oph_b2drop(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, type]
         outputs = [jobid, response, error]
 
         super(oph_b2drop, self).__init__(
@@ -1046,7 +1046,7 @@ class oph_cancel(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, auth_path, src_path, dest_path, cdd]
         outputs = [jobid, response, error]
 
         super(oph_cancel, self).__init__(
@@ -1121,18 +1121,6 @@ class oph_cancel(Process):
 class oph_cluster(Process):
 
     def __init__(self):
-
-        super(oph_cluster, self).__init__(
-            self._handler,
-            identifier="oph_cluster",
-            title="Ophidia input",
-            version=_version,
-            abstract="Start, stop and get information about clusters of I/O servers",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -1217,8 +1205,20 @@ class oph_cluster(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, action, nhost, host_partition, user_filter]
         outputs = [jobid, response, error]
+
+        super(oph_cluster, self).__init__(
+            self._handler,
+            identifier="oph_cluster",
+            title="Ophidia input",
+            version=_version,
+            abstract="Start, stop and get information about clusters of I/O servers",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -1282,18 +1282,6 @@ class oph_cluster(Process):
 class oph_concatnc(Process):
 
     def __init__(self):
-
-        super(oph_concatnc, self).__init__(
-            self._handler,
-            identifier="oph_concatnc",
-            title="Ophidia concatnc",
-            version=_version,
-            abstract="Creates a new datacube concatenating a NetCDF file to an existing datacube (both measure and dimensions)",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -1467,8 +1455,21 @@ class oph_concatnc(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, schedule, src_path, cdd, pid, check_exp_dim,
+            subset_dims, subset_filter, subset_type, time_filter, offset, dim_offset, dim_continue, grid, description]
         outputs = [jobid, response, error]
+
+        super(oph_concatnc, self).__init__(
+            self._handler,
+            identifier="oph_concatnc",
+            title="Ophidia concatnc",
+            version=_version,
+            abstract="Creates a new datacube concatenating a NetCDF file to an existing datacube (both measure and dimensions)",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -1551,18 +1552,6 @@ class oph_concatnc(Process):
 class oph_concatnc2(Process):
 
     def __init__(self):
-
-        super(oph_concatnc2, self).__init__(
-            self._handler,
-            identifier="oph_concatnc2",
-            title="Ophidia concatnc2",
-            version=_version,
-            abstract="Creates a new datacube concatenating a NetCDF file to an existing datacube (both measure and dimensions)",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -1745,8 +1734,21 @@ class oph_concatnc2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, schedule, src_path, cdd, pid, check_exp_dim,
+            subset_dims, subset_filter, subset_type, time_filter, offset, dim_offset, dim_continue, grid, description]
         outputs = [jobid, response, error]
+
+        super(oph_concatnc2, self).__init__(
+            self._handler,
+            identifier="oph_concatnc2",
+            title="Ophidia concatnc2",
+            version=_version,
+            abstract="Creates a new datacube concatenating a NetCDF file to an existing datacube (both measure and dimensions)",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -1832,18 +1834,6 @@ class oph_containerschema(Process):
 
     def __init__(self):
 
-        super(oph_containerschema, self).__init__(
-            self._handler,
-            identifier="oph_containerschema",
-            title="Ophidia containerschema",
-            version=_version,
-            abstract="Show some information about a container: description, vocabulary, dimension list, etc.",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
-
         inputs = []
         outputs = []
 
@@ -1911,8 +1901,20 @@ class oph_containerschema(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container]
         outputs = [jobid, response, error]
+
+        super(oph_containerschema, self).__init__(
+            self._handler,
+            identifier="oph_containerschema",
+            title="Ophidia containerschema",
+            version=_version,
+            abstract="Show some information about a container: description, vocabulary, dimension list, etc.",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -1971,18 +1973,6 @@ class oph_containerschema(Process):
 class oph_createcontainer(Process):
 
     def __init__(self):
-
-        super(oph_createcontainer, self).__init__(
-            self._handler,
-            identifier="oph_createcontainer",
-            title="Ophidia createcontainer",
-            version=_version,
-            abstract="Create an empty container",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -2156,8 +2146,21 @@ class oph_createcontainer(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, dim, dim_type, compressed,
+            hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
         outputs = [jobid, response, error]
+
+        super(oph_createcontainer, self).__init__(
+            self._handler,
+            identifier="oph_createcontainer",
+            title="Ophidia createcontainer",
+            version=_version,
+            abstract="Create an empty container",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -2240,18 +2243,6 @@ class oph_cubeelements(Process):
 
     def __init__(self):
 
-        super(oph_cubeelements, self).__init__(
-            self._handler,
-            identifier="oph_cubeelements",
-            title="Ophidia cubeelements",
-            version=_version,
-            abstract="Compute and display the number of elements stored in the input datacube",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
-
         inputs = []
         outputs = []
 
@@ -2330,8 +2321,20 @@ class oph_cubeelements(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, schedule, sessionid, pid, algorithm]
         outputs = [jobid, response, error]
+
+        super(oph_cubeelements, self).__init__(
+            self._handler,
+            identifier="oph_cubeelements",
+            title="Ophidia cubeelements",
+            version=_version,
+            abstract="Compute and display the number of elements stored in the input datacube",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -2393,18 +2396,6 @@ class oph_cubeelements(Process):
 class oph_cubeio(Process):
 
     def __init__(self):
-
-        super(oph_cubeio, self).__init__(
-            self._handler,
-            identifier="oph_cubeio",
-            title="Ophidia cubeio",
-            version=_version,
-            abstract="Show the hierarchy of all datacubes used to generate the input datacube and of those derived from it",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -2476,8 +2467,20 @@ class oph_cubeio(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, branch]
         outputs = [jobid, response, error]
+
+        super(oph_cubeio, self).__init__(
+            self._handler,
+            identifier="oph_cubeio",
+            title="Ophidia cubeio",
+            version=_version,
+            abstract="Show the hierarchy of all datacubes used to generate the input datacube and of those derived from it",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -2537,18 +2540,6 @@ class oph_cubeio(Process):
 class oph_cubeschema(Process):
 
     def __init__(self):
-
-        super(oph_cubeschema, self).__init__(
-            self._handler,
-            identifier="oph_cubeschema",
-            title="Ophidia cubeschema",
-            version=_version,
-            abstract="Show metadata information about a datacube and the dimensions related to it",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -2692,8 +2683,20 @@ class oph_cubeschema(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, action, level, dim, show_index, show_time, base64, concept_level, dim_level, dim_array]
         outputs = [jobid, response, error]
+
+        super(oph_cubeschema, self).__init__(
+            self._handler,
+            identifier="oph_cubeschema",
+            title="Ophidia cubeschema",
+            version=_version,
+            abstract="Show metadata information about a datacube and the dimensions related to it",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -2769,18 +2772,6 @@ class oph_cubeschema(Process):
 class oph_cubesize(Process):
 
     def __init__(self):
-
-        super(oph_cubesize, self).__init__(
-            self._handler,
-            identifier="oph_cubesize",
-            title="Ophidia cubesize",
-            version=_version,
-            abstract="Compute and display the size of the input datacube",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -2869,8 +2860,20 @@ class oph_cubesize(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, schedule, pid, byte_unit, algorithm]
         outputs = [jobid, response, error]
+
+        super(oph_cubesize, self).__init__(
+            self._handler,
+            identifier="oph_cubesize",
+            title="Ophidia cubesize",
+            version=_version,
+            abstract="Compute and display the size of the input datacube",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -2934,18 +2937,6 @@ class oph_cubesize(Process):
 class oph_delete(Process):
 
     def __init__(self):
-
-        super(oph_delete, self).__init__(
-            self._handler,
-            identifier="oph_delete",
-            title="Ophidia delete",
-            version=_version,
-            abstract="Remove a datacube",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -3025,8 +3016,20 @@ class oph_delete(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule]
         outputs = [jobid, response, error]
+
+        super(oph_delete, self).__init__(
+            self._handler,
+            identifier="oph_delete",
+            title="Ophidia delete",
+            version=_version,
+            abstract="Remove a datacube",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -3088,18 +3091,6 @@ class oph_delete(Process):
 class oph_deletecontainer(Process):
 
     def __init__(self):
-
-        super(oph_deletecontainer, self).__init__(
-            self._handler,
-            identifier="oph_deletecontainer",
-            title="Ophidia deletecontainer",
-            version=_version,
-            abstract="Remove a container with related dimensions and grids. The container can be deleted logically or physically",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -3195,8 +3186,20 @@ class oph_deletecontainer(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, force, cwd, container, force]
         outputs = [jobid, response, error]
+
+        super(oph_deletecontainer, self).__init__(
+            self._handler,
+            identifier="oph_deletecontainer",
+            title="Ophidia deletecontainer",
+            version=_version,
+            abstract="Remove a container with related dimensions and grids. The container can be deleted logically or physically",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -3261,18 +3264,6 @@ class oph_deletecontainer(Process):
 class oph_drilldown(Process):
 
     def __init__(self):
-
-        super(oph_drilldown, self).__init__(
-            self._handler,
-            identifier="oph_drilldown",
-            title="Ophidia drilldown",
-            version=_version,
-            abstract="Perform a drill-down on a datacube, i.e. it transforms dimensions from implicit to explicit",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -3370,8 +3361,20 @@ class oph_drilldown(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, schedule, container, description, ndim]
         outputs = [jobid, response, error]
+
+        super(oph_drilldown, self).__init__(
+            self._handler,
+            identifier="oph_drilldown",
+            title="Ophidia drilldown",
+            version=_version,
+            abstract="Perform a drill-down on a datacube, i.e. it transforms dimensions from implicit to explicit",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -3437,18 +3440,6 @@ class oph_drilldown(Process):
 class oph_duplicate(Process):
 
     def __init__(self):
-
-        super(oph_duplicate, self).__init__(
-            self._handler,
-            identifier="oph_duplicate",
-            title="Ophidia duplicate",
-            version=_version,
-            abstract="Duplicate a datacube creating an exact copy of the input one",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -3546,8 +3537,20 @@ class oph_duplicate(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, container, description]
         outputs = [jobid, response, error]
+
+        super(oph_duplicate, self).__init__(
+            self._handler,
+            identifier="oph_duplicate",
+            title="Ophidia duplicate",
+            version=_version,
+            abstract="Duplicate a datacube creating an exact copy of the input one",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -3613,18 +3616,6 @@ class oph_duplicate(Process):
 class oph_explorecube(Process):
 
     def __init__(self):
-
-        super(oph_explorecube, self).__init__(
-            self._handler,
-            identifier="oph_explorecube",
-            title="Ophidia explorecube",
-            version=_version,
-            abstract="Print a data stored into a datacube, and offer to subset the data along its dimensions; dimensions values are used as input filters for subsetting",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -3812,8 +3803,21 @@ class oph_explorecube(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, limit_filter, time_filter, show_index, show_id,
+            show_time, level, output_path, output_name, cdd, base64, subset_dims, subset_type, subset_filter, schedule]
         outputs = [jobid, response, error]
+
+        super(oph_explorecube, self).__init__(
+            self._handler,
+            identifier="oph_explorecube",
+            title="Ophidia explorecube",
+            version=_version,
+            abstract="Print a data stored into a datacube, and offer to subset the data along its dimensions; dimensions values are used as input filters for subsetting",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -3899,18 +3903,6 @@ class oph_explorecube(Process):
 class oph_explorenc(Process):
 
     def __init__(self):
-
-        super(oph_explorenc, self).__init__(
-            self._handler,
-            identifier="oph_explorenc",
-            title="Ophidia explorenc",
-            version=_version,
-            abstract="Read a NetCDF file (both measure and dimensions)",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -4158,8 +4150,21 @@ class oph_explorenc(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, measure, level, src_path, cdd, exp_dim, imp_dim, subset_dims, subset_type, subset_filter,
+            limit_filter, show_index, show_id, show_time, show_stats, show_fit, imp_num_points, offset, operation, wavelet, wavelet_ratio, wavelet_coeff, schedule]
         outputs = [jobid, response, error]
+
+        super(oph_explorenc, self).__init__(
+            self._handler,
+            identifier="oph_explorenc",
+            title="Ophidia explorenc",
+            version=_version,
+            abstract="Read a NetCDF file (both measure and dimensions)",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -4259,18 +4264,6 @@ class oph_explorenc(Process):
 class oph_exportnc(Process):
 
     def __init__(self):
-
-        super(oph_exportnc, self).__init__(
-            self._handler,
-            identifier="oph_exportnc",
-            title="Ophidia exportnc",
-            version=_version,
-            abstract="Export data of a datacube into multiple NetCDF files",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -4395,8 +4388,20 @@ class oph_exportnc(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, misc, output_path, output_name, cdd, force, export_metadata, schedule]
         outputs = [jobid, response, error]
+
+        super(oph_exportnc, self).__init__(
+            self._handler,
+            identifier="oph_exportnc",
+            title="Ophidia exportnc",
+            version=_version,
+            abstract="Export data of a datacube into multiple NetCDF files",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -4468,18 +4473,6 @@ class oph_exportnc(Process):
 class oph_exportnc2(Process):
 
     def __init__(self):
-
-        super(oph_exportnc2, self).__init__(
-            self._handler,
-            identifier="oph_exportnc2",
-            title="Ophidia exportnc2",
-            version=_version,
-            abstract="Export data of a datacube into a single NetCDF file",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -4604,8 +4597,20 @@ class oph_exportnc2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, misc, output_path, output_name, cdd, force, export_metadata, schedule]
         outputs = [jobid, response, error]
+
+        super(oph_exportnc2, self).__init__(
+            self._handler,
+            identifier="oph_exportnc2",
+            title="Ophidia exportnc2",
+            version=_version,
+            abstract="Export data of a datacube into a single NetCDF file",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -4677,18 +4682,6 @@ class oph_exportnc2(Process):
 class oph_folder(Process):
 
     def __init__(self):
-
-        super(oph_folder, self).__init__(
-            self._handler,
-            identifier="oph_folder",
-            title="Ophidia folder",
-            version=_version,
-            abstract="Manage folder of the Ophidia filesystem",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -4766,8 +4759,20 @@ class oph_folder(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, command, path, cwd]
         outputs = [jobid, response, error]
+
+        super(oph_folder, self).__init__(
+            self._handler,
+            identifier="oph_folder",
+            title="Ophidia folder",
+            version=_version,
+            abstract="Manage folder of the Ophidia filesystem",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -4828,18 +4833,6 @@ class oph_folder(Process):
 class oph_fs(Process):
 
     def __init__(self):
-
-        super(oph_fs, self).__init__(
-            self._handler,
-            identifier="oph_fs",
-            title="Ophidia fs",
-            version=_version,
-            abstract="Manage folders of the real Ophidia filesystem",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -4959,8 +4952,20 @@ class oph_fs(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, command, dpath, file, cdd, recursive, depth, realpath]
         outputs = [jobid, response, error]
+
+        super(oph_fs, self).__init__(
+            self._handler,
+            identifier="oph_fs",
+            title="Ophidia fs",
+            version=_version,
+            abstract="Manage folders of the real Ophidia filesystem",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -5031,18 +5036,6 @@ class oph_get_config(Process):
 
     def __init__(self):
 
-        super(oph_get_config, self).__init__(
-            self._handler,
-            identifier="oph_get_config",
-            title="Ophidia get_config",
-            version=_version,
-            abstract="Request the configuration parameters",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
-
         inputs = []
         outputs = []
 
@@ -5099,8 +5092,20 @@ class oph_get_config(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, key]
         outputs = [jobid, response, error]
+
+        super(oph_get_config, self).__init__(
+            self._handler,
+            identifier="oph_get_config",
+            title="Ophidia get_config",
+            version=_version,
+            abstract="Request the configuration parameters",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -5156,18 +5161,6 @@ class oph_get_config(Process):
 class oph_hierarchy(Process):
 
     def __init__(self):
-
-        super(oph_hierarchy, self).__init__(
-            self._handler,
-            identifier="oph_hierarchy",
-            title="Ophidia hierarchy",
-            version=_version,
-            abstract="Show the list of the hierarchies or the description of a specified hierarchy",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -5242,8 +5235,20 @@ class oph_hierarchy(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, hierarchy, hierarchy_version]
         outputs = [jobid, response, error]
+
+        super(oph_hierarchy, self).__init__(
+            self._handler,
+            identifier="oph_hierarchy",
+            title="Ophidia hierarchy",
+            version=_version,
+            abstract="Show the list of the hierarchies or the description of a specified hierarchy",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -5303,18 +5308,6 @@ class oph_hierarchy(Process):
 class oph_importfits(Process):
 
     def __init__(self):
-
-        super(oph_importfits, self).__init__(
-            self._handler,
-            identifier="oph_importfits",
-            title="Ophidia importfits",
-            version=_version,
-            abstract="Imports a FITS file into a datacube (both data and axis); support is provided only for FITS images",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -5533,8 +5526,21 @@ class oph_importfits(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, nhost,
+            nfrag, measure, run, schedule, src_path, cdd, hdu, exp_dim, imp_dim, subset_dims, subset_filter, compressed, description]
         outputs = [jobid, response, error]
+
+        super(oph_importfits, self).__init__(
+            self._handler,
+            identifier="oph_importfits",
+            title="Ophidia importfits",
+            version=_version,
+            abstract="Imports a FITS file into a datacube (both data and axis); support is provided only for FITS images",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -5627,18 +5633,6 @@ class oph_importfits(Process):
 class oph_importnc(Process):
 
     def __init__(self):
-
-        super(oph_importnc, self).__init__(
-            self._handler,
-            identifier="oph_importnc",
-            title="Ophidia importnc",
-            version=_version,
-            abstract="Import a NetCDF file into a datacube (both measure and dimensions)",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -5978,8 +5972,21 @@ class oph_importnc(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, check_compliance, nhost, nfrag, measure, run, schedule, src_path, cdd, exp_dim, imp_dim, subset_dims,
+            subset_filter, subset_type, time_filter, offset, exp_concept_level, imp_concept_level, compressed, grid, hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
         outputs = [jobid, response, error]
+
+        super(oph_importnc, self).__init__(
+            self._handler,
+            identifier="oph_importnc",
+            title="Ophidia importnc",
+            version=_version,
+            abstract="Import a NetCDF file into a datacube (both measure and dimensions)",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -6099,18 +6106,6 @@ class oph_importnc(Process):
 class oph_importnc2(Process):
 
     def __init__(self):
-
-        super(oph_importnc2, self).__init__(
-            self._handler,
-            identifier="oph_importnc2",
-            title="Ophidia importnc2",
-            version=_version,
-            abstract="Import a NetCDF file into a datacube (both measure and dimensions); optimized version of oph_importnc",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -6459,8 +6454,21 @@ class oph_importnc2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, check_compliance, nhost, nfrag, measure, run, schedule, src_path, cdd, exp_dim, imp_dim,
+            subset_dims, subset_filter, subset_type, time_filter, offset, exp_concept_level, imp_concept_level, compressed, grid, hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
         outputs = [jobid, response, error]
+
+        super(oph_importnc2, self).__init__(
+            self._handler,
+            identifier="oph_importnc2",
+            title="Ophidia importnc2",
+            version=_version,
+            abstract="Import a NetCDF file into a datacube (both measure and dimensions); optimized version of oph_importnc",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -6583,18 +6591,6 @@ class oph_input(Process):
 
     def __init__(self):
 
-        super(oph_input, self).__init__(
-            self._handler,
-            identifier="oph_input",
-            title="Ophidia input",
-            version=_version,
-            abstract="Send commands or data to an interactive task ('OPH_WAIT'); set parameters in a workflow environment",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
-
         inputs = []
         outputs = []
 
@@ -6687,8 +6683,20 @@ class oph_input(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, id, taskname, action, key, value]
         outputs = [jobid, response, error]
+
+        super(oph_input, self).__init__(
+            self._handler,
+            identifier="oph_input",
+            title="Ophidia input",
+            version=_version,
+            abstract="Send commands or data to an interactive task ('OPH_WAIT'); set parameters in a workflow environment",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -6752,18 +6760,6 @@ class oph_input(Process):
 class oph_instances(Process):
 
     def __init__(self):
-
-        super(oph_instances, self).__init__(
-            self._handler,
-            identifier="oph_instances",
-            title="Ophidia instances",
-            version=_version,
-            abstract="Show information about host partitions, hosts and dbms instances",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -6901,8 +6897,20 @@ class oph_instances(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, action, level, host_filter, nhost, host_partition, filesystem_filter, ioserver_filter, host_status, dbms_status]
         outputs = [jobid, response, error]
+
+        super(oph_instances, self).__init__(
+            self._handler,
+            identifier="oph_instances",
+            title="Ophidia instances",
+            version=_version,
+            abstract="Show information about host partitions, hosts and dbms instances",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -6976,18 +6984,6 @@ class oph_instances(Process):
 class oph_intercube(Process):
 
     def __init__(self):
-
-        super(oph_intercube, self).__init__(
-            self._handler,
-            identifier="oph_intercube",
-            title="Ophidia intercube",
-            version=_version,
-            abstract="Execute an operation between two datacubes with the same fragmentation structure and return a new datacube as result of the specified operation applied element by element",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -7100,8 +7096,20 @@ class oph_intercube(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, pid2, container, measure, description, schedule, operation]
         outputs = [jobid, response, error]
+
+        super(oph_intercube, self).__init__(
+            self._handler,
+            identifier="oph_intercube",
+            title="Ophidia intercube",
+            version=_version,
+            abstract="Execute an operation between two datacubes with the same fragmentation structure and return a new datacube as result of the specified operation applied element by element",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -7170,18 +7178,6 @@ class oph_intercube(Process):
 class oph_list(Process):
 
     def __init__(self):
-
-        super(oph_list, self).__init__(
-            self._handler,
-            identifier="oph_list",
-            title="Ophidia list",
-            version=_version,
-            abstract="Show information about folders, container and datacubes fragmentation (file system)",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -7343,8 +7339,20 @@ class oph_list(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, level, path, cwd, container_filter, pid, host_filter, dbms_filter, measure_filter, ntransform, src_filter, db_filter, recursive]
         outputs = [jobid, response, error]
+
+        super(oph_list, self).__init__(
+            self._handler,
+            identifier="oph_list",
+            title="Ophidia list",
+            version=_version,
+            abstract="Show information about folders, container and datacubes fragmentation (file system)",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -7424,18 +7432,6 @@ class oph_list(Process):
 class oph_log_info(Process):
 
     def __init__(self):
-
-        super(oph_log_info, self).__init__(
-            self._handler,
-            identifier="oph_log_info",
-            title="Ophidia log_info",
-            version=_version,
-            abstract="Read the last lines from the server log or from a specific container log; this operator requires administrator privileges",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -7528,8 +7524,20 @@ class oph_log_info(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, log_type, container_id, ioserver, nlines]
         outputs = [jobid, response, error]
+
+        super(oph_log_info, self).__init__(
+            self._handler,
+            identifier="oph_log_info",
+            title="Ophidia log_info",
+            version=_version,
+            abstract="Read the last lines from the server log or from a specific container log; this operator requires administrator privileges",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -7593,18 +7601,6 @@ class oph_log_info(Process):
 class oph_loggingbk(Process):
 
     def __init__(self):
-
-        super(oph_loggingbk, self).__init__(
-            self._handler,
-            identifier="oph_loggingbk",
-            title="Ophidia loggingbk",
-            version=_version,
-            abstract="Show info about sumbitted jobs",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -7796,8 +7792,21 @@ class oph_loggingbk(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, session_level, job_level, mask, session_filter, session_label_filter, session_creation_filter,
+            workflowid_filter, markerid_filter, parent_job_filter, job_creation_filter, job_status_filter, submission_string_filter, job_start_filter, job_end_filter, nlines]
         outputs = [jobid, response, error]
+
+        super(oph_loggingbk, self).__init__(
+            self._handler,
+            identifier="oph_loggingbk",
+            title="Ophidia loggingbk",
+            version=_version,
+            abstract="Show info about sumbitted jobs",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -7884,18 +7893,6 @@ class oph_man(Process):
 
     def __init__(self):
 
-        super(oph_man, self).__init__(
-            self._handler,
-            identifier="oph_man",
-            title="Ophidia man",
-            version=_version,
-            abstract="Show a description of the behaviour of an operator/primitive",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
-
         inputs = []
         outputs = []
 
@@ -7975,8 +7972,20 @@ class oph_man(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, function, function_version, function_type]
         outputs = [jobid, response, error]
+
+        super(oph_man, self).__init__(
+            self._handler,
+            identifier="oph_man",
+            title="Ophidia man",
+            version=_version,
+            abstract="Show a description of the behaviour of an operator/primitive",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -8038,18 +8047,6 @@ class oph_man(Process):
 class oph_manage_session(Process):
 
     def __init__(self):
-
-        super(oph_manage_session, self).__init__(
-            self._handler,
-            identifier="oph_manage_session",
-            title="Ophidia manage_session",
-            version=_version,
-            abstract="Request or set session data: session list, session creation date, authorized users, etc. Only session owner and administrators can submit the command",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -8139,8 +8136,20 @@ class oph_manage_session(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, action, session, key, value]
         outputs = [jobid, response, error]
+
+        super(oph_manage_session, self).__init__(
+            self._handler,
+            identifier="oph_manage_session",
+            title="Ophidia manage_session",
+            version=_version,
+            abstract="Request or set session data: session list, session creation date, authorized users, etc. Only session owner and administrators can submit the command",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -8204,18 +8213,6 @@ class oph_manage_session(Process):
 class oph_merge(Process):
 
     def __init__(self):
-
-        super(oph_merge, self).__init__(
-            self._handler,
-            identifier="oph_merge",
-            title="Ophidia merge",
-            version=_version,
-            abstract="Create a new datacube grouping nmerge input fragments in a new output fragment",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -8311,8 +8308,20 @@ class oph_merge(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, schedule, nmerge, container, description]
         outputs = [jobid, response, error]
+
+        super(oph_merge, self).__init__(
+            self._handler,
+            identifier="oph_merge",
+            title="Ophidia merge",
+            version=_version,
+            abstract="Create a new datacube grouping nmerge input fragments in a new output fragment",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -8378,18 +8387,6 @@ class oph_merge(Process):
 class oph_mergecubes(Process):
 
     def __init__(self):
-
-        super(oph_mergecubes, self).__init__(
-            self._handler,
-            identifier="oph_mergecubes",
-            title="Ophidia mergecubes",
-            version=_version,
-            abstract="Merge the measures of n input datacubes with the same fragmentation structure and creates a new datacube with the union of the n measures; only single measure data cubes can be merged",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -8505,8 +8502,20 @@ class oph_mergecubes(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pids, schedule, mode, hold_values, number, container, description]
         outputs = [jobid, response, error]
+
+        super(oph_mergecubes, self).__init__(
+            self._handler,
+            identifier="oph_mergecubes",
+            title="Ophidia mergecubes",
+            version=_version,
+            abstract="Merge the measures of n input datacubes with the same fragmentation structure and creates a new datacube with the union of the n measures; only single measure data cubes can be merged",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -8576,18 +8585,6 @@ class oph_mergecubes(Process):
 class oph_mergecubes2(Process):
 
     def __init__(self):
-
-        super(oph_mergecubes2, self).__init__(
-            self._handler,
-            identifier="oph_mergecubes2",
-            title="Ophidia mergecubes2",
-            version=_version,
-            abstract="Merge the measures of n input datacubes with the same fragmentation structure and creates a new datacube with the union of the n measures; only single measure data cubes can be merged and a new implicit dimension will be created",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -8702,8 +8699,20 @@ class oph_mergecubes2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pids, schedule, dim, dim_type, number, container, description]
         outputs = [jobid, response, error]
+
+        super(oph_mergecubes2, self).__init__(
+            self._handler,
+            identifier="oph_mergecubes2",
+            title="Ophidia mergecubes2",
+            version=_version,
+            abstract="Merge the measures of n input datacubes with the same fragmentation structure and creates a new datacube with the union of the n measures; only single measure data cubes can be merged and a new implicit dimension will be created",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -8773,18 +8782,6 @@ class oph_mergecubes2(Process):
 class oph_metadata(Process):
 
     def __init__(self):
-
-        super(oph_metadata, self).__init__(
-            self._handler,
-            identifier="oph_metadata",
-            title="Ophidia metadata",
-            version=_version,
-            abstract="Provide CRUD operations (Create, Read, Update and Delete) on OphidiaDB metadata",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -8937,8 +8934,21 @@ class oph_metadata(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, mode, metadata_key, variable, metadata_id,
+            metadata_type, metadata_value, variable_filter, metadata_type_filter, metadata_value_filter, force]
         outputs = [jobid, response, error]
+
+        super(oph_metadata, self).__init__(
+            self._handler,
+            identifier="oph_metadata",
+            title="Ophidia metadata",
+            version=_version,
+            abstract="Provide CRUD operations (Create, Read, Update and Delete) on OphidiaDB metadata",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -9017,18 +9027,6 @@ class oph_movecontainer(Process):
 
     def __init__(self):
 
-        super(oph_movecontainer, self).__init__(
-            self._handler,
-            identifier="oph_movecontainer",
-            title="Ophidia movecontainer",
-            version=_version,
-            abstract="Move/rename a visible container",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
-
         inputs = []
         outputs = []
 
@@ -9096,8 +9094,20 @@ class oph_movecontainer(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, container, cwd]
         outputs = [jobid, response, error]
+
+        super(oph_movecontainer, self).__init__(
+            self._handler,
+            identifier="oph_movecontainer",
+            title="Ophidia movecontainer",
+            version=_version,
+            abstract="Move/rename a visible container",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -9156,18 +9166,6 @@ class oph_movecontainer(Process):
 class oph_operators_list(Process):
 
     def __init__(self):
-
-        super(oph_operators_list, self).__init__(
-            self._handler,
-            identifier="oph_operators_list",
-            title="Ophidia operators_list",
-            version=_version,
-            abstract="Show the list of all active operators",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -9242,8 +9240,20 @@ class oph_operators_list(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, operator_filter, limit_filter]
         outputs = [jobid, response, error]
+
+        super(oph_operators_list, self).__init__(
+            self._handler,
+            identifier="oph_operators_list",
+            title="Ophidia operators_list",
+            version=_version,
+            abstract="Show the list of all active operators",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -9303,18 +9313,6 @@ class oph_operators_list(Process):
 class oph_permute(Process):
 
     def __init__(self):
-
-        super(oph_permute, self).__init__(
-            self._handler,
-            identifier="oph_permute",
-            title="Ophidia permute",
-            version=_version,
-            abstract="Perform a permutation of the dimension of a datacube; this version operates only on implicit dimensions",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -9418,8 +9416,20 @@ class oph_permute(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, dim_pos, container, description]
         outputs = [jobid, response, error]
+
+        super(oph_permute, self).__init__(
+            self._handler,
+            identifier="oph_permute",
+            title="Ophidia permute",
+            version=_version,
+            abstract="Perform a permutation of the dimension of a datacube; this version operates only on implicit dimensions",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -9486,18 +9496,6 @@ class oph_permute(Process):
 class oph_primitives_list(Process):
 
     def __init__(self):
-
-        super(oph_primitives_list, self).__init__(
-            self._handler,
-            identifier="oph_primitives_list",
-            title="Ophidia primitives_list",
-            version=_version,
-            abstract="Show a list with info about active Ophidia Primitives loaded into a specifiv DBMS instance",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -9608,8 +9606,20 @@ class oph_primitives_list(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, level, dbms_filter, return_type, primitive_type, primitive_filter, limit_filter]
         outputs = [jobid, response, error]
+
+        super(oph_primitives_list, self).__init__(
+            self._handler,
+            identifier="oph_primitives_list",
+            title="Ophidia primitives_list",
+            version=_version,
+            abstract="Show a list with info about active Ophidia Primitives loaded into a specifiv DBMS instance",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -9677,18 +9687,6 @@ class oph_primitives_list(Process):
 class oph_publish(Process):
 
     def __init__(self):
-
-        super(oph_publish, self).__init__(
-            self._handler,
-            identifier="oph_publish",
-            title="Ophidia publish",
-            version=_version,
-            abstract="Create HTML pages with data and other information from a datacube",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -9795,8 +9793,20 @@ class oph_publish(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, show_index, show_id, show_time, content, schedule]
         outputs = [jobid, response, error]
+
+        super(oph_publish, self).__init__(
+            self._handler,
+            identifier="oph_publish",
+            title="Ophidia publish",
+            version=_version,
+            abstract="Create HTML pages with data and other information from a datacube",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -9864,18 +9874,6 @@ class oph_publish(Process):
 class oph_randcube(Process):
 
     def __init__(self):
-
-        super(oph_randcube, self).__init__(
-            self._handler,
-            identifier="oph_randcube",
-            title="Ophidia randcube",
-            version=_version,
-            abstract="Create a new datacube with random data and dimensions",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -10077,8 +10075,21 @@ class oph_randcube(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, nhost, nfrag, ntuple,
+            measure, measure_type, exp_ndim, dim, concept_level, dim_size, run, schedule, compressed, grid, description, algorithm]
         outputs = [jobid, response, error]
+
+        super(oph_randcube, self).__init__(
+            self._handler,
+            identifier="oph_randcube",
+            title="Ophidia randcube",
+            version=_version,
+            abstract="Create a new datacube with random data and dimensions",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -10164,18 +10175,6 @@ class oph_randcube(Process):
 class oph_randcube2(Process):
 
     def __init__(self):
-
-        super(oph_randcube2, self).__init__(
-            self._handler,
-            identifier="oph_randcube2",
-            title="Ophidia randcube2",
-            version=_version,
-            abstract="Create a new datacube with random data and dimensions",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -10386,8 +10385,21 @@ class oph_randcube2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, cwd, container, host_partition, ioserver, nhost, nfrag, ntuple,
+            measure, measure_type, exp_ndim, dim, concept_level, dim_size, run, schedule, compressed, grid, description, algorithm]
         outputs = [jobid, response, error]
+
+        super(oph_randcube2, self).__init__(
+            self._handler,
+            identifier="oph_randcube2",
+            title="Ophidia randcube2",
+            version=_version,
+            abstract="Create a new datacube with random data and dimensions",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -10475,18 +10487,6 @@ class oph_randcube2(Process):
 class oph_reduce(Process):
 
     def __init__(self):
-
-        super(oph_reduce, self).__init__(
-            self._handler,
-            identifier="oph_reduce",
-            title="Ophidia reduce",
-            version=_version,
-            abstract="Perform a reduction operation on a datacube with respect to implicit dimensions",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -10624,8 +10624,20 @@ class oph_reduce(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, group_size, operation, order, missingvalue]
         outputs = [jobid, response, error]
+
+        super(oph_reduce, self).__init__(
+            self._handler,
+            identifier="oph_reduce",
+            title="Ophidia reduce",
+            version=_version,
+            abstract="Perform a reduction operation on a datacube with respect to implicit dimensions",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -10700,18 +10712,6 @@ class oph_reduce(Process):
 class oph_reduce2(Process):
 
     def __init__(self):
-
-        super(oph_reduce2, self).__init__(
-            self._handler,
-            identifier="oph_reduce2",
-            title="Ophidia reduce2",
-            version=_version,
-            abstract="Perform a reduction operation based on hierarchy on a datacube",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -10865,8 +10865,20 @@ class oph_reduce2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, dim, concept_level, midnight, order, missingvalue, operation]
         outputs = [jobid, response, error]
+
+        super(oph_reduce2, self).__init__(
+            self._handler,
+            identifier="oph_reduce2",
+            title="Ophidia reduce2",
+            version=_version,
+            abstract="Perform a reduction operation based on hierarchy on a datacube",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -10944,18 +10956,6 @@ class oph_reduce2(Process):
 class oph_resume(Process):
 
     def __init__(self):
-
-        super(oph_resume, self).__init__(
-            self._handler,
-            identifier="oph_resume",
-            title="Ophidia resume",
-            version=_version,
-            abstract="Request the list of the commands submitted within a session or the output of a command",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -11084,8 +11084,20 @@ class oph_resume(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, session, id, id_type, document_type, level, user, status_filter, save]
         outputs = [jobid, response, error]
+
+        super(oph_resume, self).__init__(
+            self._handler,
+            identifier="oph_resume",
+            title="Ophidia resume",
+            version=_version,
+            abstract="Request the list of the commands submitted within a session or the output of a command",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -11157,18 +11169,6 @@ class oph_resume(Process):
 class oph_rollup(Process):
 
     def __init__(self):
-
-        super(oph_rollup, self).__init__(
-            self._handler,
-            identifier="oph_rollup",
-            title="Ophidia rollup",
-            version=_version,
-            abstract="Perform a roll-up on a datacube, i.e. it transform dimensions from explicit to implicit",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -11275,8 +11275,20 @@ class oph_rollup(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, container, description, ndim]
         outputs = [jobid, response, error]
+
+        super(oph_rollup, self).__init__(
+            self._handler,
+            identifier="oph_rollup",
+            title="Ophidia rollup",
+            version=_version,
+            abstract="Perform a roll-up on a datacube, i.e. it transform dimensions from explicit to implicit",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -11344,18 +11356,6 @@ class oph_rollup(Process):
 class oph_script(Process):
 
     def __init__(self):
-
-        super(oph_script, self).__init__(
-            self._handler,
-            identifier="oph_script",
-            title="Ophidia script",
-            version=_version,
-            abstract="Execute a bash script",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -11466,8 +11466,20 @@ class oph_script(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, script, args, stdout, stderr, list]
         outputs = [jobid, response, error]
+
+        super(oph_script, self).__init__(
+            self._handler,
+            identifier="oph_script",
+            title="Ophidia script",
+            version=_version,
+            abstract="Execute a bash script",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -11535,18 +11547,6 @@ class oph_script(Process):
 class oph_search(Process):
 
     def __init__(self):
-
-        super(oph_search, self).__init__(
-            self._handler,
-            identifier="oph_search",
-            title="Ophidia search",
-            version=_version,
-            abstract="Provide enhanced searching on metadata",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -11645,8 +11645,20 @@ class oph_search(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, container_filter, metadata_key_filter, metadata_value_filter, path, cwd]
         outputs = [jobid, response, error]
+
+        super(oph_search, self).__init__(
+            self._handler,
+            identifier="oph_search",
+            title="Ophidia search",
+            version=_version,
+            abstract="Provide enhanced searching on metadata",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -11713,18 +11725,6 @@ class oph_service(Process):
 
     def __init__(self):
 
-        super(oph_service, self).__init__(
-            self._handler,
-            identifier="oph_service",
-            title="Ophidia service",
-            version=_version,
-            abstract="Request or set the service status",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
-
         inputs = []
         outputs = []
 
@@ -11790,8 +11790,20 @@ class oph_service(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, state, level]
         outputs = [jobid, response, error]
+
+        super(oph_service, self).__init__(
+            self._handler,
+            identifier="oph_service",
+            title="Ophidia service",
+            version=_version,
+            abstract="Request or set the service status",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -11849,18 +11861,6 @@ class oph_service(Process):
 class oph_set(Process):
 
     def __init__(self):
-
-        super(oph_set, self).__init__(
-            self._handler,
-            identifier="oph_set",
-            title="Ophidia set",
-            version=_version,
-            abstract="Set parameters in the workflow environment",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -11951,8 +11951,20 @@ class oph_set(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, subset_filter, offset, id, key, value]
         outputs = [jobid, response, error]
+
+        super(oph_set, self).__init__(
+            self._handler,
+            identifier="oph_set",
+            title="Ophidia set",
+            version=_version,
+            abstract="Set parameters in the workflow environment",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -12016,18 +12028,6 @@ class oph_set(Process):
 class oph_showgrid(Process):
 
     def __init__(self):
-
-        super(oph_showgrid, self).__init__(
-            self._handler,
-            identifier="oph_showgrid",
-            title="Ophidia showgrid",
-            version=_version,
-            abstract="Show information about one or more grids related to the specified container",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -12123,8 +12123,20 @@ class oph_showgrid(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, container, grid, dim, show_index, cwd]
         outputs = [jobid, response, error]
+
+        super(oph_showgrid, self).__init__(
+            self._handler,
+            identifier="oph_showgrid",
+            title="Ophidia showgrid",
+            version=_version,
+            abstract="Show information about one or more grids related to the specified container",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -12189,18 +12201,6 @@ class oph_showgrid(Process):
 class oph_split(Process):
 
     def __init__(self):
-
-        super(oph_split, self).__init__(
-            self._handler,
-            identifier="oph_split",
-            title="Ophidia split",
-            version=_version,
-            abstract="Create a new datacube by splitting input fragments in nsplit output fragments in the same origin database",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -12304,8 +12304,20 @@ class oph_split(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, nsplit, description, schedule]
         outputs = [jobid, response, error]
+
+        super(oph_split, self).__init__(
+            self._handler,
+            identifier="oph_split",
+            title="Ophidia split",
+            version=_version,
+            abstract="Create a new datacube by splitting input fragments in nsplit output fragments in the same origin database",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -12373,18 +12385,6 @@ class oph_split(Process):
 class oph_subset(Process):
 
     def __init__(self):
-
-        super(oph_subset, self).__init__(
-            self._handler,
-            identifier="oph_subset",
-            title="Ophidia subset",
-            version=_version,
-            abstract="Subset a cube",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -12526,8 +12526,20 @@ class oph_subset(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, container, grid, subset_dims, subset_filter, description, schedule, subset_type, time_filter, offset]
         outputs = [jobid, response, error]
+
+        super(oph_subset, self).__init__(
+            self._handler,
+            identifier="oph_subset",
+            title="Ophidia subset",
+            version=_version,
+            abstract="Subset a cube",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -12603,18 +12615,6 @@ class oph_subset(Process):
 class oph_subset2(Process):
 
     def __init__(self):
-
-        super(oph_subset2, self).__init__(
-            self._handler,
-            identifier="oph_subset2",
-            title="Ophidia subset2",
-            version=_version,
-            abstract="Perform a subsetting along dimensions of a datacube; dimension values are used as input filters",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -12748,8 +12748,20 @@ class oph_subset2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, container, grid, subset_dims, subset_filter, description, schedule, time_filter, offset]
         outputs = [jobid, response, error]
+
+        super(oph_subset2, self).__init__(
+            self._handler,
+            identifier="oph_subset2",
+            title="Ophidia subset2",
+            version=_version,
+            abstract="Perform a subsetting along dimensions of a datacube; dimension values are used as input filters",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -12823,18 +12835,6 @@ class oph_subset2(Process):
 class oph_tasks(Process):
 
     def __init__(self):
-
-        super(oph_tasks, self).__init__(
-            self._handler,
-            identifier="oph_tasks",
-            title="Ophidia tasks",
-            version=_version,
-            abstract="Show information about executed tasks; default arguments allow to show all the tasks executed; if a container is given, then only tasks that involve the container as shown",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -12933,8 +12933,20 @@ class oph_tasks(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cube_filter, operator_filter, path, cwd, container]
         outputs = [jobid, response, error]
+
+        super(oph_tasks, self).__init__(
+            self._handler,
+            identifier="oph_tasks",
+            title="Ophidia tasks",
+            version=_version,
+            abstract="Show information about executed tasks; default arguments allow to show all the tasks executed; if a container is given, then only tasks that involve the container as shown",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -13001,18 +13013,6 @@ class oph_unpublish(Process):
 
     def __init__(self):
 
-        super(oph_unpublish, self).__init__(
-            self._handler,
-            identifier="oph_unpublish",
-            title="Ophidia unpublish",
-            version=_version,
-            abstract="Remove the HTML pages created by the PUBLISH2 operator; note that it doesn't remove the container folder",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
-
         inputs = []
         outputs = []
 
@@ -13074,8 +13074,20 @@ class oph_unpublish(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid]
         outputs = [jobid, response, error]
+
+        super(oph_unpublish, self).__init__(
+            self._handler,
+            identifier="oph_unpublish",
+            title="Ophidia unpublish",
+            version=_version,
+            abstract="Remove the HTML pages created by the PUBLISH2 operator; note that it doesn't remove the container folder",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
@@ -13133,18 +13145,6 @@ class oph_unpublish(Process):
 class oph_wait(Process):
 
     def __init__(self):
-
-        super(oph_wait, self).__init__(
-            self._handler,
-            identifier="oph_wait",
-            title="Ophidia wait",
-            version=_version,
-            abstract="Wait until an event occurs; the task can be unlocked by means of the command 'OPH_INPUT'",
-            inputs=inputs,
-            outputs=outputs,
-            storeSupported=True,
-            status_supported=True
-        )
 
         inputs = []
         outputs = []
@@ -13265,8 +13265,20 @@ class oph_wait(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, request]
+        inputs = [userid, passwd, ncores, exec_mode, type, timeout, timeout_type, key, value, filename, message, run]
         outputs = [jobid, response, error]
+
+        super(oph_wait, self).__init__(
+            self._handler,
+            identifier="oph_wait",
+            title="Ophidia wait",
+            version=_version,
+            abstract="Wait until an event occurs; the task can be unlocked by means of the command 'OPH_INPUT'",
+            inputs=inputs,
+            outputs=outputs,
+            storeSupported=True,
+            status_supported=True
+        )
 
     def _handler(self, request, response):
 
