@@ -63,14 +63,24 @@ Configure Apache by saving the following specification in */etc/httpd/conf.d/pyt
 
 By default it is assumed that Ophidia Server is running on the same node where PyWPS works and listening to port 11732. Otherwise, change service address (IP address and port number) by editing */usr/local/ophidia/extra/wps/processes/ophidia.py*.
 
+To allow Apache to call PyWPS processes, create a symbolic link in your site-packages folder as follows or set python environmental variables accordingly.
+
+```
+cd /usr/lib/python2.7/site-packages/
+sudo ln -s /usr/local/ophidia/extra/wps/processes processes
+```
+
 Create the folders for PyWPS log file and WPS Responses (based on parameters set in */usr/local/ophidia/extra/wps/etc/pywps.cfg*):
 
 ```
 sudo mkdir -p /var/www/html/wpsoutputs
+sudo mkdir -p /var/www/wps
 sudo mkdir -p /var/log/wps
 sudo chown root:apache /var/www/html/wpsoutputs
+sudo chown root:apache /var/www/wps
 sudo chown root:apache /var/log/wps
 sudo chmod 775 /var/www/html/wpsoutputs
+sudo chmod 775 /var/www/wps
 sudo chmod 775 /var/log/wps
 ```
 
