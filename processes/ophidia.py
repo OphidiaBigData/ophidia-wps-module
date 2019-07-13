@@ -7036,6 +7036,12 @@ class oph_intercube(Process):
             abstract="Name of the second input datacube in PID format",
             data_type='string')
 
+        pids = LiteralInput(
+            identifier="cubes",
+            title="Input cubes",
+            abstract="Name of the input datacubes, in PID format, alternatively to parameters 'cube' and 'cube2'. Multiple-values field: list of cubes separated by '|' can be provided. Only two datacbubes shall be specified",
+            data_type='string')
+
         container = LiteralInput(
             identifier="container",
             title="Output container",
@@ -7122,6 +7128,7 @@ class oph_intercube(Process):
 
         LOGGER.debug("Build the query")
         query = 'oph_intercube '
+
         if request.inputs['sessionid'][0].data is not None:
             query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
         if request.inputs['ncores'][0].data is not None:
@@ -7138,9 +7145,12 @@ class oph_intercube(Process):
             query += 'operation=' + str(request.inputs['operation'][0].data) + ';'
         if request.inputs['measure'][0].data is not None:
             query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
-
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
-        query += 'cube2=' + str(request.inputs['cube2'][0].data) + ';'
+        if request.inputs['cube'][0].data is not None:
+            query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        if request.inputs['cube2'][0].data is not None:
+            query += 'cube2=' + str(request.inputs['cube2'][0].data) + ';'
+        if request.inputs['cubes'][0].data is not None:
+            query += 'cubes=' + str(request.inputs['cubes'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
@@ -8428,7 +8438,7 @@ class oph_mergecubes(Process):
         pids = LiteralInput(
             identifier="cubes",
             title="Input cubes",
-            abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided. At least two datacbubes must be specified",
+            abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided",
             data_type='string')
 
         schedule = LiteralInput(
@@ -8626,7 +8636,7 @@ class oph_mergecubes2(Process):
         pids = LiteralInput(
             identifier="cubes",
             title="Input cubes",
-            abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided. At least two datacbubes must be specified",
+            abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided",
             data_type='string')
 
         schedule = LiteralInput(

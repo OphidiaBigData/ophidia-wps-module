@@ -1,9 +1,14 @@
 
-## New features
+## Next release
+
+### Added:
+
+- New parameter 'cubes' to OPH_INTERCUBE
 
 ### Changed:
 
-- process format for PyWPS 4
+- Process format for PyWPS 4
+
 
 ## v1.1.0 - 2019-01-24
 
