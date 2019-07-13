@@ -26,6 +26,7 @@ _host = "127.0.0.1"
 _port = 11732
 _version = "1.1.0"
 
+
 class OphExecuteMainProcess(WPSProcess):
 
     def __init__(self):
@@ -6878,6 +6879,12 @@ class oph_intercube(WPSProcess):
             abstract="Name of the second input datacube in PID format",
             type=type(''))
 
+        self.pids = self.addLiteralInput(
+            identifier="cubes",
+            title="Input cubes",
+            abstract="Name of the input datacubes, in PID format, alternatively to parameters 'cube' and 'cube2'. Multiple-values field: list of cubes separated by '|' can be provided. Only two datacbubes shall be specified",
+            type=type(''))
+
         self.container = self.addLiteralInput(
             identifier="container",
             title="Output container",
@@ -6965,9 +6972,12 @@ class oph_intercube(WPSProcess):
             query += 'operation=' + str(self.operation.getValue()) + ';'
         if self.measure.getValue() is not None:
             query += 'measure=' + str(self.measure.getValue()) + ';'
-
-        query += 'cube=' + str(self.pid.getValue()) + ';'
-        query += 'cube2=' + str(self.pid.getValue()) + ';'
+        if self.pid.getValue() is not None:
+            query += 'cube=' + str(self.pid.getValue()) + ';'
+        if self.pid2.getValue() is not None:
+            query += 'cube2=' + str(self.pid2.getValue()) + ';'
+        if self.pids.getValue() is not None:
+            query += 'cubes=' + str(self.pids.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
@@ -8236,7 +8246,7 @@ class oph_mergecubes(WPSProcess):
         self.pids = self.addLiteralInput(
             identifier="cubes",
             title="Input cubes",
-            abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided. At least two datacbubes must be specified",
+            abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided",
             type=type(''))
 
         self.schedule = self.addLiteralInput(
@@ -8429,7 +8439,7 @@ class oph_mergecubes2(WPSProcess):
         self.pids = self.addLiteralInput(
             identifier="cubes",
             title="Input cubes",
-            abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided. At least two datacbubes must be specified",
+            abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided",
             type=type(''))
 
         self.schedule = self.addLiteralInput(

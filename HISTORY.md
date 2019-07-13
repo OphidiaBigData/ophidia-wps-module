@@ -1,4 +1,11 @@
 
+## Next release
+
+### Added:
+
+- New parameter 'cubes' to OPH_INTERCUBE
+
+
 ## v1.1.0 - 2019-01-24
 
 ### Fixed:
