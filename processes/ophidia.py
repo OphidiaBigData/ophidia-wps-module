@@ -870,13 +870,45 @@ class oph_b2drop(Process):
             default="async",
             data_type='string')
 
-        type = LiteralInput(
-            identifier="",
-            title="",
-            abstract="",
+        sessionid = LiteralInput(
+            identifier="sessionid",
+            title="Session identifier",
             min_occurs=0,
             max_occurs=1,
-            default="",
+            default="null",
+            data_type='string')
+
+        auth_path = LiteralInput(
+            identifier="auth_path",
+            title="Authorization data",
+            abstract="Absolute path to the netrc file containing the B2DROP login information; note that it is not possible to use double dots (..) within the path; if no path is provided, the user's home will be used (default)",
+            min_occurs=0,
+            max_occurs=1,
+            default="-",
+            data_type='string')
+
+        src_path = LiteralInput(
+            identifier="src_path",
+            title="Source path",
+            abstract="Path to the file to be uploaded to B2DROP. The path can be absolute or relative; in case of relative path the cdd argument will be pre-pended; note that it is not possible to use double dots (..) within the path",
+            data_type='string')
+
+        dest_path = LiteralInput(
+            identifier="dest_path",
+            title="Destination path",
+            abstract="Path where the file will be uploaded on B2DROP. In case no path is specified, the base path and the input file name will be used (default)",
+            min_occurs=0,
+            max_occurs=1,
+            default="-",
+            data_type='string')
+
+        cdd = LiteralInput(
+            identifier="cdd",
+            title="Current Data Directory",
+            abstract="Absolute path corresponding to the current directory on data repository",
+            min_occurs=0,
+            max_occurs=1,
+            default="/",
             data_type='string')
 
         jobid = LiteralOutput(
@@ -894,7 +926,7 @@ class oph_b2drop(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, ncores, exec_mode, type]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, auth_path, src_path, dest_path, cdd]
         outputs = [jobid, response, error]
 
         super(oph_b2drop, self).__init__(
@@ -921,14 +953,21 @@ class oph_b2drop(Process):
 
         LOGGER.debug("Build the query")
         query = 'oph_b2drop '
-        if request.inputs['type'][0].data is not None:
-            query += 'type=' + str(request.inputs['type'][0].data) + ';'
+
+        if request.inputs['sessionid'][0].data is not None:
+            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
+        if request.inputs['auth_path'][0].data is not None:
+            query += 'auth_path=' + str(request.inputs['auth_path'][0].data) + ';'
+        if request.inputs['dest_path'][0].data is not None:
+            query += 'dest_path=' + str(request.inputs['dest_path'][0].data) + ';'
+        if request.inputs['cdd'][0].data is not None:
+            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
         if request.inputs['exec_mode'][0].data is not None:
             query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
         if request.inputs['ncores'][0].data is not None:
             query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
 
-        query += 'id=' + str(request.inputs['id'][0].data) + ';'
+        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
@@ -998,37 +1037,18 @@ class oph_cancel(Process):
             default="async",
             data_type='string')
 
-        auth_path = LiteralInput(
-            identifier="auth_path",
-            title="Authorization data",
-            abstract="Absolute path to the netrc file containing the B2DROP login information; note that it is not possible to use double dots (..) within the path; if no path is provided, the user's home will be used (default)",
+        id = LiteralInput(
+            identifier="id",
+            title="Identifier of the workflow to be stopped",
+            data_type='integer')
+
+        type = LiteralInput(
+            identifier="type",
+            title="Cancellation type",
+            abstract="Use 'kill' to abort workflow and submitted tasks (default), 'abort' to abort workflow and pending tasks (running tasks continue), 'stop' to abort workflow, submitted tasks continue",
             min_occurs=0,
             max_occurs=1,
-            default="-",
-            data_type='string')
-
-        src_path = LiteralInput(
-            identifier="src_path",
-            title="Source path",
-            abstract="Path to the file to be uploaded to B2DROP. The path can be absolute or relative; in case of relative path the cdd argument will be pre-pended; note that it is not possible to use double dots (..) within the path",
-            data_type='string')
-
-        dest_path = LiteralInput(
-            identifier="dest_path",
-            title="Destination path",
-            abstract="Path where the file will be uploaded on B2DROP. In case no path is specified, the base path and the input file name will be used (default)",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
-
-        cdd = LiteralInput(
-            identifier="cdd",
-            title="Current Data Directory",
-            abstract="Absolute path corresponding to the current directory on data repository",
-            min_occurs=0,
-            max_occurs=1,
-            default="/",
+            default="kill",
             data_type='string')
 
         jobid = LiteralOutput(
@@ -1046,7 +1066,7 @@ class oph_cancel(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, ncores, exec_mode, auth_path, src_path, dest_path, cdd]
+        inputs = [userid, passwd, ncores, exec_mode, id, type]
         outputs = [jobid, response, error]
 
         super(oph_cancel, self).__init__(
@@ -1073,18 +1093,14 @@ class oph_cancel(Process):
 
         LOGGER.debug("Build the query")
         query = 'oph_cancel '
-        if request.inputs['auth_path'][0].data is not None:
-            query += 'auth_path=' + str(request.inputs['auth_path'][0].data) + ';'
-        if request.inputs['dest_path'][0].data is not None:
-            query += 'dest_path=' + str(request.inputs['dest_path'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
+        if request.inputs['type'][0].data is not None:
+            query += 'type=' + str(request.inputs['type'][0].data) + ';'
         if request.inputs['exec_mode'][0].data is not None:
             query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
         if request.inputs['ncores'][0].data is not None:
             query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
 
-        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
+        query += 'id=' + str(request.inputs['id'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
