@@ -860,13 +860,45 @@ class oph_b2drop(WPSProcess):
             default="async",
             type=type(''))
 
-        self.type = self.addLiteralInput(
-            identifier="",
-            title="",
-            abstract="",
+        self.sessionid = self.addLiteralInput(
+            identifier="sessionid",
+            title="Session identifier",
             minOccurs=0,
             maxOccurs=1,
-            default="",
+            default="null",
+            type=type(''))
+
+        self.auth_path = self.addLiteralInput(
+            identifier="auth_path",
+            title="Authorization data",
+            abstract="Absolute path to the netrc file containing the B2DROP login information; note that it is not possible to use double dots (..) within the path; if no path is provided, the user's home will be used (default)",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
+        self.src_path = self.addLiteralInput(
+            identifier="src_path",
+            title="Source path",
+            abstract="Path to the file to be uploaded to B2DROP. The path can be absolute or relative; in case of relative path the cdd argument will be pre-pended; note that it is not possible to use double dots (..) within the path",
+            type=type(''))
+
+        self.dest_path = self.addLiteralInput(
+            identifier="dest_path",
+            title="Destination path",
+            abstract="Path where the file will be uploaded on B2DROP. In case no path is specified, the base path and the input file name will be used (default)",
+            minOccurs=0,
+            maxOccurs=1,
+            default="-",
+            type=type(''))
+
+        self.cdd = self.addLiteralInput(
+            identifier="cdd",
+            title="Current Data Directory",
+            abstract="Absolute path corresponding to the current directory on data repository",
+            minOccurs=0,
+            maxOccurs=1,
+            default="/",
             type=type(''))
 
         self.jobid = self.addLiteralOutput(
@@ -896,14 +928,20 @@ class oph_b2drop(WPSProcess):
 
         logging.debug("Build the query")
         query = 'oph_b2drop '
-        if self.type.getValue() is not None:
-            query += 'type=' + str(self.type.getValue()) + ';'
+        if self.sessionid.getValue() is not None:
+            query += 'sessionid=' + str(self.sessionid.getValue()) + ';'
+        if self.auth_path.getValue() is not None:
+            query += 'auth_path=' + str(self.auth_path.getValue()) + ';'
+        if self.dest_path.getValue() is not None:
+            query += 'dest_path=' + str(self.dest_path.getValue()) + ';'
+        if self.cdd.getValue() is not None:
+            query += 'cdd=' + str(self.cdd.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
 
-        query += 'id=' + str(self.id.getValue()) + ';'
+        query += 'src_path=' + str(self.src_path.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
@@ -983,37 +1021,18 @@ class oph_cancel(WPSProcess):
             default="async",
             type=type(''))
 
-        self.auth_path = self.addLiteralInput(
-            identifier="auth_path",
-            title="Authorization data",
-            abstract="Absolute path to the netrc file containing the B2DROP login information; note that it is not possible to use double dots (..) within the path; if no path is provided, the user's home will be used (default)",
+        self.id = self.addLiteralInput(
+            identifier="id",
+            title="Identifier of the workflow to be stopped",
+            type=type(1))
+
+        self.type = self.addLiteralInput(
+            identifier="type",
+            title="Cancellation type",
+            abstract="Use 'kill' to abort workflow and submitted tasks (default), 'abort' to abort workflow and pending tasks (running tasks continue), 'stop' to abort workflow, submitted tasks continue",
             minOccurs=0,
             maxOccurs=1,
-            default="-",
-            type=type(''))
-
-        self.src_path = self.addLiteralInput(
-            identifier="src_path",
-            title="Source path",
-            abstract="Path to the file to be uploaded to B2DROP. The path can be absolute or relative; in case of relative path the cdd argument will be pre-pended; note that it is not possible to use double dots (..) within the path",
-            type=type(''))
-
-        self.dest_path = self.addLiteralInput(
-            identifier="dest_path",
-            title="Destination path",
-            abstract="Path where the file will be uploaded on B2DROP. In case no path is specified, the base path and the input file name will be used (default)",
-            minOccurs=0,
-            maxOccurs=1,
-            default="-",
-            type=type(''))
-
-        self.cdd = self.addLiteralInput(
-            identifier="cdd",
-            title="Current Data Directory",
-            abstract="Absolute path corresponding to the current directory on data repository",
-            minOccurs=0,
-            maxOccurs=1,
-            default="/",
+            default="kill",
             type=type(''))
 
         self.jobid = self.addLiteralOutput(
@@ -1043,18 +1062,14 @@ class oph_cancel(WPSProcess):
 
         logging.debug("Build the query")
         query = 'oph_cancel '
-        if self.auth_path.getValue() is not None:
-            query += 'auth_path=' + str(self.auth_path.getValue()) + ';'
-        if self.dest_path.getValue() is not None:
-            query += 'dest_path=' + str(self.dest_path.getValue()) + ';'
-        if self.cdd.getValue() is not None:
-            query += 'cdd=' + str(self.cdd.getValue()) + ';'
+        if self.type.getValue() is not None:
+            query += 'type=' + str(self.type.getValue()) + ';'
         if self.exec_mode.getValue() is not None:
             query += 'exec_mode=' + str(self.exec_mode.getValue()) + ';'
         if self.ncores.getValue() is not None:
             query += 'ncores=' + str(self.ncores.getValue()) + ';'
 
-        query += 'src_path=' + str(self.src_path.getValue()) + ';'
+        query += 'id=' + str(self.id.getValue()) + ';'
 
         logging.debug("Create Ophidia client")
         oph_client = _client.Client(self.userid.getValue(), self.passwd.getValue(), _host, _port)
