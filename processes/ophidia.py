@@ -6647,7 +6647,7 @@ class oph_input(Process):
             abstract="Workflow identifier. By default the hosting workflow is selected. The target workflow must have been subitted the same session. Default value is @OPH_WORKFLOW_ID",
             min_occurs=0,
             max_occurs=1,
-            default='@OPH_WORKFLOW_ID',
+            default=0,
             data_type='integer')
 
         taskname = LiteralInput(
@@ -11944,7 +11944,7 @@ class oph_set(Process):
             abstract="Workflow identifier. By default the hosting workflow is selected. The target workflow must have been subitted the same session. Default value is @OPH_WORKFLOW_ID",
             min_occurs=0,
             max_occurs=1,
-            default='@OPH_WORKFLOW_ID',
+            default=0,
             data_type='integer')
 
         key = LiteralInput(
