@@ -7304,7 +7304,7 @@ class oph_list(Process):
             abstract="Optional filter on DBMSs. Default is 'all'",
             min_occurs=0,
             max_occurs=1,
-            default="all",
+            default=0,
             data_type='integer')
 
         measure_filter = LiteralInput(
@@ -7322,7 +7322,7 @@ class oph_list(Process):
             abstract="Optional filter on operation level (number of transformation applied since import). Default is 'all'",
             min_occurs=0,
             max_occurs=1,
-            default="all",
+            default=0,
             data_type='integer')
 
         src_filter = LiteralInput(
@@ -9582,7 +9582,7 @@ class oph_primitives_list(Process):
             abstract="Id of the specific DBMS instance look up. If no values is specified, then DBMS used will be the first available",
             min_occurs=0,
             max_occurs=1,
-            default="all",
+            default=0,
             data_type='integer')
 
         return_type = LiteralInput(
