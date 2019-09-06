@@ -212,7 +212,8 @@ class oph_aggregate(Process):
             identifier="group_size",
             title="Group size",
             abstract="Number of tuples per group to consider in the aggregation function. If set to 'all' the aggregation, will occur on all tuples of the table",
-            min_occurs=1,
+            min_occurs=0,
+            max_occurs=1,
             default="all",
             data_type='string')
 
@@ -3966,6 +3967,7 @@ class oph_explorenc(Process):
             abstract="Name of the measure related to the NetCDF. The argument is mandatory in case level different from '0'",
             min_occurs=0,
             max_occurs=1,
+            default="-",
             data_type='string')
 
         level = LiteralInput(
@@ -3998,6 +4000,7 @@ class oph_explorenc(Process):
             abstract="Names of explicit dimensions (axis). Multi value field: list of dimensions separated by '|' can be provided",
             min_occurs=0,
             max_occurs=1,
+            default="-",
             data_type='string')
 
         imp_dim = LiteralInput(
@@ -4006,6 +4009,7 @@ class oph_explorenc(Process):
             abstract="Names of implicit dimensions (axis). Multi value field: list of dimensions separated by '|' can be provided",
             min_occurs=0,
             max_occurs=1,
+            default="-",
             data_type='string')
 
         subset_dims = LiteralInput(
@@ -4325,8 +4329,6 @@ class oph_exportnc(Process):
             identifier="cube",
             title="Input cube",
             abstract="Name of the input datacube in PID format",
-            min_occurs=0,
-            max_occurs=1,
             data_type='string')
 
         misc = LiteralInput(
@@ -6645,6 +6647,7 @@ class oph_input(Process):
             abstract="Workflow identifier. By default the hosting workflow is selected. The target workflow must have been subitted the same session. Default value is @OPH_WORKFLOW_ID",
             min_occurs=0,
             max_occurs=1,
+            default='@OPH_WORKFLOW_ID',
             data_type='integer')
 
         taskname = LiteralInput(
@@ -7301,6 +7304,7 @@ class oph_list(Process):
             abstract="Optional filter on DBMSs. Default is 'all'",
             min_occurs=0,
             max_occurs=1,
+            default="all",
             data_type='integer')
 
         measure_filter = LiteralInput(
@@ -7318,6 +7322,7 @@ class oph_list(Process):
             abstract="Optional filter on operation level (number of transformation applied since import). Default is 'all'",
             min_occurs=0,
             max_occurs=1,
+            default="all",
             data_type='integer')
 
         src_filter = LiteralInput(
@@ -8295,6 +8300,7 @@ class oph_merge(Process):
             identifier="nmerge",
             title="Number of Input Fragments",
             min_occurs=0,
+            max_occurs=1,
             default=0,
             data_type='integer')
 
@@ -8694,7 +8700,8 @@ class oph_mergecubes2(Process):
             identifier="container",
             title="Output container",
             abstract="PID of the container to be used to store the output cube",
-            min_occurs=1,
+            min_occurs=0,
+            max_occurs=1,
             default="-",
             data_type='string')
 
@@ -9575,6 +9582,7 @@ class oph_primitives_list(Process):
             abstract="Id of the specific DBMS instance look up. If no values is specified, then DBMS used will be the first available",
             min_occurs=0,
             max_occurs=1,
+            default="all",
             data_type='integer')
 
         return_type = LiteralInput(
@@ -9980,8 +9988,6 @@ class oph_randcube(Process):
             identifier="nfrag",
             title="Number of fragments per database",
             abstract="Number of fragments per database",
-            min_occurs=0,
-            max_occurs=1,
             data_type='integer')
 
         ntuple = LiteralInput(
@@ -10290,8 +10296,6 @@ class oph_randcube2(Process):
             identifier="nfrag",
             title="Number of fragments per database",
             abstract="Number of fragments per database",
-            min_occurs=0,
-            max_occurs=1,
             data_type='integer')
 
         ntuple = LiteralInput(
@@ -11940,6 +11944,7 @@ class oph_set(Process):
             abstract="Workflow identifier. By default the hosting workflow is selected. The target workflow must have been subitted the same session. Default value is @OPH_WORKFLOW_ID",
             min_occurs=0,
             max_occurs=1,
+            default='@OPH_WORKFLOW_ID',
             data_type='integer')
 
         key = LiteralInput(
