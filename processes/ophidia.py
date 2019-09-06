@@ -309,18 +309,18 @@ class oph_aggregate(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -543,18 +543,18 @@ class oph_aggregate2(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -807,18 +807,18 @@ class oph_apply(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -978,14 +978,14 @@ class oph_b2drop(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -1111,14 +1111,14 @@ class oph_cancel(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -1272,14 +1272,14 @@ class oph_cluster(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -1542,14 +1542,14 @@ class oph_concatnc(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -1823,14 +1823,14 @@ class oph_concatnc2(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -1963,14 +1963,14 @@ class oph_containerschema(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -2232,14 +2232,14 @@ class oph_createcontainer(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -2386,14 +2386,14 @@ class oph_cubeelements(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -2530,14 +2530,14 @@ class oph_cubeio(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -2762,14 +2762,14 @@ class oph_cubeschema(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -2927,14 +2927,14 @@ class oph_cubesize(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -3077,18 +3077,18 @@ class oph_delete(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -3254,14 +3254,14 @@ class oph_deletecontainer(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -3426,18 +3426,18 @@ class oph_drilldown(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -3602,18 +3602,18 @@ class oph_duplicate(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -3893,14 +3893,14 @@ class oph_explorecube(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -4257,14 +4257,14 @@ class oph_explorenc(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -4464,14 +4464,14 @@ class oph_exportnc(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -4673,14 +4673,14 @@ class oph_exportnc2(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -4824,14 +4824,14 @@ class oph_folder(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -5026,14 +5026,14 @@ class oph_fs(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -5152,14 +5152,14 @@ class oph_get_config(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -5299,14 +5299,14 @@ class oph_hierarchy(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -5624,14 +5624,14 @@ class oph_importfits(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -6097,14 +6097,14 @@ class oph_importnc(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -6581,14 +6581,14 @@ class oph_importnc2(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -6751,14 +6751,14 @@ class oph_input(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -6975,14 +6975,14 @@ class oph_instances(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -7175,18 +7175,18 @@ class oph_intercube(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -7433,14 +7433,14 @@ class oph_list(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -7602,14 +7602,14 @@ class oph_log_info(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -7893,14 +7893,14 @@ class oph_loggingbk(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -8048,14 +8048,14 @@ class oph_man(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -8214,14 +8214,14 @@ class oph_manage_session(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -8385,18 +8385,18 @@ class oph_merge(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -8583,18 +8583,18 @@ class oph_mergecubes(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -8781,18 +8781,18 @@ class oph_mergecubes2(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -9029,14 +9029,14 @@ class oph_metadata(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -9169,14 +9169,14 @@ class oph_movecontainer(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -9316,14 +9316,14 @@ class oph_operators_list(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -9495,18 +9495,18 @@ class oph_permute(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -9690,14 +9690,14 @@ class oph_primitives_list(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -9877,14 +9877,14 @@ class oph_publish(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -10176,14 +10176,14 @@ class oph_randcube(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -10486,14 +10486,14 @@ class oph_randcube2(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -10707,18 +10707,18 @@ class oph_reduce(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -10951,18 +10951,18 @@ class oph_reduce2(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -11168,14 +11168,14 @@ class oph_resume(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -11351,18 +11351,18 @@ class oph_rollup(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -11542,18 +11542,18 @@ class oph_script(Process):
         oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
-        LOGGER.debug("Submit the query")
+        LOGGER.debug("Submit the query: " + query)
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -11723,14 +11723,14 @@ class oph_search(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -11860,14 +11860,14 @@ class oph_service(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -12027,14 +12027,14 @@ class oph_set(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -12200,14 +12200,14 @@ class oph_showgrid(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -12384,14 +12384,14 @@ class oph_split(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -12614,14 +12614,14 @@ class oph_subset(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -12834,14 +12834,14 @@ class oph_subset2(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -13011,14 +13011,14 @@ class oph_tasks(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -13144,14 +13144,14 @@ class oph_unpublish(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
@@ -13347,14 +13347,14 @@ class oph_wait(Process):
         oph_client.submit(query)
 
         LOGGER.debug("Get the return values")
-        response = oph_client.last_response
+        last_response = oph_client.last_response
         jobid = oph_client.last_jobid
         return_value = oph_client.last_return_value
         error = oph_client.last_error
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % response)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
