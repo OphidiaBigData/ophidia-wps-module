@@ -3178,7 +3178,7 @@ class oph_deletecontainer(Process):
             abstract="Name of the container to be removed",
             data_type='string')
 
-        force = LiteralInput(
+        container_pid = LiteralInput(
             identifier="container_pid",
             title="Container PID",
             abstract="PID of the input container. If it is set, arguments 'container' and 'cwd' are negleted",
@@ -3202,7 +3202,7 @@ class oph_deletecontainer(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, force, cwd, container, force]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, force, cwd, container, container_pid]
         outputs = [jobid, response, error]
 
         super(oph_deletecontainer, self).__init__(
