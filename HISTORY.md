@@ -5,6 +5,9 @@
 
 - New parameter 'cubes' to OPH_INTERCUBE
 
+### Changed:
+
+- Name of parameter 'return' to 'return_code'
 
 ## v1.1.0 - 2019-01-24
 

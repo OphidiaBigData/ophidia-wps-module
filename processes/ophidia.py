@@ -71,7 +71,7 @@ class OphExecuteMainProcess(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -255,7 +255,7 @@ class oph_aggregate(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -481,7 +481,7 @@ class oph_aggregate2(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -734,7 +734,7 @@ class oph_apply(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -913,7 +913,7 @@ class oph_b2drop(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -1047,7 +1047,7 @@ class oph_cancel(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -1197,7 +1197,7 @@ class oph_cluster(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -1442,7 +1442,7 @@ class oph_concatnc(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -1715,7 +1715,7 @@ class oph_concatnc2(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -1876,7 +1876,7 @@ class oph_containerschema(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -2116,7 +2116,7 @@ class oph_createcontainer(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -2285,7 +2285,7 @@ class oph_cubeelements(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -2426,7 +2426,7 @@ class oph_cubeio(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -2637,7 +2637,7 @@ class oph_cubeschema(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -2809,7 +2809,7 @@ class oph_cubesize(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -2960,7 +2960,7 @@ class oph_delete(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -3125,7 +3125,7 @@ class oph_deletecontainer(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -3295,7 +3295,7 @@ class oph_drilldown(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -3466,7 +3466,7 @@ class oph_duplicate(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -3727,7 +3727,7 @@ class oph_explorecube(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -4068,7 +4068,7 @@ class oph_explorenc(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -4300,7 +4300,7 @@ class oph_exportnc(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -4504,7 +4504,7 @@ class oph_exportnc2(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -4661,7 +4661,7 @@ class oph_folder(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -4849,7 +4849,7 @@ class oph_fs(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -4984,7 +4984,7 @@ class oph_get_config(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -5122,7 +5122,7 @@ class oph_hierarchy(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -5408,7 +5408,7 @@ class oph_importfits(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -5848,7 +5848,7 @@ class oph_importnc(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -6324,7 +6324,7 @@ class oph_importnc2(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -6547,7 +6547,7 @@ class oph_input(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -6756,7 +6756,7 @@ class oph_instances(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -6956,7 +6956,7 @@ class oph_intercube(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -7197,7 +7197,7 @@ class oph_list(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -7377,7 +7377,7 @@ class oph_log_info(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -7640,7 +7640,7 @@ class oph_loggingbk(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -7814,7 +7814,7 @@ class oph_man(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -7973,7 +7973,7 @@ class oph_manage_session(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -8140,7 +8140,7 @@ class oph_merge(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -8329,7 +8329,7 @@ class oph_mergecubes(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -8521,7 +8521,7 @@ class oph_mergecubes2(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -8751,7 +8751,7 @@ class oph_metadata(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -8905,7 +8905,7 @@ class oph_movecontainer(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -9046,7 +9046,7 @@ class oph_operators_list(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -9217,7 +9217,7 @@ class oph_permute(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -9402,7 +9402,7 @@ class oph_primitives_list(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -9584,7 +9584,7 @@ class oph_publish(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -9861,7 +9861,7 @@ class oph_randcube(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -10165,7 +10165,7 @@ class oph_randcube2(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -10398,7 +10398,7 @@ class oph_reduce(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -10634,7 +10634,7 @@ class oph_reduce2(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -10848,7 +10848,7 @@ class oph_resume(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -11034,7 +11034,7 @@ class oph_rollup(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -11220,7 +11220,7 @@ class oph_script(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -11394,7 +11394,7 @@ class oph_search(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -11534,7 +11534,7 @@ class oph_service(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -11690,7 +11690,7 @@ class oph_set(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -11857,7 +11857,7 @@ class oph_showgrid(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -12033,7 +12033,7 @@ class oph_split(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -12250,7 +12250,7 @@ class oph_subset(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -12467,7 +12467,7 @@ class oph_subset2(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -12647,7 +12647,7 @@ class oph_tasks(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -12783,7 +12783,7 @@ class oph_unpublish(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
@@ -12969,7 +12969,7 @@ class oph_wait(WPSProcess):
             formats=[{"mimeType": "text/json", "encoding": "base64"}, {"mimeType": "text/plain", "encoding": "utf-8"}])
 
         self.error = self.addLiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             type=type(1))
 
