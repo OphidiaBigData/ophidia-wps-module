@@ -7,8 +7,8 @@
 
 ### Changed:
 
+- Name of parameter 'return' to 'return_code'
 - Process format for PyWPS 4
-
 
 ## v1.1.0 - 2019-01-24
 

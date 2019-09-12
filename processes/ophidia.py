@@ -64,7 +64,7 @@ class OphExecuteMain(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            'return',
+            'return_code',
             'Return code',
             data_type='integer')
 
@@ -91,7 +91,7 @@ class OphExecuteMain(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         buffer = request.inputs['request'][0].data
 
@@ -110,7 +110,7 @@ class OphExecuteMain(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -250,7 +250,7 @@ class oph_aggregate(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -275,7 +275,7 @@ class oph_aggregate(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -325,7 +325,7 @@ class oph_aggregate(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -481,7 +481,7 @@ class oph_aggregate2(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -506,7 +506,7 @@ class oph_aggregate2(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -559,7 +559,7 @@ class oph_aggregate2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -739,7 +739,7 @@ class oph_apply(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -764,7 +764,7 @@ class oph_apply(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -823,7 +823,7 @@ class oph_apply(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -923,7 +923,7 @@ class oph_b2drop(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -948,7 +948,7 @@ class oph_b2drop(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -990,7 +990,7 @@ class oph_b2drop(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -1063,7 +1063,7 @@ class oph_cancel(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -1088,7 +1088,7 @@ class oph_cancel(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -1123,7 +1123,7 @@ class oph_cancel(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -1218,7 +1218,7 @@ class oph_cluster(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -1243,7 +1243,7 @@ class oph_cluster(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -1284,7 +1284,7 @@ class oph_cluster(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -1468,7 +1468,7 @@ class oph_concatnc(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -1494,7 +1494,7 @@ class oph_concatnc(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -1554,7 +1554,7 @@ class oph_concatnc(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -1747,7 +1747,7 @@ class oph_concatnc2(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -1773,7 +1773,7 @@ class oph_concatnc2(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -1835,7 +1835,7 @@ class oph_concatnc2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -1914,7 +1914,7 @@ class oph_containerschema(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -1939,7 +1939,7 @@ class oph_containerschema(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -1975,7 +1975,7 @@ class oph_containerschema(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -2159,7 +2159,7 @@ class oph_createcontainer(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -2185,7 +2185,7 @@ class oph_createcontainer(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -2244,7 +2244,7 @@ class oph_createcontainer(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -2334,7 +2334,7 @@ class oph_cubeelements(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -2359,7 +2359,7 @@ class oph_cubeelements(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -2398,7 +2398,7 @@ class oph_cubeelements(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -2480,7 +2480,7 @@ class oph_cubeio(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -2505,7 +2505,7 @@ class oph_cubeio(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -2542,7 +2542,7 @@ class oph_cubeio(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -2696,7 +2696,7 @@ class oph_cubeschema(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -2721,7 +2721,7 @@ class oph_cubeschema(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -2774,7 +2774,7 @@ class oph_cubeschema(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -2873,7 +2873,7 @@ class oph_cubesize(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -2898,7 +2898,7 @@ class oph_cubesize(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -2939,7 +2939,7 @@ class oph_cubesize(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -3029,7 +3029,7 @@ class oph_delete(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -3054,7 +3054,7 @@ class oph_delete(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -3093,7 +3093,7 @@ class oph_delete(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -3199,7 +3199,7 @@ class oph_deletecontainer(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -3224,7 +3224,7 @@ class oph_deletecontainer(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -3266,7 +3266,7 @@ class oph_deletecontainer(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -3374,7 +3374,7 @@ class oph_drilldown(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -3399,7 +3399,7 @@ class oph_drilldown(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -3442,7 +3442,7 @@ class oph_drilldown(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -3550,7 +3550,7 @@ class oph_duplicate(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -3575,7 +3575,7 @@ class oph_duplicate(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -3618,7 +3618,7 @@ class oph_duplicate(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -3816,7 +3816,7 @@ class oph_explorecube(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -3842,7 +3842,7 @@ class oph_explorecube(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -3905,7 +3905,7 @@ class oph_explorecube(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -4166,7 +4166,7 @@ class oph_explorenc(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -4192,7 +4192,7 @@ class oph_explorenc(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -4269,7 +4269,7 @@ class oph_explorenc(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -4402,7 +4402,7 @@ class oph_exportnc(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -4427,7 +4427,7 @@ class oph_exportnc(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -4476,7 +4476,7 @@ class oph_exportnc(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -4611,7 +4611,7 @@ class oph_exportnc2(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -4636,7 +4636,7 @@ class oph_exportnc2(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -4685,7 +4685,7 @@ class oph_exportnc2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -4773,7 +4773,7 @@ class oph_folder(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -4798,7 +4798,7 @@ class oph_folder(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -4836,7 +4836,7 @@ class oph_folder(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -4966,7 +4966,7 @@ class oph_fs(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -4991,7 +4991,7 @@ class oph_fs(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -5038,7 +5038,7 @@ class oph_fs(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -5106,7 +5106,7 @@ class oph_get_config(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -5131,7 +5131,7 @@ class oph_get_config(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -5164,7 +5164,7 @@ class oph_get_config(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -5249,7 +5249,7 @@ class oph_hierarchy(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -5274,7 +5274,7 @@ class oph_hierarchy(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -5311,7 +5311,7 @@ class oph_hierarchy(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -5540,7 +5540,7 @@ class oph_importfits(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -5566,7 +5566,7 @@ class oph_importfits(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -5636,7 +5636,7 @@ class oph_importfits(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -5986,7 +5986,7 @@ class oph_importnc(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -6012,7 +6012,7 @@ class oph_importnc(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -6109,7 +6109,7 @@ class oph_importnc(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -6468,7 +6468,7 @@ class oph_importnc2(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -6494,7 +6494,7 @@ class oph_importnc2(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -6593,7 +6593,7 @@ class oph_importnc2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -6697,7 +6697,7 @@ class oph_input(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -6722,7 +6722,7 @@ class oph_input(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -6763,7 +6763,7 @@ class oph_input(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -6911,7 +6911,7 @@ class oph_instances(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -6936,7 +6936,7 @@ class oph_instances(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -6987,7 +6987,7 @@ class oph_instances(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -7116,7 +7116,7 @@ class oph_intercube(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -7141,7 +7141,7 @@ class oph_intercube(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -7191,7 +7191,7 @@ class oph_intercube(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -7363,7 +7363,7 @@ class oph_list(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -7388,7 +7388,7 @@ class oph_list(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -7445,7 +7445,7 @@ class oph_list(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -7548,7 +7548,7 @@ class oph_log_info(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -7573,7 +7573,7 @@ class oph_log_info(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -7614,7 +7614,7 @@ class oph_log_info(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -7816,7 +7816,7 @@ class oph_loggingbk(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -7842,7 +7842,7 @@ class oph_loggingbk(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -7905,7 +7905,7 @@ class oph_loggingbk(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -7996,7 +7996,7 @@ class oph_man(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -8021,7 +8021,7 @@ class oph_man(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -8060,7 +8060,7 @@ class oph_man(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -8160,7 +8160,7 @@ class oph_manage_session(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -8185,7 +8185,7 @@ class oph_manage_session(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -8226,7 +8226,7 @@ class oph_manage_session(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -8333,7 +8333,7 @@ class oph_merge(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -8358,7 +8358,7 @@ class oph_merge(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -8401,7 +8401,7 @@ class oph_merge(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -8527,7 +8527,7 @@ class oph_mergecubes(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -8552,7 +8552,7 @@ class oph_mergecubes(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -8599,7 +8599,7 @@ class oph_mergecubes(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -8725,7 +8725,7 @@ class oph_mergecubes2(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -8750,7 +8750,7 @@ class oph_mergecubes2(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -8797,7 +8797,7 @@ class oph_mergecubes2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -8960,7 +8960,7 @@ class oph_metadata(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -8986,7 +8986,7 @@ class oph_metadata(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -9041,7 +9041,7 @@ class oph_metadata(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -9120,7 +9120,7 @@ class oph_movecontainer(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -9145,7 +9145,7 @@ class oph_movecontainer(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -9181,7 +9181,7 @@ class oph_movecontainer(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -9266,7 +9266,7 @@ class oph_operators_list(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -9291,7 +9291,7 @@ class oph_operators_list(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -9328,7 +9328,7 @@ class oph_operators_list(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -9442,7 +9442,7 @@ class oph_permute(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -9467,7 +9467,7 @@ class oph_permute(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -9511,7 +9511,7 @@ class oph_permute(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -9632,7 +9632,7 @@ class oph_primitives_list(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -9657,7 +9657,7 @@ class oph_primitives_list(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -9702,7 +9702,7 @@ class oph_primitives_list(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -9819,7 +9819,7 @@ class oph_publish(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -9844,7 +9844,7 @@ class oph_publish(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -9889,7 +9889,7 @@ class oph_publish(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -10099,7 +10099,7 @@ class oph_randcube(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -10125,7 +10125,7 @@ class oph_randcube(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -10188,7 +10188,7 @@ class oph_randcube(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -10407,7 +10407,7 @@ class oph_randcube2(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -10433,7 +10433,7 @@ class oph_randcube2(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -10498,7 +10498,7 @@ class oph_randcube2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -10646,7 +10646,7 @@ class oph_reduce(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -10671,7 +10671,7 @@ class oph_reduce(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -10723,7 +10723,7 @@ class oph_reduce(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -10887,7 +10887,7 @@ class oph_reduce2(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -10912,7 +10912,7 @@ class oph_reduce2(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -10967,7 +10967,7 @@ class oph_reduce2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -11106,7 +11106,7 @@ class oph_resume(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -11131,7 +11131,7 @@ class oph_resume(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -11180,7 +11180,7 @@ class oph_resume(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -11297,7 +11297,7 @@ class oph_rollup(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -11322,7 +11322,7 @@ class oph_rollup(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -11367,7 +11367,7 @@ class oph_rollup(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -11488,7 +11488,7 @@ class oph_script(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -11513,7 +11513,7 @@ class oph_script(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -11558,7 +11558,7 @@ class oph_script(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -11667,7 +11667,7 @@ class oph_search(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -11692,7 +11692,7 @@ class oph_search(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -11735,7 +11735,7 @@ class oph_search(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -11812,7 +11812,7 @@ class oph_service(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -11837,7 +11837,7 @@ class oph_service(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -11872,7 +11872,7 @@ class oph_service(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -11973,7 +11973,7 @@ class oph_set(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -11998,7 +11998,7 @@ class oph_set(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -12039,7 +12039,7 @@ class oph_set(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -12145,7 +12145,7 @@ class oph_showgrid(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -12170,7 +12170,7 @@ class oph_showgrid(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -12212,7 +12212,7 @@ class oph_showgrid(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -12326,7 +12326,7 @@ class oph_split(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -12351,7 +12351,7 @@ class oph_split(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -12396,7 +12396,7 @@ class oph_split(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -12548,7 +12548,7 @@ class oph_subset(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -12573,7 +12573,7 @@ class oph_subset(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -12626,7 +12626,7 @@ class oph_subset(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -12770,7 +12770,7 @@ class oph_subset2(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -12795,7 +12795,7 @@ class oph_subset2(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -12846,7 +12846,7 @@ class oph_subset2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -12955,7 +12955,7 @@ class oph_tasks(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -12980,7 +12980,7 @@ class oph_tasks(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -13023,7 +13023,7 @@ class oph_tasks(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -13096,7 +13096,7 @@ class oph_unpublish(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -13121,7 +13121,7 @@ class oph_unpublish(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -13156,7 +13156,7 @@ class oph_unpublish(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -13287,7 +13287,7 @@ class oph_wait(Process):
             supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
 
         error = LiteralOutput(
-            identifier="return",
+            identifier="return_code",
             title="Return code",
             data_type='integer')
 
@@ -13312,7 +13312,7 @@ class oph_wait(Process):
 
         response.outputs['jobid'].data = ""
         response.outputs['response'].data = ""
-        response.outputs['return'].data = 1
+        response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
 
@@ -13359,7 +13359,7 @@ class oph_wait(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return'].data = return_value
+        response.outputs['return_code'].data = return_value
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
@@ -13369,3 +13369,4 @@ class oph_wait(Process):
         response.update_status("Succeded", 100)
 
         return response
+
