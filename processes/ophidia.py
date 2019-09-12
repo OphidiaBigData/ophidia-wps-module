@@ -329,8 +329,8 @@ class oph_aggregate(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -563,8 +563,8 @@ class oph_aggregate2(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -827,8 +827,8 @@ class oph_apply(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -994,8 +994,8 @@ class oph_b2drop(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -1127,8 +1127,8 @@ class oph_cancel(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -1288,8 +1288,8 @@ class oph_cluster(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -1558,8 +1558,8 @@ class oph_concatnc(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -1839,8 +1839,8 @@ class oph_concatnc2(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -1979,8 +1979,8 @@ class oph_containerschema(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -2248,8 +2248,8 @@ class oph_createcontainer(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -2402,8 +2402,8 @@ class oph_cubeelements(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -2546,8 +2546,8 @@ class oph_cubeio(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -2778,8 +2778,8 @@ class oph_cubeschema(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -2943,8 +2943,8 @@ class oph_cubesize(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -3097,8 +3097,8 @@ class oph_delete(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -3270,8 +3270,8 @@ class oph_deletecontainer(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -3446,8 +3446,8 @@ class oph_drilldown(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -3622,8 +3622,8 @@ class oph_duplicate(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -3909,8 +3909,8 @@ class oph_explorecube(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -4273,8 +4273,8 @@ class oph_explorenc(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -4480,8 +4480,8 @@ class oph_exportnc(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -4689,8 +4689,8 @@ class oph_exportnc2(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -4840,8 +4840,8 @@ class oph_folder(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -5042,8 +5042,8 @@ class oph_fs(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -5168,8 +5168,8 @@ class oph_get_config(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -5315,8 +5315,8 @@ class oph_hierarchy(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -5640,8 +5640,8 @@ class oph_importfits(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -6113,8 +6113,8 @@ class oph_importnc(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -6597,8 +6597,8 @@ class oph_importnc2(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -6767,8 +6767,8 @@ class oph_input(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -6991,8 +6991,8 @@ class oph_instances(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -7195,8 +7195,8 @@ class oph_intercube(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -7449,8 +7449,8 @@ class oph_list(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -7618,8 +7618,8 @@ class oph_log_info(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -7909,8 +7909,8 @@ class oph_loggingbk(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -8064,8 +8064,8 @@ class oph_man(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -8230,8 +8230,8 @@ class oph_manage_session(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -8405,8 +8405,8 @@ class oph_merge(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -8603,8 +8603,8 @@ class oph_mergecubes(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -8801,8 +8801,8 @@ class oph_mergecubes2(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -9045,8 +9045,8 @@ class oph_metadata(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -9185,8 +9185,8 @@ class oph_movecontainer(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -9332,8 +9332,8 @@ class oph_operators_list(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -9515,8 +9515,8 @@ class oph_permute(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -9706,8 +9706,8 @@ class oph_primitives_list(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -9893,8 +9893,8 @@ class oph_publish(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -10192,8 +10192,8 @@ class oph_randcube(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -10502,8 +10502,8 @@ class oph_randcube2(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -10727,8 +10727,8 @@ class oph_reduce(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -10971,8 +10971,8 @@ class oph_reduce2(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -11184,8 +11184,8 @@ class oph_resume(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -11371,8 +11371,8 @@ class oph_rollup(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -11562,8 +11562,8 @@ class oph_script(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -11739,8 +11739,8 @@ class oph_search(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -11876,8 +11876,8 @@ class oph_service(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -12043,8 +12043,8 @@ class oph_set(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -12216,8 +12216,8 @@ class oph_showgrid(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -12400,8 +12400,8 @@ class oph_split(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -12630,8 +12630,8 @@ class oph_subset(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -12850,8 +12850,8 @@ class oph_subset2(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -13027,8 +13027,8 @@ class oph_tasks(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -13160,8 +13160,8 @@ class oph_unpublish(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
@@ -13363,10 +13363,9 @@ class oph_wait(Process):
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs['response'].data = last_response
 
         response.update_status("Succeded", 100)
 
         return response
-
