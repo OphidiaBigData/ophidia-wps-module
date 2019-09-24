@@ -51,7 +51,7 @@ class OphExecuteMain(Process):
         request = ComplexInput(
             'request',
             'JSON Request',
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='base64'), Format('application/json', encoding='utf-8')])
 
         jobid = LiteralOutput(
             'jobid',
@@ -61,7 +61,7 @@ class OphExecuteMain(Process):
         response = ComplexOutput(
             'response',
             'JSON Response',
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='base64'), Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             'return_code',
@@ -90,7 +90,6 @@ class OphExecuteMain(Process):
         LOGGER.debug("Incoming a request with format %s" % request.inputs['request'][0].data_format.encoding)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         buffer = request.inputs['request'][0].data
@@ -101,21 +100,23 @@ class OphExecuteMain(Process):
 
         LOGGER.debug("Execute the job")
 
-        buffer, jobid, new_session, return_value, error = _ophsubmit.submit(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port, buffer)
+        last_response, jobid, new_session, return_value, error = _ophsubmit.submit(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port, buffer)
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
-        LOGGER.debug("Response: %s" % buffer)
+        LOGGER.debug("Response: %s" % last_response)
         LOGGER.debug("Error message: %s" % error)
 
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
-            if len(buffer) > 0:
-                response.outputs['response'].data = buffer
+            if len(last_response) > 0:
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -247,7 +248,7 @@ class oph_aggregate(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -274,7 +275,6 @@ class oph_aggregate(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -326,11 +326,13 @@ class oph_aggregate(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -478,7 +480,7 @@ class oph_aggregate2(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -505,7 +507,6 @@ class oph_aggregate2(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -560,11 +561,13 @@ class oph_aggregate2(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -736,7 +739,7 @@ class oph_apply(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -763,7 +766,6 @@ class oph_apply(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -824,11 +826,13 @@ class oph_apply(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -920,7 +924,7 @@ class oph_b2drop(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -947,7 +951,6 @@ class oph_b2drop(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -991,11 +994,13 @@ class oph_b2drop(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1060,7 +1065,7 @@ class oph_cancel(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -1087,7 +1092,6 @@ class oph_cancel(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -1124,11 +1128,13 @@ class oph_cancel(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1215,7 +1221,7 @@ class oph_cluster(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -1242,7 +1248,6 @@ class oph_cluster(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -1285,11 +1290,13 @@ class oph_cluster(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1465,7 +1472,7 @@ class oph_concatnc(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -1493,7 +1500,6 @@ class oph_concatnc(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -1555,11 +1561,13 @@ class oph_concatnc(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1744,7 +1752,7 @@ class oph_concatnc2(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -1772,7 +1780,6 @@ class oph_concatnc2(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -1836,11 +1843,13 @@ class oph_concatnc2(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1911,7 +1920,7 @@ class oph_containerschema(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -1938,7 +1947,6 @@ class oph_containerschema(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -1976,11 +1984,13 @@ class oph_containerschema(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2156,7 +2166,7 @@ class oph_createcontainer(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -2184,7 +2194,6 @@ class oph_createcontainer(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -2245,11 +2254,13 @@ class oph_createcontainer(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2331,7 +2342,7 @@ class oph_cubeelements(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -2358,7 +2369,6 @@ class oph_cubeelements(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -2399,11 +2409,13 @@ class oph_cubeelements(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2477,7 +2489,7 @@ class oph_cubeio(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -2504,7 +2516,6 @@ class oph_cubeio(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -2543,11 +2554,13 @@ class oph_cubeio(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2693,7 +2706,7 @@ class oph_cubeschema(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -2720,7 +2733,6 @@ class oph_cubeschema(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -2775,11 +2787,13 @@ class oph_cubeschema(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2870,7 +2884,7 @@ class oph_cubesize(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -2897,7 +2911,6 @@ class oph_cubesize(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -2940,11 +2953,13 @@ class oph_cubesize(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3026,7 +3041,7 @@ class oph_delete(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -3053,7 +3068,6 @@ class oph_delete(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -3094,11 +3108,13 @@ class oph_delete(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3196,7 +3212,7 @@ class oph_deletecontainer(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -3223,7 +3239,6 @@ class oph_deletecontainer(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -3267,11 +3282,13 @@ class oph_deletecontainer(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3371,7 +3388,7 @@ class oph_drilldown(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -3398,7 +3415,6 @@ class oph_drilldown(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -3443,11 +3459,13 @@ class oph_drilldown(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3547,7 +3565,7 @@ class oph_duplicate(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -3574,7 +3592,6 @@ class oph_duplicate(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -3619,11 +3636,13 @@ class oph_duplicate(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3813,7 +3832,7 @@ class oph_explorecube(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -3841,7 +3860,6 @@ class oph_explorecube(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -3906,11 +3924,13 @@ class oph_explorecube(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4163,7 +4183,7 @@ class oph_explorenc(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -4191,7 +4211,6 @@ class oph_explorenc(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -4270,11 +4289,13 @@ class oph_explorenc(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4399,7 +4420,7 @@ class oph_exportnc(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -4426,7 +4447,6 @@ class oph_exportnc(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -4477,11 +4497,13 @@ class oph_exportnc(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4608,7 +4630,7 @@ class oph_exportnc2(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -4635,7 +4657,6 @@ class oph_exportnc2(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -4686,11 +4707,13 @@ class oph_exportnc2(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4770,7 +4793,7 @@ class oph_folder(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -4797,7 +4820,6 @@ class oph_folder(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -4837,11 +4859,13 @@ class oph_folder(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4963,7 +4987,7 @@ class oph_fs(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -4990,7 +5014,6 @@ class oph_fs(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -5039,11 +5062,13 @@ class oph_fs(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5103,7 +5128,7 @@ class oph_get_config(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -5130,7 +5155,6 @@ class oph_get_config(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -5165,11 +5189,13 @@ class oph_get_config(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5246,7 +5272,7 @@ class oph_hierarchy(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -5273,7 +5299,6 @@ class oph_hierarchy(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -5312,11 +5337,13 @@ class oph_hierarchy(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5537,7 +5564,7 @@ class oph_importfits(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -5565,7 +5592,6 @@ class oph_importfits(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -5637,11 +5663,13 @@ class oph_importfits(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5983,7 +6011,7 @@ class oph_importnc(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -6011,7 +6039,6 @@ class oph_importnc(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -6110,11 +6137,13 @@ class oph_importnc(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -6465,7 +6494,7 @@ class oph_importnc2(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -6493,7 +6522,6 @@ class oph_importnc2(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -6594,11 +6622,13 @@ class oph_importnc2(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -6694,7 +6724,7 @@ class oph_input(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -6721,7 +6751,6 @@ class oph_input(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -6764,11 +6793,13 @@ class oph_input(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -6908,7 +6939,7 @@ class oph_instances(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -6935,7 +6966,6 @@ class oph_instances(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -6988,11 +7018,13 @@ class oph_instances(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7113,7 +7145,7 @@ class oph_intercube(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -7140,7 +7172,6 @@ class oph_intercube(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -7192,11 +7223,13 @@ class oph_intercube(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7360,7 +7393,7 @@ class oph_list(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -7387,7 +7420,6 @@ class oph_list(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -7446,11 +7478,13 @@ class oph_list(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7545,7 +7579,7 @@ class oph_log_info(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -7572,7 +7606,6 @@ class oph_log_info(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -7615,11 +7648,13 @@ class oph_log_info(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7813,7 +7848,7 @@ class oph_loggingbk(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -7841,7 +7876,6 @@ class oph_loggingbk(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -7906,11 +7940,13 @@ class oph_loggingbk(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7993,7 +8029,7 @@ class oph_man(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -8020,7 +8056,6 @@ class oph_man(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -8061,11 +8096,13 @@ class oph_man(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8157,7 +8194,7 @@ class oph_manage_session(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -8184,7 +8221,6 @@ class oph_manage_session(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -8227,11 +8263,13 @@ class oph_manage_session(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8330,7 +8368,7 @@ class oph_merge(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -8357,7 +8395,6 @@ class oph_merge(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -8402,11 +8439,13 @@ class oph_merge(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8524,7 +8563,7 @@ class oph_mergecubes(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -8551,7 +8590,6 @@ class oph_mergecubes(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -8600,11 +8638,13 @@ class oph_mergecubes(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8722,7 +8762,7 @@ class oph_mergecubes2(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -8749,7 +8789,6 @@ class oph_mergecubes2(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -8798,11 +8837,13 @@ class oph_mergecubes2(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8957,7 +8998,7 @@ class oph_metadata(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -8985,7 +9026,6 @@ class oph_metadata(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -9042,11 +9082,13 @@ class oph_metadata(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9117,7 +9159,7 @@ class oph_movecontainer(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -9144,7 +9186,6 @@ class oph_movecontainer(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -9182,11 +9223,13 @@ class oph_movecontainer(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9263,7 +9306,7 @@ class oph_operators_list(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -9290,7 +9333,6 @@ class oph_operators_list(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -9329,11 +9371,13 @@ class oph_operators_list(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9439,7 +9483,7 @@ class oph_permute(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -9466,7 +9510,6 @@ class oph_permute(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -9512,11 +9555,13 @@ class oph_permute(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9629,7 +9674,7 @@ class oph_primitives_list(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -9656,7 +9701,6 @@ class oph_primitives_list(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -9703,11 +9747,13 @@ class oph_primitives_list(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9816,7 +9862,7 @@ class oph_publish(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -9843,7 +9889,6 @@ class oph_publish(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -9890,11 +9935,13 @@ class oph_publish(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -10096,7 +10143,7 @@ class oph_randcube(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -10124,7 +10171,6 @@ class oph_randcube(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -10189,11 +10235,13 @@ class oph_randcube(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -10404,7 +10452,7 @@ class oph_randcube2(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -10432,7 +10480,6 @@ class oph_randcube2(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -10499,11 +10546,13 @@ class oph_randcube2(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -10643,7 +10692,7 @@ class oph_reduce(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -10670,7 +10719,6 @@ class oph_reduce(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -10724,11 +10772,13 @@ class oph_reduce(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -10884,7 +10934,7 @@ class oph_reduce2(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -10911,7 +10961,6 @@ class oph_reduce2(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -10968,11 +11017,13 @@ class oph_reduce2(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11103,7 +11154,7 @@ class oph_resume(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -11130,7 +11181,6 @@ class oph_resume(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -11181,11 +11231,13 @@ class oph_resume(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11294,7 +11346,7 @@ class oph_rollup(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -11321,7 +11373,6 @@ class oph_rollup(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -11368,11 +11419,13 @@ class oph_rollup(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11485,7 +11538,7 @@ class oph_script(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -11512,7 +11565,6 @@ class oph_script(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -11559,11 +11611,13 @@ class oph_script(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11664,7 +11718,7 @@ class oph_search(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -11691,7 +11745,6 @@ class oph_search(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -11736,11 +11789,13 @@ class oph_search(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11809,7 +11864,7 @@ class oph_service(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -11836,7 +11891,6 @@ class oph_service(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -11873,11 +11927,13 @@ class oph_service(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11970,7 +12026,7 @@ class oph_set(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -11997,7 +12053,6 @@ class oph_set(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -12040,11 +12095,13 @@ class oph_set(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12142,7 +12199,7 @@ class oph_showgrid(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -12169,7 +12226,6 @@ class oph_showgrid(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -12213,11 +12269,13 @@ class oph_showgrid(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12323,7 +12381,7 @@ class oph_split(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -12350,7 +12408,6 @@ class oph_split(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -12397,11 +12454,13 @@ class oph_split(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12545,7 +12604,7 @@ class oph_subset(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -12572,7 +12631,6 @@ class oph_subset(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -12627,11 +12685,13 @@ class oph_subset(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12767,7 +12827,7 @@ class oph_subset2(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -12794,7 +12854,6 @@ class oph_subset2(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -12847,11 +12906,13 @@ class oph_subset2(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12952,7 +13013,7 @@ class oph_tasks(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -12979,7 +13040,6 @@ class oph_tasks(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -13024,11 +13084,13 @@ class oph_tasks(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -13093,7 +13155,7 @@ class oph_unpublish(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -13120,7 +13182,6 @@ class oph_unpublish(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -13157,11 +13218,13 @@ class oph_unpublish(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -13284,7 +13347,7 @@ class oph_wait(Process):
         response = ComplexOutput(
             identifier="response",
             title="JSON Response",
-            supported_formats=[Format('text/json', encoding='base64'), Format('text/plain', encoding='utf-8')])
+            supported_formats=[Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
             identifier="return_code",
@@ -13311,7 +13374,6 @@ class oph_wait(Process):
         response.update_status("Pre-processing", 1)
 
         response.outputs['jobid'].data = ""
-        response.outputs['response'].data = ""
         response.outputs['return_code'].data = 1
 
         response.update_status("Running", 2)
@@ -13360,11 +13422,13 @@ class oph_wait(Process):
         response.update_status("Post-processing", 99)
 
         response.outputs['return_code'].data = return_value
+        response_data = ""
         if return_value == 0:
             if jobid is not None:
                 response.outputs['jobid'].data = jobid
             if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
-                response.outputs['response'].data = last_response
+                response_data = last_response
+        response.outputs['response'].data = response_data
 
         response.update_status("Succeded", 100)
 

@@ -10,6 +10,10 @@
 - Name of parameter 'return' to 'return_code'
 - Process format for PyWPS 4
 
+### Removed:
+
+- Support for 'base64' encoding, except for the process 'ophexecutemain'
+
 ## v1.1.0 - 2019-01-24
 
 ### Fixed:
