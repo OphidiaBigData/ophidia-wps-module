@@ -1,4 +1,14 @@
 
+## v1.2.0 - 2021-03-11
+
+### Added:
+
+- Support for PyWPS 4 [#1](https://github.com/OphidiaBigData/ophidia-wps-module/pull/1)
+
+### Removed:
+
+- Support for PyWPS 3
+
 ## v1.1.1 - 2021-03-11
 
 ### Added:
