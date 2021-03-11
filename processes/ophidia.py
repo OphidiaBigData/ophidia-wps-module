@@ -1,6 +1,6 @@
 #
 #    Ophidia WPS Module
-#    Copyright (C) 2015-2019 CMCC Foundation
+#    Copyright (C) 2015-2021 CMCC Foundation
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ LOGGER = logging.getLogger("PYWPS")
 
 _host = "127.0.0.1"
 _port = 11732
-_version = "2.0.0"
+_version = "1.2.0"
 
 
 class OphExecuteMain(Process):
