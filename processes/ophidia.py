@@ -38,33 +38,51 @@ class OphExecuteMain(Process):
         inputs = []
         outputs = []
 
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
+
         request = ComplexInput(
-            'request',
-            'JSON Request',
+            identifier="request",
+            title="JSON Request",
             supported_formats=[Format('application/json', encoding='base64'), Format('application/json', encoding='utf-8')])
 
         jobid = LiteralOutput(
-            'jobid',
-            'Ophidia JobID',
+            identifier="jobid",
+            title="Ophidia JobID",
             data_type='string')
 
         response = ComplexOutput(
-            'response',
-            'JSON Response',
+            identifier="response",
+            title="JSON Response",
             supported_formats=[Format('application/json', encoding='base64'), Format('application/json', encoding='utf-8')])
 
         error = LiteralOutput(
-            'return_code',
-            'Return code',
+            identifier='return_code',
+            title='Return code',
             data_type='integer')
 
-        inputs = [request]
+        inputs = [userid, passwd, request]
         outputs = [jobid, response, error]
 
         super(OphExecuteMain, self).__init__(
             self._handler,
-            identifier='ophexecutemain',
-            title='Ophidia Execute Main Process',
+            identifier="ophexecutemain",
+            title="Ophidia Execute Main Process",
             abstract="Submit a generic workflow",
             version=_version,
             inputs=inputs,
@@ -90,7 +108,7 @@ class OphExecuteMain(Process):
 
         LOGGER.debug("Execute the job")
 
-        last_response, jobid, new_session, return_value, error = _ophsubmit.submit(_user, _passwd, _host, _port, buffer)
+        last_response, jobid, new_session, return_value, error = _ophsubmit.submit(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port, buffer)
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
@@ -119,6 +137,24 @@ class oph_aggregate(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -233,7 +269,7 @@ class oph_aggregate(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, group_size, missingvalue, schedule, operation]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, group_size, missingvalue, schedule, operation]
         outputs = [jobid, response, error]
 
         super(oph_aggregate, self).__init__(
@@ -284,7 +320,7 @@ class oph_aggregate(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -323,6 +359,24 @@ class oph_aggregate2(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -453,7 +507,7 @@ class oph_aggregate2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, operation, dim, concept_level, midnight, missingvalue]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, operation, dim, concept_level, midnight, missingvalue]
         outputs = [jobid, response, error]
 
         super(oph_aggregate2, self).__init__(
@@ -507,7 +561,7 @@ class oph_aggregate2(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -546,6 +600,24 @@ class oph_apply(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -700,7 +772,7 @@ class oph_apply(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, container, description, schedule, query, dim_query, measure, measure_type, dim_type, check_type, on_reduce, compressed]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, description, schedule, query, dim_query, measure, measure_type, dim_type, check_type, on_reduce, compressed]
         outputs = [jobid, response, error]
 
         super(oph_apply, self).__init__(
@@ -760,7 +832,7 @@ class oph_apply(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -799,6 +871,24 @@ class oph_b2drop(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -873,7 +963,7 @@ class oph_b2drop(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, auth_path, src_path, dest_path, cdd]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, auth_path, src_path, dest_path, cdd]
         outputs = [jobid, response, error]
 
         super(oph_b2drop, self).__init__(
@@ -916,7 +1006,7 @@ class oph_b2drop(Process):
         query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -955,6 +1045,24 @@ class oph_cancel(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -1002,7 +1110,7 @@ class oph_cancel(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, id, type]
+        inputs = [userid, passwd, ncores, exec_mode, id, type]
         outputs = [jobid, response, error]
 
         super(oph_cancel, self).__init__(
@@ -1038,7 +1146,7 @@ class oph_cancel(Process):
         query += 'id=' + str(request.inputs['id'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1077,6 +1185,24 @@ class oph_cluster(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -1146,7 +1272,7 @@ class oph_cluster(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, action, nhost, host_partition, user_filter]
+        inputs = [userid, passwd, ncores, exec_mode, action, nhost, host_partition, user_filter]
         outputs = [jobid, response, error]
 
         super(oph_cluster, self).__init__(
@@ -1188,7 +1314,7 @@ class oph_cluster(Process):
             query += 'user_filter=' + str(request.inputs['user_filter'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1227,6 +1353,24 @@ class oph_concatnc(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -1385,7 +1529,7 @@ class oph_concatnc(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, schedule, src_path, cdd, pid, check_exp_dim,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, schedule, src_path, cdd, pid, check_exp_dim,
             subset_dims, subset_filter, subset_type, time_filter, offset, dim_offset, dim_continue, grid, description]
         outputs = [jobid, response, error]
 
@@ -1447,7 +1591,7 @@ class oph_concatnc(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1486,6 +1630,24 @@ class oph_concatnc2(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -1653,7 +1815,7 @@ class oph_concatnc2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, schedule, src_path, cdd, pid, check_exp_dim,
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, schedule, src_path, cdd, pid, check_exp_dim,
             subset_dims, subset_filter, subset_type, time_filter, offset, dim_offset, dim_continue, grid, description]
         outputs = [jobid, response, error]
 
@@ -1717,7 +1879,7 @@ class oph_concatnc2(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1756,6 +1918,24 @@ class oph_containerschema(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -1809,7 +1989,7 @@ class oph_containerschema(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, cwd, container]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container]
         outputs = [jobid, response, error]
 
         super(oph_containerschema, self).__init__(
@@ -1846,7 +2026,7 @@ class oph_containerschema(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1885,6 +2065,24 @@ class oph_createcontainer(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -2043,7 +2241,7 @@ class oph_createcontainer(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, cwd, container, dim, dim_type, compressed,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, dim, dim_type, compressed,
             hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
         outputs = [jobid, response, error]
 
@@ -2104,7 +2302,7 @@ class oph_createcontainer(Process):
         query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2143,6 +2341,24 @@ class oph_cubeelements(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -2207,7 +2423,7 @@ class oph_cubeelements(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, schedule, sessionid, pid, algorithm]
+        inputs = [userid, passwd, ncores, exec_mode, schedule, sessionid, pid, algorithm]
         outputs = [jobid, response, error]
 
         super(oph_cubeelements, self).__init__(
@@ -2247,7 +2463,7 @@ class oph_cubeelements(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2286,6 +2502,24 @@ class oph_cubeio(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -2342,7 +2576,7 @@ class oph_cubeio(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, branch]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, branch]
         outputs = [jobid, response, error]
 
         super(oph_cubeio, self).__init__(
@@ -2380,7 +2614,7 @@ class oph_cubeio(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2419,6 +2653,24 @@ class oph_cubeschema(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -2547,7 +2799,7 @@ class oph_cubeschema(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, action, level, dim, show_index, show_time, base64, concept_level, dim_level, dim_array]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, action, level, dim, show_index, show_time, base64, concept_level, dim_level, dim_array]
         outputs = [jobid, response, error]
 
         super(oph_cubeschema, self).__init__(
@@ -2601,7 +2853,7 @@ class oph_cubeschema(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2640,6 +2892,24 @@ class oph_cubesize(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -2713,7 +2983,7 @@ class oph_cubesize(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, schedule, pid, byte_unit, algorithm]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, schedule, pid, byte_unit, algorithm]
         outputs = [jobid, response, error]
 
         super(oph_cubesize, self).__init__(
@@ -2755,7 +3025,7 @@ class oph_cubesize(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2794,6 +3064,24 @@ class oph_delete(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -2858,7 +3146,7 @@ class oph_delete(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, schedule]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule]
         outputs = [jobid, response, error]
 
         super(oph_delete, self).__init__(
@@ -2898,7 +3186,7 @@ class oph_delete(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2937,6 +3225,24 @@ class oph_deletecontainer(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -3017,7 +3323,7 @@ class oph_deletecontainer(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, force, cwd, container, container_pid]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, force, cwd, container, container_pid]
         outputs = [jobid, response, error]
 
         super(oph_deletecontainer, self).__init__(
@@ -3060,7 +3366,7 @@ class oph_deletecontainer(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3099,6 +3405,24 @@ class oph_drilldown(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -3181,7 +3505,7 @@ class oph_drilldown(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, schedule, container, description, ndim]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, schedule, container, description, ndim]
         outputs = [jobid, response, error]
 
         super(oph_drilldown, self).__init__(
@@ -3225,7 +3549,7 @@ class oph_drilldown(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3264,6 +3588,24 @@ class oph_duplicate(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -3346,7 +3688,7 @@ class oph_duplicate(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, schedule, container, description]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, container, description]
         outputs = [jobid, response, error]
 
         super(oph_duplicate, self).__init__(
@@ -3390,7 +3732,7 @@ class oph_duplicate(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3429,6 +3771,24 @@ class oph_explorecube(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -3601,7 +3961,7 @@ class oph_explorecube(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, limit_filter, time_filter, show_index, show_id,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, limit_filter, time_filter, show_index, show_id,
             show_time, level, output_path, output_name, cdd, base64, subset_dims, subset_type, subset_filter, schedule]
         outputs = [jobid, response, error]
 
@@ -3666,7 +4026,7 @@ class oph_explorecube(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3705,6 +4065,24 @@ class oph_explorenc(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -3940,7 +4318,7 @@ class oph_explorenc(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, measure, level, src_path, cdd, exp_dim, imp_dim, subset_dims, subset_type, subset_filter,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, measure, level, src_path, cdd, exp_dim, imp_dim, subset_dims, subset_type, subset_filter,
             limit_filter, show_index, show_id, show_time, show_stats, show_fit, imp_num_points, offset, operation, wavelet, wavelet_ratio, wavelet_coeff, schedule]
         outputs = [jobid, response, error]
 
@@ -4019,7 +4397,7 @@ class oph_explorenc(Process):
         query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4058,6 +4436,24 @@ class oph_exportnc(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -4165,7 +4561,7 @@ class oph_exportnc(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, misc, output_path, output_name, cdd, force, export_metadata, schedule]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, misc, output_path, output_name, cdd, force, export_metadata, schedule]
         outputs = [jobid, response, error]
 
         super(oph_exportnc, self).__init__(
@@ -4215,7 +4611,7 @@ class oph_exportnc(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4254,6 +4650,24 @@ class oph_exportnc2(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -4363,7 +4777,7 @@ class oph_exportnc2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, misc, output_path, output_name, cdd, force, export_metadata, schedule]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, misc, output_path, output_name, cdd, force, export_metadata, schedule]
         outputs = [jobid, response, error]
 
         super(oph_exportnc2, self).__init__(
@@ -4413,7 +4827,7 @@ class oph_exportnc2(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4452,6 +4866,24 @@ class oph_folder(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -4514,7 +4946,7 @@ class oph_folder(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, command, path, cwd]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, command, path, cwd]
         outputs = [jobid, response, error]
 
         super(oph_folder, self).__init__(
@@ -4553,7 +4985,7 @@ class oph_folder(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4592,6 +5024,24 @@ class oph_fs(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -4696,7 +5146,7 @@ class oph_fs(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, command, dpath, file, cdd, recursive, depth, realpath]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, command, dpath, file, cdd, recursive, depth, realpath]
         outputs = [jobid, response, error]
 
         super(oph_fs, self).__init__(
@@ -4744,7 +5194,7 @@ class oph_fs(Process):
             query += 'realpath=' + str(request.inputs['realpath'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4783,6 +5233,24 @@ class oph_get_config(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -4825,7 +5293,7 @@ class oph_get_config(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, key]
+        inputs = [userid, passwd, ncores, exec_mode, key]
         outputs = [jobid, response, error]
 
         super(oph_get_config, self).__init__(
@@ -4859,7 +5327,7 @@ class oph_get_config(Process):
             query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4898,6 +5366,24 @@ class oph_hierarchy(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -4957,7 +5443,7 @@ class oph_hierarchy(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, hierarchy, hierarchy_version]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, hierarchy, hierarchy_version]
         outputs = [jobid, response, error]
 
         super(oph_hierarchy, self).__init__(
@@ -4995,7 +5481,7 @@ class oph_hierarchy(Process):
             query += 'hierarchy_version=' + str(request.inputs['hierarchy_version'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -5034,6 +5520,24 @@ class oph_importfits(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -5237,7 +5741,7 @@ class oph_importfits(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, nhost,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, nhost,
             nfrag, measure, run, schedule, src_path, cdd, hdu, exp_dim, imp_dim, subset_dims, subset_filter, compressed, description]
         outputs = [jobid, response, error]
 
@@ -5309,7 +5813,7 @@ class oph_importfits(Process):
         query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -5348,6 +5852,24 @@ class oph_importnc(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -5672,7 +6194,7 @@ class oph_importnc(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, check_compliance, nhost, nfrag, measure, run, schedule, src_path, cdd, exp_dim, imp_dim, subset_dims,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, check_compliance, nhost, nfrag, measure, run, schedule, src_path, cdd, exp_dim, imp_dim, subset_dims,
             subset_filter, subset_type, time_filter, offset, exp_concept_level, imp_concept_level, compressed, grid, hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
         outputs = [jobid, response, error]
 
@@ -5771,7 +6293,7 @@ class oph_importnc(Process):
         query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -5810,6 +6332,24 @@ class oph_importnc2(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -6143,7 +6683,7 @@ class oph_importnc2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, check_compliance, nhost, nfrag, measure, run, schedule, src_path, cdd, exp_dim, imp_dim,
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, check_compliance, nhost, nfrag, measure, run, schedule, src_path, cdd, exp_dim, imp_dim,
             subset_dims, subset_filter, subset_type, time_filter, offset, exp_concept_level, imp_concept_level, compressed, grid, hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
         outputs = [jobid, response, error]
 
@@ -6244,7 +6784,7 @@ class oph_importnc2(Process):
         query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -6283,6 +6823,24 @@ class oph_input(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -6361,7 +6919,7 @@ class oph_input(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, id, taskname, action, key, value]
+        inputs = [userid, passwd, ncores, exec_mode, id, taskname, action, key, value]
         outputs = [jobid, response, error]
 
         super(oph_input, self).__init__(
@@ -6403,7 +6961,7 @@ class oph_input(Process):
             query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -6442,6 +7000,24 @@ class oph_instances(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -6564,7 +7140,7 @@ class oph_instances(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, action, level, host_filter, nhost, host_partition, filesystem_filter, ioserver_filter, host_status, dbms_status]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, action, level, host_filter, nhost, host_partition, filesystem_filter, ioserver_filter, host_status, dbms_status]
         outputs = [jobid, response, error]
 
         super(oph_instances, self).__init__(
@@ -6616,7 +7192,7 @@ class oph_instances(Process):
             query += 'action=' + str(request.inputs['action'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -6655,6 +7231,24 @@ class oph_intercube(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -6758,7 +7352,7 @@ class oph_intercube(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, pid2, container, measure, description, schedule, operation]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, pid2, container, measure, description, schedule, operation]
         outputs = [jobid, response, error]
 
         super(oph_intercube, self).__init__(
@@ -6809,7 +7403,7 @@ class oph_intercube(Process):
             query += 'cubes=' + str(request.inputs['cubes'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -6848,6 +7442,24 @@ class oph_list(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -6994,7 +7606,7 @@ class oph_list(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, level, path, cwd, container_filter, pid, host_filter, dbms_filter, measure_filter, ntransform, src_filter, db_filter, recursive]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, level, path, cwd, container_filter, pid, host_filter, dbms_filter, measure_filter, ntransform, src_filter, db_filter, recursive]
         outputs = [jobid, response, error]
 
         super(oph_list, self).__init__(
@@ -7052,7 +7664,7 @@ class oph_list(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7091,6 +7703,24 @@ class oph_log_info(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -7168,7 +7798,7 @@ class oph_log_info(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, log_type, container_id, ioserver, nlines]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, log_type, container_id, ioserver, nlines]
         outputs = [jobid, response, error]
 
         super(oph_log_info, self).__init__(
@@ -7210,7 +7840,7 @@ class oph_log_info(Process):
             query += 'nlines=' + str(request.inputs['nlines'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7249,6 +7879,24 @@ class oph_loggingbk(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -7425,7 +8073,7 @@ class oph_loggingbk(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, session_level, job_level, mask, session_filter, session_label_filter, session_creation_filter,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, session_level, job_level, mask, session_filter, session_label_filter, session_creation_filter,
             workflowid_filter, markerid_filter, parent_job_filter, job_creation_filter, job_status_filter, submission_string_filter, job_start_filter, job_end_filter, nlines]
         outputs = [jobid, response, error]
 
@@ -7490,7 +8138,7 @@ class oph_loggingbk(Process):
             query += 'nlines=' + str(request.inputs['nlines'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7529,6 +8177,24 @@ class oph_man(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -7594,7 +8260,7 @@ class oph_man(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, function, function_version, function_type]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, function, function_version, function_type]
         outputs = [jobid, response, error]
 
         super(oph_man, self).__init__(
@@ -7634,7 +8300,7 @@ class oph_man(Process):
         query += 'function=' + str(request.inputs['function'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7673,6 +8339,24 @@ class oph_manage_session(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -7747,7 +8431,7 @@ class oph_manage_session(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, action, session, key, value]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, action, session, key, value]
         outputs = [jobid, response, error]
 
         super(oph_manage_session, self).__init__(
@@ -7789,7 +8473,7 @@ class oph_manage_session(Process):
         query += 'action=' + str(request.inputs['action'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7828,6 +8512,24 @@ class oph_merge(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -7909,7 +8611,7 @@ class oph_merge(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, schedule, nmerge, container, description]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, schedule, nmerge, container, description]
         outputs = [jobid, response, error]
 
         super(oph_merge, self).__init__(
@@ -7953,7 +8655,7 @@ class oph_merge(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7992,6 +8694,24 @@ class oph_mergecubes(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -8092,7 +8812,7 @@ class oph_mergecubes(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pids, schedule, mode, hold_values, number, container, description]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pids, schedule, mode, hold_values, number, container, description]
         outputs = [jobid, response, error]
 
         super(oph_mergecubes, self).__init__(
@@ -8140,7 +8860,7 @@ class oph_mergecubes(Process):
         query += 'cubes=' + str(request.inputs['cubes'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8179,6 +8899,24 @@ class oph_mergecubes2(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -8279,7 +9017,7 @@ class oph_mergecubes2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pids, schedule, dim, dim_type, number, container, description]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pids, schedule, dim, dim_type, number, container, description]
         outputs = [jobid, response, error]
 
         super(oph_mergecubes2, self).__init__(
@@ -8327,7 +9065,7 @@ class oph_mergecubes2(Process):
         query += 'cubes=' + str(request.inputs['cubes'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8366,6 +9104,24 @@ class oph_metadata(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -8503,7 +9259,7 @@ class oph_metadata(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, mode, metadata_key, variable, metadata_id,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, mode, metadata_key, variable, metadata_id,
             metadata_type, metadata_value, variable_filter, metadata_type_filter, metadata_value_filter, force]
         outputs = [jobid, response, error]
 
@@ -8560,7 +9316,7 @@ class oph_metadata(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8599,6 +9355,24 @@ class oph_movecontainer(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -8652,7 +9426,7 @@ class oph_movecontainer(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, container, cwd]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, container, cwd]
         outputs = [jobid, response, error]
 
         super(oph_movecontainer, self).__init__(
@@ -8689,7 +9463,7 @@ class oph_movecontainer(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8728,6 +9502,24 @@ class oph_operators_list(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -8787,7 +9579,7 @@ class oph_operators_list(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, operator_filter, limit_filter]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, operator_filter, limit_filter]
         outputs = [jobid, response, error]
 
         super(oph_operators_list, self).__init__(
@@ -8825,7 +9617,7 @@ class oph_operators_list(Process):
             query += 'limit_filter=' + str(request.inputs['limit_filter'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8864,6 +9656,24 @@ class oph_permute(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -8952,7 +9762,7 @@ class oph_permute(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, schedule, dim_pos, container, description]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, dim_pos, container, description]
         outputs = [jobid, response, error]
 
         super(oph_permute, self).__init__(
@@ -8997,7 +9807,7 @@ class oph_permute(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9036,6 +9846,24 @@ class oph_primitives_list(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -9131,7 +9959,7 @@ class oph_primitives_list(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, level, dbms_filter, return_type, primitive_type, primitive_filter, limit_filter]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, level, dbms_filter, return_type, primitive_type, primitive_filter, limit_filter]
         outputs = [jobid, response, error]
 
         super(oph_primitives_list, self).__init__(
@@ -9177,7 +10005,7 @@ class oph_primitives_list(Process):
             query += 'limit_filter=' + str(request.inputs['limit_filter'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9216,6 +10044,24 @@ class oph_publish(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -9307,7 +10153,7 @@ class oph_publish(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, show_index, show_id, show_time, content, schedule]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, show_index, show_id, show_time, content, schedule]
         outputs = [jobid, response, error]
 
         super(oph_publish, self).__init__(
@@ -9353,7 +10199,7 @@ class oph_publish(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9392,6 +10238,24 @@ class oph_randcube(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -9576,7 +10440,7 @@ class oph_randcube(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, nhost, nfrag, ntuple,
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, nhost, nfrag, ntuple,
             measure, measure_type, exp_ndim, dim, concept_level, dim_size, run, schedule, compressed, grid, description, algorithm]
         outputs = [jobid, response, error]
 
@@ -9641,7 +10505,7 @@ class oph_randcube(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9680,6 +10544,24 @@ class oph_randcube2(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -9873,7 +10755,7 @@ class oph_randcube2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, cwd, container, host_partition, ioserver, nhost, nfrag, ntuple,
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, cwd, container, host_partition, ioserver, nhost, nfrag, ntuple,
             measure, measure_type, exp_ndim, dim, concept_level, dim_size, run, schedule, compressed, grid, description, algorithm]
         outputs = [jobid, response, error]
 
@@ -9940,7 +10822,7 @@ class oph_randcube2(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9979,6 +10861,24 @@ class oph_reduce(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -10101,7 +11001,7 @@ class oph_reduce(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, group_size, operation, order, missingvalue]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, group_size, operation, order, missingvalue]
         outputs = [jobid, response, error]
 
         super(oph_reduce, self).__init__(
@@ -10154,7 +11054,7 @@ class oph_reduce(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10193,6 +11093,24 @@ class oph_reduce2(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -10331,7 +11249,7 @@ class oph_reduce2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, dim, concept_level, midnight, order, missingvalue, operation]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, dim, concept_level, midnight, order, missingvalue, operation]
         outputs = [jobid, response, error]
 
         super(oph_reduce2, self).__init__(
@@ -10387,7 +11305,7 @@ class oph_reduce2(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10426,6 +11344,24 @@ class oph_resume(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -10539,7 +11475,7 @@ class oph_resume(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, session, id, id_type, document_type, level, user, status_filter, save]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, session, id, id_type, document_type, level, user, status_filter, save]
         outputs = [jobid, response, error]
 
         super(oph_resume, self).__init__(
@@ -10589,7 +11525,7 @@ class oph_resume(Process):
             query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10628,6 +11564,24 @@ class oph_rollup(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -10719,7 +11673,7 @@ class oph_rollup(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, schedule, container, description, ndim]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, container, description, ndim]
         outputs = [jobid, response, error]
 
         super(oph_rollup, self).__init__(
@@ -10765,7 +11719,7 @@ class oph_rollup(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10804,6 +11758,24 @@ class oph_script(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -10899,7 +11871,7 @@ class oph_script(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, script, args, stdout, stderr, list]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, script, args, stdout, stderr, list]
         outputs = [jobid, response, error]
 
         super(oph_script, self).__init__(
@@ -10945,7 +11917,7 @@ class oph_script(Process):
             query += 'list=' + str(request.inputs['list'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10984,6 +11956,24 @@ class oph_search(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -11067,7 +12057,7 @@ class oph_search(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, container_filter, metadata_key_filter, metadata_value_filter, path, cwd]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, container_filter, metadata_key_filter, metadata_value_filter, path, cwd]
         outputs = [jobid, response, error]
 
         super(oph_search, self).__init__(
@@ -11111,7 +12101,7 @@ class oph_search(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11150,6 +12140,24 @@ class oph_service(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -11201,7 +12209,7 @@ class oph_service(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, state, level]
+        inputs = [userid, passwd, ncores, exec_mode, state, level]
         outputs = [jobid, response, error]
 
         super(oph_service, self).__init__(
@@ -11237,7 +12245,7 @@ class oph_service(Process):
             query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11276,6 +12284,24 @@ class oph_set(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -11351,7 +12377,7 @@ class oph_set(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, subset_filter, offset, id, key, value]
+        inputs = [userid, passwd, ncores, exec_mode, subset_filter, offset, id, key, value]
         outputs = [jobid, response, error]
 
         super(oph_set, self).__init__(
@@ -11393,7 +12419,7 @@ class oph_set(Process):
         query += 'key=' + str(request.inputs['key'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11432,6 +12458,24 @@ class oph_showgrid(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -11512,7 +12556,7 @@ class oph_showgrid(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, container, grid, dim, show_index, cwd]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, container, grid, dim, show_index, cwd]
         outputs = [jobid, response, error]
 
         super(oph_showgrid, self).__init__(
@@ -11555,7 +12599,7 @@ class oph_showgrid(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11594,6 +12638,24 @@ class oph_split(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -11682,7 +12744,7 @@ class oph_split(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, nthreads, exec_mode, sessionid, pid, container, nsplit, description, schedule]
+        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, nsplit, description, schedule]
         outputs = [jobid, response, error]
 
         super(oph_split, self).__init__(
@@ -11728,7 +12790,7 @@ class oph_split(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11767,6 +12829,24 @@ class oph_subset(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -11893,7 +12973,7 @@ class oph_subset(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, container, grid, subset_dims, subset_filter, description, schedule, subset_type, time_filter, offset]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, container, grid, subset_dims, subset_filter, description, schedule, subset_type, time_filter, offset]
         outputs = [jobid, response, error]
 
         super(oph_subset, self).__init__(
@@ -11947,7 +13027,7 @@ class oph_subset(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11986,6 +13066,24 @@ class oph_subset2(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -12104,7 +13202,7 @@ class oph_subset2(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid, container, grid, subset_dims, subset_filter, description, schedule, time_filter, offset]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, container, grid, subset_dims, subset_filter, description, schedule, time_filter, offset]
         outputs = [jobid, response, error]
 
         super(oph_subset2, self).__init__(
@@ -12156,7 +13254,7 @@ class oph_subset2(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -12195,6 +13293,24 @@ class oph_tasks(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -12278,7 +13394,7 @@ class oph_tasks(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, cube_filter, operator_filter, path, cwd, container]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, cube_filter, operator_filter, path, cwd, container]
         outputs = [jobid, response, error]
 
         super(oph_tasks, self).__init__(
@@ -12322,7 +13438,7 @@ class oph_tasks(Process):
         query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -12361,6 +13477,24 @@ class oph_unpublish(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -12408,7 +13542,7 @@ class oph_unpublish(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, sessionid, pid]
+        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid]
         outputs = [jobid, response, error]
 
         super(oph_unpublish, self).__init__(
@@ -12444,7 +13578,7 @@ class oph_unpublish(Process):
         query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -12483,6 +13617,24 @@ class oph_wait(Process):
 
         inputs = []
         outputs = []
+
+        userid = LiteralInput(
+            identifier="userid",
+            title="Username",
+            abstract="User identifier for Ophidia system",
+            min_occurs=0,
+            max_occurs=1,
+            default=_user,
+            data_type='string')
+
+        passwd = LiteralInput(
+            identifier="passwd",
+            title="Password",
+            abstract="Password to access Ophidia",
+            min_occurs=0,
+            max_occurs=1,
+            default=_passwd,
+            data_type='string')
 
         ncores = LiteralInput(
             identifier="ncores",
@@ -12588,7 +13740,7 @@ class oph_wait(Process):
             title="Return code",
             data_type='integer')
 
-        inputs = [ncores, exec_mode, type, timeout, timeout_type, key, value, filename, message, run]
+        inputs = [userid, passwd, ncores, exec_mode, type, timeout, timeout_type, key, value, filename, message, run]
         outputs = [jobid, response, error]
 
         super(oph_wait, self).__init__(
@@ -12636,7 +13788,7 @@ class oph_wait(Process):
             query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(_user, _passwd, _host, _port)
+        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
