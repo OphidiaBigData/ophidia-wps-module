@@ -1,6 +1,6 @@
 #
 #    Ophidia WPS Module
-#    Copyright (C) 2015-2019 CMCC Foundation
+#    Copyright (C) 2015-2021 CMCC Foundation
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ from PyOphidia import client as _client, ophsubmit as _ophsubmit
 
 _host = "127.0.0.1"
 _port = 11732
-_version = "1.1.0"
+_version = "1.1.1"
 
 
 class OphExecuteMainProcess(WPSProcess):
