@@ -32,49 +32,22 @@ _passwd = "abcd"
 
 
 class OphExecuteMain(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        request = ComplexInput(
-            identifier="request",
-            title="JSON Request",
-            supported_formats=[Format('application/json', encoding='base64'), Format('application/json', encoding='utf-8')])
+        request = ComplexInput(identifier="request", title="JSON Request", supported_formats=[Format("application/json", encoding="base64"), Format("application/json", encoding="utf-8")])
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='base64'), Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="base64"), Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier='return_code',
-            title='Return code',
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, request]
         outputs = [jobid, response, error]
@@ -88,19 +61,19 @@ class OphExecuteMain(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        LOGGER.debug("Incoming a request with format %s" % request.inputs['request'][0].data_format.encoding)
+        LOGGER.debug("Incoming a request with format %s" % request.inputs["request"][0].data_format.encoding)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
-        buffer = request.inputs['request'][0].data
+        buffer = request.inputs["request"][0].data
 
         LOGGER.debug("Request: %s" % buffer)
 
@@ -108,7 +81,7 @@ class OphExecuteMain(Process):
 
         LOGGER.debug("Execute the job")
 
-        last_response, jobid, new_session, return_value, error = _ophsubmit.submit(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port, buffer)
+        last_response, jobid, new_session, return_value, error = _ophsubmit.submit(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port, buffer)
 
         LOGGER.debug("Return value: %s" % return_value)
         LOGGER.debug("JobID: %s" % jobid)
@@ -117,14 +90,14 @@ class OphExecuteMain(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
+                response.outputs["jobid"].data = jobid
             if len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -132,46 +105,20 @@ class OphExecuteMain(Process):
 
 
 class oph_aggregate(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -180,30 +127,16 @@ class oph_aggregate(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Input container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Input container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         grid = LiteralInput(
             identifier="grid",
@@ -212,16 +145,12 @@ class oph_aggregate(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         group_size = LiteralInput(
             identifier="group_size",
@@ -230,44 +159,20 @@ class oph_aggregate(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
-        missingvalue = LiteralInput(
-            identifier="missingvalue",
-            title="Missingvalue",
-            min_occurs=0,
-            max_occurs=1,
-            default="NAN",
-            data_type='float')
+        missingvalue = LiteralInput(identifier="missingvalue", title="Missingvalue", min_occurs=0, max_occurs=1, default="NAN", data_type="float")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        operation = LiteralInput(
-            identifier="operation",
-            title="Operation",
-            abstract="Indicates the operation. Possible values are count, max, min, avg, sum",
-            data_type='string')
+        operation = LiteralInput(identifier="operation", title="Operation", abstract="Indicates the operation. Possible values are count, max, min, avg, sum", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, group_size, missingvalue, schedule, operation]
         outputs = [jobid, response, error]
@@ -281,46 +186,46 @@ class oph_aggregate(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_aggregate '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['group_size'][0].data is not None:
-            query += 'group_size=' + str(request.inputs['group_size'][0].data) + ';'
-        if request.inputs['missingvalue'][0].data is not None:
-            query += 'missingvalue=' + str(request.inputs['missingvalue'][0].data) + ';'
+        query = "oph_aggregate "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["group_size"][0].data is not None:
+            query += "group_size=" + str(request.inputs["group_size"][0].data) + ";"
+        if request.inputs["missingvalue"][0].data is not None:
+            query += "missingvalue=" + str(request.inputs["missingvalue"][0].data) + ";"
 
-        query += 'operation=' + str(request.inputs['operation'][0].data) + ';'
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "operation=" + str(request.inputs["operation"][0].data) + ";"
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -339,14 +244,14 @@ class oph_aggregate(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -354,46 +259,20 @@ class oph_aggregate(Process):
 
 
 class oph_aggregate2(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -402,30 +281,16 @@ class oph_aggregate2(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         grid = LiteralInput(
             identifier="grid",
@@ -434,45 +299,22 @@ class oph_aggregate2(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        operation = LiteralInput(
-            identifier="operation",
-            title="Operation",
-            abstract="Indicates the operation. Possible values are count, max, min, avg, sum",
-            data_type='string')
+        operation = LiteralInput(identifier="operation", title="Operation", abstract="Indicates the operation. Possible values are count, max, min, avg, sum", data_type="string")
 
-        dim = LiteralInput(
-            identifier="dim",
-            title="Dim",
-            abstract="Name of dimension on which the operation will be applied",
-            data_type='string')
+        dim = LiteralInput(identifier="dim", title="Dim", abstract="Name of dimension on which the operation will be applied", data_type="string")
 
         concept_level = LiteralInput(
-            identifier="concept_level",
-            title="Concept Level",
-            abstract="Concept level inside the hierarchy used for the operation",
-            min_occurs=0,
-            max_occurs=1,
-            default="A",
-            data_type='string')
+            identifier="concept_level", title="Concept Level", abstract="Concept level inside the hierarchy used for the operation", min_occurs=0, max_occurs=1, default="A", data_type="string"
+        )
 
         midnight = LiteralInput(
             identifier="midnight",
@@ -481,31 +323,16 @@ class oph_aggregate2(Process):
             min_occurs=0,
             max_occurs=1,
             default="24",
-            data_type='string')
+            data_type="string",
+        )
 
-        missingvalue = LiteralInput(
-            identifier="missingvalue",
-            title="Missingvalue",
-            abstract="Value to be considered as missing value",
-            min_occurs=0,
-            max_occurs=1,
-            default="NAN",
-            data_type='float')
+        missingvalue = LiteralInput(identifier="missingvalue", title="Missingvalue", abstract="Value to be considered as missing value", min_occurs=0, max_occurs=1, default="NAN", data_type="float")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, operation, dim, concept_level, midnight, missingvalue]
         outputs = [jobid, response, error]
@@ -519,49 +346,49 @@ class oph_aggregate2(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_aggregate2 '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['concept_level'][0].data is not None:
-            query += 'concept_level=' + str(request.inputs['concept_level'][0].data) + ';'
-        if request.inputs['midnight'][0].data is not None:
-            query += 'midnight=' + str(request.inputs['midnight'][0].data) + ';'
-        if request.inputs['missingvalue'][0].data is not None:
-            query += 'missingvalue=' + str(request.inputs['missingvalue'][0].data) + ';'
+        query = "oph_aggregate2 "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["concept_level"][0].data is not None:
+            query += "concept_level=" + str(request.inputs["concept_level"][0].data) + ";"
+        if request.inputs["midnight"][0].data is not None:
+            query += "midnight=" + str(request.inputs["midnight"][0].data) + ";"
+        if request.inputs["missingvalue"][0].data is not None:
+            query += "missingvalue=" + str(request.inputs["missingvalue"][0].data) + ";"
 
-        query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
-        query += 'operation=' + str(request.inputs['operation'][0].data) + ';'
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "dim=" + str(request.inputs["dim"][0].data) + ";"
+        query += "operation=" + str(request.inputs["operation"][0].data) + ";"
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -580,14 +407,14 @@ class oph_aggregate2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -595,46 +422,20 @@ class oph_aggregate2(Process):
 
 
 class oph_apply(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -643,47 +444,22 @@ class oph_apply(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         query = LiteralInput(
             identifier="query",
@@ -692,25 +468,14 @@ class oph_apply(Process):
             min_occurs=0,
             max_occurs=1,
             default="measure",
-            data_type='string')
+            data_type="string",
+        )
 
-        dim_query = LiteralInput(
-            identifier="dim_query",
-            title="Dim Query",
-            abstract="Dimension of query defined by user",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        dim_query = LiteralInput(identifier="dim_query", title="Dim Query", abstract="Dimension of query defined by user", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         measure = LiteralInput(
-            identifier="measure",
-            title="Measure",
-            abstract="Name of the new measure resulting from the specified operation",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+            identifier="measure", title="Measure", abstract="Name of the new measure resulting from the specified operation", min_occurs=0, max_occurs=1, default="null", data_type="string"
+        )
 
         measure_type = LiteralInput(
             identifier="measure_type",
@@ -719,7 +484,8 @@ class oph_apply(Process):
             min_occurs=0,
             max_occurs=1,
             default="manual",
-            data_type='string')
+            data_type="string",
+        )
 
         dim_type = LiteralInput(
             identifier="dim_type",
@@ -728,7 +494,8 @@ class oph_apply(Process):
             min_occurs=0,
             max_occurs=1,
             default="manual",
-            data_type='string')
+            data_type="string",
+        )
 
         check_type = LiteralInput(
             identifier="check_type",
@@ -737,7 +504,8 @@ class oph_apply(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
         on_reduce = LiteralInput(
             identifier="on_reduce",
@@ -746,7 +514,8 @@ class oph_apply(Process):
             min_occurs=0,
             max_occurs=1,
             default="skip",
-            data_type='string')
+            data_type="string",
+        )
 
         compressed = LiteralInput(
             identifier="compressed",
@@ -755,22 +524,14 @@ class oph_apply(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, description, schedule, query, dim_query, measure, measure_type, dim_type, check_type, on_reduce, compressed]
         outputs = [jobid, response, error]
@@ -784,55 +545,55 @@ class oph_apply(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_apply '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['query'][0].data is not None:
-            query += 'query=' + str(request.inputs['query'][0].data) + ';'
-        if request.inputs['dim_query'][0].data is not None:
-            query += 'dim_query=' + str(request.inputs['dim_query'][0].data) + ';'
-        if request.inputs['measure'][0].data is not None:
-            query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
-        if request.inputs['measure_type'][0].data is not None:
-            query += 'measure_type=' + str(request.inputs['measure_type'][0].data) + ';'
-        if request.inputs['dim_type'][0].data is not None:
-            query += 'dim_type=' + str(request.inputs['dim_type'][0].data) + ';'
-        if request.inputs['check_type'][0].data is not None:
-            query += 'check_type=' + str(request.inputs['check_type'][0].data) + ';'
-        if request.inputs['on_reduce'][0].data is not None:
-            query += 'on_reduce=' + str(request.inputs['on_reduce'][0].data) + ';'
-        if request.inputs['compressed'][0].data is not None:
-            query += 'compressed=' + str(request.inputs['compressed'][0].data) + ';'
+        query = "oph_apply "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["query"][0].data is not None:
+            query += "query=" + str(request.inputs["query"][0].data) + ";"
+        if request.inputs["dim_query"][0].data is not None:
+            query += "dim_query=" + str(request.inputs["dim_query"][0].data) + ";"
+        if request.inputs["measure"][0].data is not None:
+            query += "measure=" + str(request.inputs["measure"][0].data) + ";"
+        if request.inputs["measure_type"][0].data is not None:
+            query += "measure_type=" + str(request.inputs["measure_type"][0].data) + ";"
+        if request.inputs["dim_type"][0].data is not None:
+            query += "dim_type=" + str(request.inputs["dim_type"][0].data) + ";"
+        if request.inputs["check_type"][0].data is not None:
+            query += "check_type=" + str(request.inputs["check_type"][0].data) + ";"
+        if request.inputs["on_reduce"][0].data is not None:
+            query += "on_reduce=" + str(request.inputs["on_reduce"][0].data) + ";"
+        if request.inputs["compressed"][0].data is not None:
+            query += "compressed=" + str(request.inputs["compressed"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -851,14 +612,14 @@ class oph_apply(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -866,37 +627,16 @@ class oph_apply(Process):
 
 
 class oph_b2drop(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -905,15 +645,10 @@ class oph_b2drop(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         auth_path = LiteralInput(
             identifier="auth_path",
@@ -922,13 +657,15 @@ class oph_b2drop(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         src_path = LiteralInput(
             identifier="src_path",
             title="Source path",
             abstract="Path to the file to be uploaded to B2DROP. The path can be absolute or relative; in case of relative path the cdd argument will be pre-pended; note that it is not possible to use double dots (..) within the path",
-            data_type='string')
+            data_type="string",
+        )
 
         dest_path = LiteralInput(
             identifier="dest_path",
@@ -937,7 +674,8 @@ class oph_b2drop(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -946,22 +684,14 @@ class oph_b2drop(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, auth_path, src_path, dest_path, cdd]
         outputs = [jobid, response, error]
@@ -975,38 +705,38 @@ class oph_b2drop(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_b2drop '
+        query = "oph_b2drop "
 
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['auth_path'][0].data is not None:
-            query += 'auth_path=' + str(request.inputs['auth_path'][0].data) + ';'
-        if request.inputs['dest_path'][0].data is not None:
-            query += 'dest_path=' + str(request.inputs['dest_path'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["auth_path"][0].data is not None:
+            query += "auth_path=" + str(request.inputs["auth_path"][0].data) + ";"
+        if request.inputs["dest_path"][0].data is not None:
+            query += "dest_path=" + str(request.inputs["dest_path"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
 
-        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
+        query += "src_path=" + str(request.inputs["src_path"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1025,14 +755,14 @@ class oph_b2drop(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1040,37 +770,16 @@ class oph_b2drop(Process):
 
 
 class oph_cancel(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -1079,12 +788,10 @@ class oph_cancel(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        id = LiteralInput(
-            identifier="id",
-            title="Identifier of the workflow to be stopped",
-            data_type='integer')
+        id = LiteralInput(identifier="id", title="Identifier of the workflow to be stopped", data_type="integer")
 
         type = LiteralInput(
             identifier="type",
@@ -1093,22 +800,14 @@ class oph_cancel(Process):
             min_occurs=0,
             max_occurs=1,
             default="kill",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, id, type]
         outputs = [jobid, response, error]
@@ -1122,31 +821,31 @@ class oph_cancel(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_cancel '
-        if request.inputs['type'][0].data is not None:
-            query += 'type=' + str(request.inputs['type'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
+        query = "oph_cancel "
+        if request.inputs["type"][0].data is not None:
+            query += "type=" + str(request.inputs["type"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
 
-        query += 'id=' + str(request.inputs['id'][0].data) + ';'
+        query += "id=" + str(request.inputs["id"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1165,14 +864,14 @@ class oph_cancel(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1180,37 +879,16 @@ class oph_cancel(Process):
 
 
 class oph_cluster(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -1219,7 +897,8 @@ class oph_cluster(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
         action = LiteralInput(
             identifier="action",
@@ -1228,7 +907,8 @@ class oph_cluster(Process):
             min_occurs=0,
             max_occurs=1,
             default="info",
-            data_type='string')
+            data_type="string",
+        )
 
         nhost = LiteralInput(
             identifier="nhost",
@@ -1237,7 +917,8 @@ class oph_cluster(Process):
             min_occurs=0,
             max_occurs=1,
             default="0",
-            data_type='integer')
+            data_type="integer",
+        )
 
         host_partition = LiteralInput(
             identifier="host_partititon",
@@ -1246,7 +927,8 @@ class oph_cluster(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         user_filter = LiteralInput(
             identifier="user_filter",
@@ -1255,22 +937,14 @@ class oph_cluster(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, action, nhost, host_partition, user_filter]
         outputs = [jobid, response, error]
@@ -1284,37 +958,37 @@ class oph_cluster(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_cluster '
-        if request.inputs['id'][0].data is not None:
-            query += 'id=' + str(request.inputs['id'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['action'][0].data is not None:
-            query += 'action=' + str(request.inputs['action'][0].data) + ';'
-        if request.inputs['nhost'][0].data is not None:
-            query += 'nhost=' + str(request.inputs['nhost'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['host_partition'][0].data is not None:
-            query += 'host_partition=' + str(request.inputs['host_partition'][0].data) + ';'
-        if request.inputs['user_filter'][0].data is not None:
-            query += 'user_filter=' + str(request.inputs['user_filter'][0].data) + ';'
+        query = "oph_cluster "
+        if request.inputs["id"][0].data is not None:
+            query += "id=" + str(request.inputs["id"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["action"][0].data is not None:
+            query += "action=" + str(request.inputs["action"][0].data) + ";"
+        if request.inputs["nhost"][0].data is not None:
+            query += "nhost=" + str(request.inputs["nhost"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["host_partition"][0].data is not None:
+            query += "host_partition=" + str(request.inputs["host_partition"][0].data) + ";"
+        if request.inputs["user_filter"][0].data is not None:
+            query += "user_filter=" + str(request.inputs["user_filter"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1333,14 +1007,14 @@ class oph_cluster(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1348,37 +1022,16 @@ class oph_cluster(Process):
 
 
 class oph_concatnc(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -1387,29 +1040,19 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         src_path = LiteralInput(
             identifier="src_path",
             title="Path of the NetCDF file",
             abstract="Path or OPeNDAP URL of the NetCDF file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders",
-            data_type='string')
+            data_type="string",
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -1418,13 +1061,10 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         check_exp_dim = LiteralInput(
             identifier="check_exp_dim",
@@ -1433,7 +1073,8 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_dims = LiteralInput(
             identifier="subset_dims",
@@ -1442,7 +1083,8 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="none",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -1451,7 +1093,8 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_type = LiteralInput(
             identifier="subset_type",
@@ -1460,16 +1103,12 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="index",
-            data_type='string')
+            data_type="string",
+        )
 
         time_filter = LiteralInput(
-            identifier="time_filter",
-            title="Time filter",
-            abstract="Enable filters using dates for time dimensions; enabled by default",
-            min_occurs=0,
-            max_occurs=1,
-            default="yes",
-            data_type='string')
+            identifier="time_filter", title="Time filter", abstract="Enable filters using dates for time dimensions; enabled by default", min_occurs=0, max_occurs=1, default="yes", data_type="string"
+        )
 
         offset = LiteralInput(
             identifier="offset",
@@ -1478,7 +1117,8 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='float')
+            data_type="float",
+        )
 
         dim_offset = LiteralInput(
             identifier="dim_offset",
@@ -1487,7 +1127,8 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='float')
+            data_type="float",
+        )
 
         dim_continue = LiteralInput(
             identifier="dim_continue",
@@ -1496,41 +1137,44 @@ class oph_concatnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         grid = LiteralInput(
-            identifier="grid",
-            title="Grid name",
-            abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created",
-            default="-",
-            data_type='string')
+            identifier="grid", title="Grid name", abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created", default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, schedule, src_path, cdd, pid, check_exp_dim,
-            subset_dims, subset_filter, subset_type, time_filter, offset, dim_offset, dim_continue, grid, description]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            schedule,
+            src_path,
+            cdd,
+            pid,
+            check_exp_dim,
+            subset_dims,
+            subset_filter,
+            subset_type,
+            time_filter,
+            offset,
+            dim_offset,
+            dim_continue,
+            grid,
+            description,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_concatnc, self).__init__(
@@ -1542,56 +1186,56 @@ class oph_concatnc(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_concatnc '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['check_exp_dim'][0].data is not None:
-            query += 'check_exp_dim=' + str(request.inputs['check_exp_dim'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['subset_type'][0].data is not None:
-            query += 'subset_type=' + str(request.inputs['subset_type'][0].data) + ';'
-        if request.inputs['time_filter'][0].data is not None:
-            query += 'time_filter=' + str(request.inputs['time_filter'][0].data) + ';'
-        if request.inputs['offset'][0].data is not None:
-            query += 'offset=' + str(request.inputs['offset'][0].data) + ';'
-        if request.inputs['dim_offset'][0].data is not None:
-            query += 'dim_offset=' + str(request.inputs['dim_offset'][0].data) + ';'
-        if request.inputs['dim_continue'][0].data is not None:
-            query += 'dim_continue=' + str(request.inputs['dim_continue'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_concatnc "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["check_exp_dim"][0].data is not None:
+            query += "check_exp_dim=" + str(request.inputs["check_exp_dim"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["subset_type"][0].data is not None:
+            query += "subset_type=" + str(request.inputs["subset_type"][0].data) + ";"
+        if request.inputs["time_filter"][0].data is not None:
+            query += "time_filter=" + str(request.inputs["time_filter"][0].data) + ";"
+        if request.inputs["offset"][0].data is not None:
+            query += "offset=" + str(request.inputs["offset"][0].data) + ";"
+        if request.inputs["dim_offset"][0].data is not None:
+            query += "dim_offset=" + str(request.inputs["dim_offset"][0].data) + ";"
+        if request.inputs["dim_continue"][0].data is not None:
+            query += "dim_continue=" + str(request.inputs["dim_continue"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "src_path=" + str(request.inputs["src_path"][0].data) + ";"
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1610,14 +1254,14 @@ class oph_concatnc(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1625,46 +1269,20 @@ class oph_concatnc(Process):
 
 
 class oph_concatnc2(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -1673,29 +1291,19 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         src_path = LiteralInput(
             identifier="src_path",
             title="Path of the NetCDF file",
             abstract="Path or OPeNDAP URL of the NetCDF file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders",
-            data_type='string')
+            data_type="string",
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -1704,13 +1312,10 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         check_exp_dim = LiteralInput(
             identifier="check_exp_dim",
@@ -1719,7 +1324,8 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_dims = LiteralInput(
             identifier="subset_dims",
@@ -1728,7 +1334,8 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="none",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -1737,7 +1344,8 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_type = LiteralInput(
             identifier="subset_type",
@@ -1746,16 +1354,12 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="index",
-            data_type='string')
+            data_type="string",
+        )
 
         time_filter = LiteralInput(
-            identifier="time_filter",
-            title="Time filter",
-            abstract="Enable filters using dates for time dimensions; enabled by default",
-            min_occurs=0,
-            max_occurs=1,
-            default="yes",
-            data_type='string')
+            identifier="time_filter", title="Time filter", abstract="Enable filters using dates for time dimensions; enabled by default", min_occurs=0, max_occurs=1, default="yes", data_type="string"
+        )
 
         offset = LiteralInput(
             identifier="offset",
@@ -1764,7 +1368,8 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='float')
+            data_type="float",
+        )
 
         dim_offset = LiteralInput(
             identifier="dim_offset",
@@ -1773,7 +1378,8 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='float')
+            data_type="float",
+        )
 
         dim_continue = LiteralInput(
             identifier="dim_continue",
@@ -1782,41 +1388,45 @@ class oph_concatnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         grid = LiteralInput(
-            identifier="grid",
-            title="Grid name",
-            abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created",
-            default="-",
-            data_type='string')
+            identifier="grid", title="Grid name", abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created", default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, schedule, src_path, cdd, pid, check_exp_dim,
-            subset_dims, subset_filter, subset_type, time_filter, offset, dim_offset, dim_continue, grid, description]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            nthreads,
+            exec_mode,
+            sessionid,
+            schedule,
+            src_path,
+            cdd,
+            pid,
+            check_exp_dim,
+            subset_dims,
+            subset_filter,
+            subset_type,
+            time_filter,
+            offset,
+            dim_offset,
+            dim_continue,
+            grid,
+            description,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_concatnc2, self).__init__(
@@ -1828,58 +1438,58 @@ class oph_concatnc2(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_concatnc2 '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['check_exp_dim'][0].data is not None:
-            query += 'check_exp_dim=' + str(request.inputs['check_exp_dim'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['subset_type'][0].data is not None:
-            query += 'subset_type=' + str(request.inputs['subset_type'][0].data) + ';'
-        if request.inputs['time_filter'][0].data is not None:
-            query += 'time_filter=' + str(request.inputs['time_filter'][0].data) + ';'
-        if request.inputs['offset'][0].data is not None:
-            query += 'offset=' + str(request.inputs['offset'][0].data) + ';'
-        if request.inputs['dim_offset'][0].data is not None:
-            query += 'dim_offset=' + str(request.inputs['dim_offset'][0].data) + ';'
-        if request.inputs['dim_continue'][0].data is not None:
-            query += 'dim_continue=' + str(request.inputs['dim_continue'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_concatnc2 "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["check_exp_dim"][0].data is not None:
+            query += "check_exp_dim=" + str(request.inputs["check_exp_dim"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["subset_type"][0].data is not None:
+            query += "subset_type=" + str(request.inputs["subset_type"][0].data) + ";"
+        if request.inputs["time_filter"][0].data is not None:
+            query += "time_filter=" + str(request.inputs["time_filter"][0].data) + ";"
+        if request.inputs["offset"][0].data is not None:
+            query += "offset=" + str(request.inputs["offset"][0].data) + ";"
+        if request.inputs["dim_offset"][0].data is not None:
+            query += "dim_offset=" + str(request.inputs["dim_offset"][0].data) + ";"
+        if request.inputs["dim_continue"][0].data is not None:
+            query += "dim_continue=" + str(request.inputs["dim_continue"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "src_path=" + str(request.inputs["src_path"][0].data) + ";"
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -1898,14 +1508,14 @@ class oph_concatnc2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -1913,37 +1523,16 @@ class oph_concatnc2(Process):
 
 
 class oph_containerschema(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -1952,42 +1541,25 @@ class oph_containerschema(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
-        container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="Name of the container to be created",
-            data_type='string')
+        container = LiteralInput(identifier="container", title="Output container", abstract="Name of the container to be created", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container]
         outputs = [jobid, response, error]
@@ -2001,32 +1573,32 @@ class oph_containerschema(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_containerschema '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
+        query = "oph_containerschema "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
 
-        query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "container=" + str(request.inputs["container"][0].data) + ";"
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2045,14 +1617,14 @@ class oph_containerschema(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2060,37 +1632,16 @@ class oph_containerschema(Process):
 
 
 class oph_createcontainer(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -2099,33 +1650,23 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
-        container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="Name of the container to be created",
-            data_type='string')
+        container = LiteralInput(identifier="container", title="Output container", abstract="Name of the container to be created", data_type="string")
 
         dim = LiteralInput(
-            identifier="dim",
-            title="Dimension name",
-            abstract="Name of dimension allowed. Multiple-value field: list of dimensions separated by '|' can be provided",
-            data_type='string')
+            identifier="dim", title="Dimension name", abstract="Name of dimension allowed. Multiple-value field: list of dimensions separated by '|' can be provided", data_type="string"
+        )
 
         dim_type = LiteralInput(
             identifier="dim_type",
@@ -2134,7 +1675,8 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="double",
-            data_type='string')
+            data_type="string",
+        )
 
         compressed = LiteralInput(
             identifier="compressed",
@@ -2143,7 +1685,8 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         hierarchy = LiteralInput(
             identifier="hierarchy",
@@ -2152,7 +1695,8 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="oph_base",
-            data_type='string')
+            data_type="string",
+        )
 
         vocabulary = LiteralInput(
             identifier="vocabulary",
@@ -2161,7 +1705,8 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="CF",
-            data_type='string')
+            data_type="string",
+        )
 
         base_time = LiteralInput(
             identifier="base_time",
@@ -2170,7 +1715,8 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="1900-01-01 00:00:00",
-            data_type='string')
+            data_type="string",
+        )
 
         units = LiteralInput(
             identifier="units",
@@ -2179,16 +1725,12 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="d",
-            data_type='string')
+            data_type="string",
+        )
 
         calendar = LiteralInput(
-            identifier="calendar",
-            title="Calendar",
-            abstract="In case of time hierarchy, it indicates the calendar type",
-            min_occurs=0,
-            max_occurs=1,
-            default="standard",
-            data_type='string')
+            identifier="calendar", title="Calendar", abstract="In case of time hierarchy, it indicates the calendar type", min_occurs=0, max_occurs=1, default="standard", data_type="string"
+        )
 
         month_lenghts = LiteralInput(
             identifier="month_lenghts",
@@ -2197,7 +1739,8 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="31,28,31,30,31,30,31,31,30,31,30,31",
-            data_type='string')
+            data_type="string",
+        )
 
         leap_year = LiteralInput(
             identifier="leap_year",
@@ -2206,7 +1749,8 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         leap_month = LiteralInput(
             identifier="leap_month",
@@ -2215,7 +1759,8 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default=2,
-            data_type='integer')
+            data_type="integer",
+        )
 
         description = LiteralInput(
             identifier="description",
@@ -2224,25 +1769,36 @@ class oph_createcontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, dim, dim_type, compressed,
-            hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            cwd,
+            container,
+            dim,
+            dim_type,
+            compressed,
+            hierarchy,
+            vocabulary,
+            base_time,
+            units,
+            calendar,
+            month_lenghts,
+            leap_year,
+            leap_month,
+            description,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_createcontainer, self).__init__(
@@ -2254,55 +1810,55 @@ class oph_createcontainer(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_createcontainer '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['dim_type'][0].data is not None:
-            query += 'dim_type=' + str(request.inputs['dim_type'][0].data) + ';'
-        if request.inputs['compressed'][0].data is not None:
-            query += 'compressed=' + str(request.inputs['compressed'][0].data) + ';'
-        if request.inputs['hierarchy'][0].data is not None:
-            query += 'hierarchy=' + str(request.inputs['hierarchy'][0].data) + ';'
-        if request.inputs['vocabulary'][0].data is not None:
-            query += 'vocabulary=' + str(request.inputs['vocabulary'][0].data) + ';'
-        if request.inputs['base_time'][0].data is not None:
-            query += 'base_time=' + str(request.inputs['base_time'][0].data) + ';'
-        if request.inputs['units'][0].data is not None:
-            query += 'units=' + str(request.inputs['units'][0].data) + ';'
-        if request.inputs['calendar'][0].data is not None:
-            query += 'calendar=' + str(request.inputs['calendar'][0].data) + ';'
-        if request.inputs['month_lenghts'][0].data is not None:
-            query += 'month_lenghts=' + str(request.inputs['month_lenghts'][0].data) + ';'
-        if request.inputs['leap_year'][0].data is not None:
-            query += 'leap_year=' + str(request.inputs['leap_year'][0].data) + ';'
-        if request.inputs['leap_month'][0].data is not None:
-            query += 'leap_month=' + str(request.inputs['leap_month'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_createcontainer "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["dim_type"][0].data is not None:
+            query += "dim_type=" + str(request.inputs["dim_type"][0].data) + ";"
+        if request.inputs["compressed"][0].data is not None:
+            query += "compressed=" + str(request.inputs["compressed"][0].data) + ";"
+        if request.inputs["hierarchy"][0].data is not None:
+            query += "hierarchy=" + str(request.inputs["hierarchy"][0].data) + ";"
+        if request.inputs["vocabulary"][0].data is not None:
+            query += "vocabulary=" + str(request.inputs["vocabulary"][0].data) + ";"
+        if request.inputs["base_time"][0].data is not None:
+            query += "base_time=" + str(request.inputs["base_time"][0].data) + ";"
+        if request.inputs["units"][0].data is not None:
+            query += "units=" + str(request.inputs["units"][0].data) + ";"
+        if request.inputs["calendar"][0].data is not None:
+            query += "calendar=" + str(request.inputs["calendar"][0].data) + ";"
+        if request.inputs["month_lenghts"][0].data is not None:
+            query += "month_lenghts=" + str(request.inputs["month_lenghts"][0].data) + ";"
+        if request.inputs["leap_year"][0].data is not None:
+            query += "leap_year=" + str(request.inputs["leap_year"][0].data) + ";"
+        if request.inputs["leap_month"][0].data is not None:
+            query += "leap_month=" + str(request.inputs["leap_month"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
-        query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
+        query += "container=" + str(request.inputs["container"][0].data) + ";"
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
+        query += "dim=" + str(request.inputs["dim"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2321,14 +1877,14 @@ class oph_createcontainer(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2336,37 +1892,16 @@ class oph_createcontainer(Process):
 
 
 class oph_cubeelements(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -2375,29 +1910,14 @@ class oph_cubeelements(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         algorithm = LiteralInput(
             identifier="algorithm",
@@ -2406,22 +1926,14 @@ class oph_cubeelements(Process):
             min_occurs=0,
             max_occurs=1,
             default="dim_product",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, schedule, sessionid, pid, algorithm]
         outputs = [jobid, response, error]
@@ -2435,35 +1947,35 @@ class oph_cubeelements(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_cubeelements '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['algorithm'][0].data is not None:
-            query += 'algorithm=' + str(request.inputs['algorithm'][0].data) + ';'
+        query = "oph_cubeelements "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["algorithm"][0].data is not None:
+            query += "algorithm=" + str(request.inputs["algorithm"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2482,14 +1994,14 @@ class oph_cubeelements(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2497,37 +2009,16 @@ class oph_cubeelements(Process):
 
 
 class oph_cubeio(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -2536,21 +2027,12 @@ class oph_cubeio(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         branch = LiteralInput(
             identifier="branch",
@@ -2559,22 +2041,14 @@ class oph_cubeio(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, branch]
         outputs = [jobid, response, error]
@@ -2588,33 +2062,33 @@ class oph_cubeio(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_cubeio '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['branch'][0].data is not None:
-            query += 'branch=' + str(request.inputs['branch'][0].data) + ';'
+        query = "oph_cubeio "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["branch"][0].data is not None:
+            query += "branch=" + str(request.inputs["branch"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2633,14 +2107,14 @@ class oph_cubeio(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2648,37 +2122,16 @@ class oph_cubeio(Process):
 
 
 class oph_cubeschema(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -2687,21 +2140,12 @@ class oph_cubeschema(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         action = LiteralInput(
             identifier="action",
@@ -2710,7 +2154,8 @@ class oph_cubeschema(Process):
             min_occurs=0,
             max_occurs=1,
             default="read",
-            data_type='string')
+            data_type="string",
+        )
 
         level = LiteralInput(
             identifier="level",
@@ -2719,7 +2164,8 @@ class oph_cubeschema(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         dim = LiteralInput(
             identifier="dim",
@@ -2728,7 +2174,8 @@ class oph_cubeschema(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         show_index = LiteralInput(
             identifier="show_index",
@@ -2737,7 +2184,8 @@ class oph_cubeschema(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         show_time = LiteralInput(
             identifier="show_time",
@@ -2746,7 +2194,8 @@ class oph_cubeschema(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         base64 = LiteralInput(
             identifier="base64",
@@ -2755,25 +2204,16 @@ class oph_cubeschema(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         concept_level = LiteralInput(
-            identifier="concept_level",
-            title="Concept level",
-            abstract="Concept level to be associated with new dimnesion",
-            min_occurs=0,
-            max_occurs=1,
-            default="c",
-            data_type='string')
+            identifier="concept_level", title="Concept level", abstract="Concept level to be associated with new dimnesion", min_occurs=0, max_occurs=1, default="c", data_type="string"
+        )
 
         dim_level = LiteralInput(
-            identifier="dim_level",
-            title="Dimension level",
-            abstract="Level of the new dimension to be added in dimension table",
-            min_occurs=0,
-            max_occurs=1,
-            default="1",
-            data_type='integer')
+            identifier="dim_level", title="Dimension level", abstract="Level of the new dimension to be added in dimension table", min_occurs=0, max_occurs=1, default="1", data_type="integer"
+        )
 
         dim_array = LiteralInput(
             identifier="dim_array",
@@ -2782,22 +2222,14 @@ class oph_cubeschema(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, action, level, dim, show_index, show_time, base64, concept_level, dim_level, dim_array]
         outputs = [jobid, response, error]
@@ -2811,49 +2243,49 @@ class oph_cubeschema(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_cubeschema '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['action'][0].data is not None:
-            query += 'action=' + str(request.inputs['action'][0].data) + ';'
-        if request.inputs['level'][0].data is not None:
-            query += 'level=' + str(request.inputs['level'][0].data) + ';'
-        if request.inputs['dim'][0].data is not None:
-            query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
-        if request.inputs['show_index'][0].data is not None:
-            query += 'show_index=' + str(request.inputs['show_index'][0].data) + ';'
-        if request.inputs['show_time'][0].data is not None:
-            query += 'show_time=' + str(request.inputs['show_time'][0].data) + ';'
-        if request.inputs['base64'][0].data is not None:
-            query += 'base64=' + str(request.inputs['base64'][0].data) + ';'
-        if request.inputs['concept_level'][0].data is not None:
-            query += 'concept_level=' + str(request.inputs['concept_level'][0].data) + ';'
-        if request.inputs['dim_level'][0].data is not None:
-            query += 'dim_level=' + str(request.inputs['dim_level'][0].data) + ';'
-        if request.inputs['dim_array'][0].data is not None:
-            query += 'dim_array=' + str(request.inputs['dim_array'][0].data) + ';'
+        query = "oph_cubeschema "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["action"][0].data is not None:
+            query += "action=" + str(request.inputs["action"][0].data) + ";"
+        if request.inputs["level"][0].data is not None:
+            query += "level=" + str(request.inputs["level"][0].data) + ";"
+        if request.inputs["dim"][0].data is not None:
+            query += "dim=" + str(request.inputs["dim"][0].data) + ";"
+        if request.inputs["show_index"][0].data is not None:
+            query += "show_index=" + str(request.inputs["show_index"][0].data) + ";"
+        if request.inputs["show_time"][0].data is not None:
+            query += "show_time=" + str(request.inputs["show_time"][0].data) + ";"
+        if request.inputs["base64"][0].data is not None:
+            query += "base64=" + str(request.inputs["base64"][0].data) + ";"
+        if request.inputs["concept_level"][0].data is not None:
+            query += "concept_level=" + str(request.inputs["concept_level"][0].data) + ";"
+        if request.inputs["dim_level"][0].data is not None:
+            query += "dim_level=" + str(request.inputs["dim_level"][0].data) + ";"
+        if request.inputs["dim_array"][0].data is not None:
+            query += "dim_array=" + str(request.inputs["dim_array"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -2872,14 +2304,14 @@ class oph_cubeschema(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -2887,37 +2319,16 @@ class oph_cubeschema(Process):
 
 
 class oph_cubesize(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -2926,29 +2337,14 @@ class oph_cubesize(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         byte_unit = LiteralInput(
             identifier="byte_unit",
@@ -2957,7 +2353,8 @@ class oph_cubesize(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         algorithm = LiteralInput(
             identifier="algorithm",
@@ -2966,22 +2363,14 @@ class oph_cubesize(Process):
             min_occurs=0,
             max_occurs=1,
             default="euristic",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, schedule, pid, byte_unit, algorithm]
         outputs = [jobid, response, error]
@@ -2995,37 +2384,37 @@ class oph_cubesize(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_cubesize '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['byte_unit'][0].data is not None:
-            query += 'byte_unit=' + str(request.inputs['byte_unit'][0].data) + ';'
-        if request.inputs['algorithm'][0].data is not None:
-            query += 'algorithm=' + str(request.inputs['algorithm'][0].data) + ';'
+        query = "oph_cubesize "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["byte_unit"][0].data is not None:
+            query += "byte_unit=" + str(request.inputs["byte_unit"][0].data) + ";"
+        if request.inputs["algorithm"][0].data is not None:
+            query += "algorithm=" + str(request.inputs["algorithm"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3044,14 +2433,14 @@ class oph_cubesize(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3059,46 +2448,20 @@ class oph_cubesize(Process):
 
 
 class oph_delete(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -3107,86 +2470,54 @@ class oph_delete(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule]
         outputs = [jobid, response, error]
 
         super(oph_delete, self).__init__(
-            self._handler,
-            identifier="oph_delete",
-            title="Ophidia delete",
-            version=_version,
-            abstract="Remove a datacube",
-            inputs=inputs,
-            outputs=outputs,
-            store_supported=True,
-            status_supported=True
+            self._handler, identifier="oph_delete", title="Ophidia delete", version=_version, abstract="Remove a datacube", inputs=inputs, outputs=outputs, store_supported=True, status_supported=True
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_delete '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
+        query = "oph_delete "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3205,14 +2536,14 @@ class oph_delete(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3220,37 +2551,16 @@ class oph_delete(Process):
 
 
 class oph_deletecontainer(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
             identifier="nthreads",
@@ -3259,7 +2569,8 @@ class oph_deletecontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -3268,15 +2579,10 @@ class oph_deletecontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         force = LiteralInput(
             identifier="force",
@@ -3285,19 +2591,17 @@ class oph_deletecontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
-        container = LiteralInput(
-            identifier="container",
-            title="Container",
-            abstract="Name of the container to be removed",
-            data_type='string')
+        container = LiteralInput(identifier="container", title="Container", abstract="Name of the container to be removed", data_type="string")
 
         container_pid = LiteralInput(
             identifier="container_pid",
@@ -3306,22 +2610,14 @@ class oph_deletecontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, force, cwd, container, container_pid]
         outputs = [jobid, response, error]
@@ -3335,38 +2631,38 @@ class oph_deletecontainer(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_deletecontainer '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['force'][0].data is not None:
-            query += 'force=' + str(request.inputs['force'][0].data) + ';'
-        if request.inputs['container_pid'][0].data is not None:
-            query += 'container_pid=' + str(request.inputs['container_pid'][0].data) + ';'
+        query = "oph_deletecontainer "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["force"][0].data is not None:
+            query += "force=" + str(request.inputs["force"][0].data) + ";"
+        if request.inputs["container_pid"][0].data is not None:
+            query += "container_pid=" + str(request.inputs["container_pid"][0].data) + ";"
 
-        query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "container=" + str(request.inputs["container"][0].data) + ";"
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3385,14 +2681,14 @@ class oph_deletecontainer(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3400,37 +2696,16 @@ class oph_deletecontainer(Process):
 
 
 class oph_drilldown(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -3439,47 +2714,22 @@ class oph_drilldown(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         ndim = LiteralInput(
             identifier="ndim",
@@ -3488,22 +2738,14 @@ class oph_drilldown(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, schedule, container, description, ndim]
         outputs = [jobid, response, error]
@@ -3517,39 +2759,39 @@ class oph_drilldown(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_drilldown '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['ndim'][0].data is not None:
-            query += 'ndim=' + str(request.inputs['ndim'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_drilldown "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["ndim"][0].data is not None:
+            query += "ndim=" + str(request.inputs["ndim"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3568,14 +2810,14 @@ class oph_drilldown(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3583,46 +2825,20 @@ class oph_drilldown(Process):
 
 
 class oph_duplicate(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -3631,62 +2847,28 @@ class oph_duplicate(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, container, description]
         outputs = [jobid, response, error]
@@ -3700,39 +2882,39 @@ class oph_duplicate(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_duplicate '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_duplicate "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -3751,14 +2933,14 @@ class oph_duplicate(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -3766,37 +2948,16 @@ class oph_duplicate(Process):
 
 
 class oph_explorecube(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -3805,39 +2966,20 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         limit_filter = LiteralInput(
-            identifier="limit_filter",
-            title="Limit filter",
-            abstract="Optional filter on the maxumum number of rows",
-            min_occurs=0,
-            max_occurs=1,
-            default=100,
-            data_type='integer')
+            identifier="limit_filter", title="Limit filter", abstract="Optional filter on the maxumum number of rows", min_occurs=0, max_occurs=1, default=100, data_type="integer"
+        )
 
         time_filter = LiteralInput(
-            identifier="time_filter",
-            title="Time filter",
-            abstract="Enable filters using dates for time dimensions; enabled by default",
-            min_occurs=0,
-            max_occurs=1,
-            default="yes",
-            data_type='string')
+            identifier="time_filter", title="Time filter", abstract="Enable filters using dates for time dimensions; enabled by default", min_occurs=0, max_occurs=1, default="yes", data_type="string"
+        )
 
         show_index = LiteralInput(
             identifier="show_index",
@@ -3846,7 +2988,8 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         show_id = LiteralInput(
             identifier="show_id",
@@ -3855,7 +2998,8 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         show_time = LiteralInput(
             identifier="show_time",
@@ -3864,7 +3008,8 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         level = LiteralInput(
             identifier="level",
@@ -3873,7 +3018,8 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         output_path = LiteralInput(
             identifier="output_path",
@@ -3882,7 +3028,8 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="default",
-            data_type='string')
+            data_type="string",
+        )
 
         output_name = LiteralInput(
             identifier="output_name",
@@ -3891,7 +3038,8 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="default",
-            data_type='string')
+            data_type="string",
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -3900,16 +3048,10 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
-        base64 = LiteralInput(
-            identifier="base64",
-            title="Base64",
-            abstract="If 'no' (default), dimension values are returned as strings",
-            min_occurs=0,
-            max_occurs=1,
-            default="no",
-            data_type='string')
+        base64 = LiteralInput(identifier="base64", title="Base64", abstract="If 'no' (default), dimension values are returned as strings", min_occurs=0, max_occurs=1, default="no", data_type="string")
 
         subset_dims = LiteralInput(
             identifier="subset_dims",
@@ -3918,7 +3060,8 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="none",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_type = LiteralInput(
             identifier="subset_type",
@@ -3927,7 +3070,8 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="none",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -3936,33 +3080,39 @@ class oph_explorecube(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, limit_filter, time_filter, show_index, show_id,
-            show_time, level, output_path, output_name, cdd, base64, subset_dims, subset_type, subset_filter, schedule]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            pid,
+            limit_filter,
+            time_filter,
+            show_index,
+            show_id,
+            show_time,
+            level,
+            output_path,
+            output_name,
+            cdd,
+            base64,
+            subset_dims,
+            subset_type,
+            subset_filter,
+            schedule,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_explorecube, self).__init__(
@@ -3974,59 +3124,59 @@ class oph_explorecube(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_explorecube '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['time_filter'][0].data is not None:
-            query += 'time_filter=' + str(request.inputs['time_filter'][0].data) + ';'
-        if request.inputs['limit_filter'][0].data is not None:
-            query += 'limit_filter=' + str(request.inputs['limit_filter'][0].data) + ';'
-        if request.inputs['show_index'][0].data is not None:
-            query += 'show_index=' + str(request.inputs['show_index'][0].data) + ';'
-        if request.inputs['show_id'][0].data is not None:
-            query += 'show_id=' + str(request.inputs['show_id'][0].data) + ';'
-        if request.inputs['show_time'][0].data is not None:
-            query += 'show_time=' + str(request.inputs['show_time'][0].data) + ';'
-        if request.inputs['level'][0].data is not None:
-            query += 'level=' + str(request.inputs['level'][0].data) + ';'
-        if request.inputs['output_path'][0].data is not None:
-            query += 'output_path=' + str(request.inputs['output_path'][0].data) + ';'
-        if request.inputs['output_name'][0].data is not None:
-            query += 'output_name=' + str(request.inputs['output_name'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['base64'][0].data is not None:
-            query += 'base64=' + str(request.inputs['base64'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_type'][0].data is not None:
-            query += 'subset_type=' + str(request.inputs['subset_type'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
+        query = "oph_explorecube "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["time_filter"][0].data is not None:
+            query += "time_filter=" + str(request.inputs["time_filter"][0].data) + ";"
+        if request.inputs["limit_filter"][0].data is not None:
+            query += "limit_filter=" + str(request.inputs["limit_filter"][0].data) + ";"
+        if request.inputs["show_index"][0].data is not None:
+            query += "show_index=" + str(request.inputs["show_index"][0].data) + ";"
+        if request.inputs["show_id"][0].data is not None:
+            query += "show_id=" + str(request.inputs["show_id"][0].data) + ";"
+        if request.inputs["show_time"][0].data is not None:
+            query += "show_time=" + str(request.inputs["show_time"][0].data) + ";"
+        if request.inputs["level"][0].data is not None:
+            query += "level=" + str(request.inputs["level"][0].data) + ";"
+        if request.inputs["output_path"][0].data is not None:
+            query += "output_path=" + str(request.inputs["output_path"][0].data) + ";"
+        if request.inputs["output_name"][0].data is not None:
+            query += "output_name=" + str(request.inputs["output_name"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["base64"][0].data is not None:
+            query += "base64=" + str(request.inputs["base64"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_type"][0].data is not None:
+            query += "subset_type=" + str(request.inputs["subset_type"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4045,14 +3195,14 @@ class oph_explorecube(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4060,37 +3210,16 @@ class oph_explorecube(Process):
 
 
 class oph_explorenc(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -4099,15 +3228,10 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         measure = LiteralInput(
             identifier="measure",
@@ -4116,7 +3240,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         level = LiteralInput(
             identifier="level",
@@ -4125,13 +3250,12 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         src_path = LiteralInput(
-            identifier="src_path",
-            title="Path of the FITS file",
-            abstract="Path of the FITS file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders",
-            data_type='string')
+            identifier="src_path", title="Path of the FITS file", abstract="Path of the FITS file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders", data_type="string"
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -4140,7 +3264,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
         exp_dim = LiteralInput(
             identifier="exp_dim",
@@ -4149,7 +3274,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         imp_dim = LiteralInput(
             identifier="imp_dim",
@@ -4158,7 +3284,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_dims = LiteralInput(
             identifier="subset_dims",
@@ -4167,7 +3294,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="none",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_type = LiteralInput(
             identifier="subset_type",
@@ -4176,7 +3304,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="index",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -4185,16 +3314,12 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         limit_filter = LiteralInput(
-            identifier="limit_filter",
-            title="Limit filter",
-            abstract="Optional filter on the maxumum number of rows",
-            min_occurs=0,
-            max_occurs=1,
-            default=100,
-            data_type='integer')
+            identifier="limit_filter", title="Limit filter", abstract="Optional filter on the maxumum number of rows", min_occurs=0, max_occurs=1, default=100, data_type="integer"
+        )
 
         show_index = LiteralInput(
             identifier="show_index",
@@ -4203,7 +3328,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         show_id = LiteralInput(
             identifier="show_id",
@@ -4212,7 +3338,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         show_time = LiteralInput(
             identifier="show_time",
@@ -4221,7 +3348,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         show_stats = LiteralInput(
             identifier="show_stats",
@@ -4230,7 +3358,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="00000000000000",
-            data_type='string')
+            data_type="string",
+        )
 
         show_fit = LiteralInput(
             identifier="show_fit",
@@ -4239,7 +3368,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         imp_num_points = LiteralInput(
             identifier="imp_num_points",
@@ -4248,7 +3378,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         offset = LiteralInput(
             identifier="offset",
@@ -4257,16 +3388,12 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default=50,
-            data_type='float')
+            data_type="float",
+        )
 
         operation = LiteralInput(
-            identifier="operation",
-            title="Operation",
-            abstract="Indicates the operation. Possible values are count, max, min, avg, sum",
-            min_occurs=0,
-            max_occurs=1,
-            default="avg",
-            data_type='string')
+            identifier="operation", title="Operation", abstract="Indicates the operation. Possible values are count, max, min, avg, sum", min_occurs=0, max_occurs=1, default="avg", data_type="string"
+        )
 
         wavelet = LiteralInput(
             identifier="wavelet",
@@ -4275,7 +3402,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         wavelet_ratio = LiteralInput(
             identifier="wavelet_ratio",
@@ -4284,7 +3412,8 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='float')
+            data_type="float",
+        )
 
         wavelet_coeff = LiteralInput(
             identifier="wavelet_coeff",
@@ -4293,33 +3422,46 @@ class oph_explorenc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, measure, level, src_path, cdd, exp_dim, imp_dim, subset_dims, subset_type, subset_filter,
-            limit_filter, show_index, show_id, show_time, show_stats, show_fit, imp_num_points, offset, operation, wavelet, wavelet_ratio, wavelet_coeff, schedule]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            measure,
+            level,
+            src_path,
+            cdd,
+            exp_dim,
+            imp_dim,
+            subset_dims,
+            subset_type,
+            subset_filter,
+            limit_filter,
+            show_index,
+            show_id,
+            show_time,
+            show_stats,
+            show_fit,
+            imp_num_points,
+            offset,
+            operation,
+            wavelet,
+            wavelet_ratio,
+            wavelet_coeff,
+            schedule,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_explorenc, self).__init__(
@@ -4331,73 +3473,73 @@ class oph_explorenc(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_explorenc '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['level'][0].data is not None:
-            query += 'level=' + str(request.inputs['level'][0].data) + ';'
-        if request.inputs['measure'][0].data is not None:
-            query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['exp_dim'][0].data is not None:
-            query += 'exp_dim=' + str(request.inputs['exp_dim'][0].data) + ';'
-        if request.inputs['imp_dim'][0].data is not None:
-            query += 'imp_dim=' + str(request.inputs['imp_dim'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_type'][0].data is not None:
-            query += 'subset_type=' + str(request.inputs['subset_type'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['limit_filter'][0].data is not None:
-            query += 'limit_filter=' + str(request.inputs['limit_filter'][0].data) + ';'
-        if request.inputs['show_index'][0].data is not None:
-            query += 'show_index=' + str(request.inputs['show_index'][0].data) + ';'
-        if request.inputs['show_id'][0].data is not None:
-            query += 'show_id=' + str(request.inputs['show_id'][0].data) + ';'
-        if request.inputs['show_time'][0].data is not None:
-            query += 'show_time=' + str(request.inputs['show_time'][0].data) + ';'
-        if request.inputs['show_stats'][0].data is not None:
-            query += 'show_stats=' + str(request.inputs['show_stats'][0].data) + ';'
-        if request.inputs['show_fit'][0].data is not None:
-            query += 'show_fit=' + str(request.inputs['show_fit'][0].data) + ';'
-        if request.inputs['imp_num_points'][0].data is not None:
-            query += 'imp_num_points=' + str(request.inputs['imp_num_points'][0].data) + ';'
-        if request.inputs['offset'][0].data is not None:
-            query += 'offset=' + str(request.inputs['offset'][0].data) + ';'
-        if request.inputs['operation'][0].data is not None:
-            query += 'operation=' + str(request.inputs['operation'][0].data) + ';'
-        if request.inputs['wavelet'][0].data is not None:
-            query += 'wavelet=' + str(request.inputs['wavelet'][0].data) + ';'
-        if request.inputs['wavelet_ratio'][0].data is not None:
-            query += 'wavelet_ratio=' + str(request.inputs['wavelet_ratio'][0].data) + ';'
-        if request.inputs['wavelet_coeff'][0].data is not None:
-            query += 'wavelet_coeff=' + str(request.inputs['wavelet_coeff'][0].data) + ';'
+        query = "oph_explorenc "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["level"][0].data is not None:
+            query += "level=" + str(request.inputs["level"][0].data) + ";"
+        if request.inputs["measure"][0].data is not None:
+            query += "measure=" + str(request.inputs["measure"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["exp_dim"][0].data is not None:
+            query += "exp_dim=" + str(request.inputs["exp_dim"][0].data) + ";"
+        if request.inputs["imp_dim"][0].data is not None:
+            query += "imp_dim=" + str(request.inputs["imp_dim"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_type"][0].data is not None:
+            query += "subset_type=" + str(request.inputs["subset_type"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["limit_filter"][0].data is not None:
+            query += "limit_filter=" + str(request.inputs["limit_filter"][0].data) + ";"
+        if request.inputs["show_index"][0].data is not None:
+            query += "show_index=" + str(request.inputs["show_index"][0].data) + ";"
+        if request.inputs["show_id"][0].data is not None:
+            query += "show_id=" + str(request.inputs["show_id"][0].data) + ";"
+        if request.inputs["show_time"][0].data is not None:
+            query += "show_time=" + str(request.inputs["show_time"][0].data) + ";"
+        if request.inputs["show_stats"][0].data is not None:
+            query += "show_stats=" + str(request.inputs["show_stats"][0].data) + ";"
+        if request.inputs["show_fit"][0].data is not None:
+            query += "show_fit=" + str(request.inputs["show_fit"][0].data) + ";"
+        if request.inputs["imp_num_points"][0].data is not None:
+            query += "imp_num_points=" + str(request.inputs["imp_num_points"][0].data) + ";"
+        if request.inputs["offset"][0].data is not None:
+            query += "offset=" + str(request.inputs["offset"][0].data) + ";"
+        if request.inputs["operation"][0].data is not None:
+            query += "operation=" + str(request.inputs["operation"][0].data) + ";"
+        if request.inputs["wavelet"][0].data is not None:
+            query += "wavelet=" + str(request.inputs["wavelet"][0].data) + ";"
+        if request.inputs["wavelet_ratio"][0].data is not None:
+            query += "wavelet_ratio=" + str(request.inputs["wavelet_ratio"][0].data) + ";"
+        if request.inputs["wavelet_coeff"][0].data is not None:
+            query += "wavelet_coeff=" + str(request.inputs["wavelet_coeff"][0].data) + ";"
 
-        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
+        query += "src_path=" + str(request.inputs["src_path"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4416,14 +3558,14 @@ class oph_explorenc(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4431,37 +3573,16 @@ class oph_explorenc(Process):
 
 
 class oph_exportnc(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -4470,21 +3591,12 @@ class oph_exportnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         misc = LiteralInput(
             identifier="misc",
@@ -4493,7 +3605,8 @@ class oph_exportnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         output_path = LiteralInput(
             identifier="output_path",
@@ -4502,14 +3615,16 @@ class oph_exportnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="default",
-            data_type='string')
+            data_type="string",
+        )
 
         output_name = LiteralInput(
             identifier="output_name",
             title="Output name",
             abstract="Filename of the NetCDF output files. In case of multiple fragments, filenames will be 'output_name0.nc', 'output_name1.nc', etc. The default value is the measure name of the input datacube",
             default="default",
-            data_type='string')
+            data_type="string",
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -4518,7 +3633,8 @@ class oph_exportnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
         force = LiteralInput(
             identifier="force",
@@ -4527,7 +3643,8 @@ class oph_exportnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         export_metadata = LiteralInput(
             identifier="export_metadata",
@@ -4536,30 +3653,16 @@ class oph_exportnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, misc, output_path, output_name, cdd, force, export_metadata, schedule]
         outputs = [jobid, response, error]
@@ -4573,45 +3676,45 @@ class oph_exportnc(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_exportnc '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['misc'][0].data is not None:
-            query += 'misc=' + str(request.inputs['misc'][0].data) + ';'
-        if request.inputs['output_path'][0].data is not None:
-            query += 'output_path=' + str(request.inputs['output_path'][0].data) + ';'
-        if request.inputs['output_name'][0].data is not None:
-            query += 'output_name=' + str(request.inputs['output_name'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['force'][0].data is not None:
-            query += 'force=' + str(request.inputs['force'][0].data) + ';'
-        if request.inputs['export_metadata'][0].data is not None:
-            query += 'export_metadata=' + str(request.inputs['export_metadata'][0].data) + ';'
+        query = "oph_exportnc "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["misc"][0].data is not None:
+            query += "misc=" + str(request.inputs["misc"][0].data) + ";"
+        if request.inputs["output_path"][0].data is not None:
+            query += "output_path=" + str(request.inputs["output_path"][0].data) + ";"
+        if request.inputs["output_name"][0].data is not None:
+            query += "output_name=" + str(request.inputs["output_name"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["force"][0].data is not None:
+            query += "force=" + str(request.inputs["force"][0].data) + ";"
+        if request.inputs["export_metadata"][0].data is not None:
+            query += "export_metadata=" + str(request.inputs["export_metadata"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4630,14 +3733,14 @@ class oph_exportnc(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4645,37 +3748,16 @@ class oph_exportnc(Process):
 
 
 class oph_exportnc2(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -4684,21 +3766,12 @@ class oph_exportnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         misc = LiteralInput(
             identifier="misc",
@@ -4707,7 +3780,8 @@ class oph_exportnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         output_path = LiteralInput(
             identifier="output_path",
@@ -4716,7 +3790,8 @@ class oph_exportnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="default",
-            data_type='string')
+            data_type="string",
+        )
 
         output_name = LiteralInput(
             identifier="output_name",
@@ -4725,7 +3800,8 @@ class oph_exportnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="default",
-            data_type='string')
+            data_type="string",
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -4734,7 +3810,8 @@ class oph_exportnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
         force = LiteralInput(
             identifier="force",
@@ -4743,7 +3820,8 @@ class oph_exportnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         export_metadata = LiteralInput(
             identifier="export_metadata",
@@ -4752,30 +3830,16 @@ class oph_exportnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, misc, output_path, output_name, cdd, force, export_metadata, schedule]
         outputs = [jobid, response, error]
@@ -4789,45 +3853,45 @@ class oph_exportnc2(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_exportnc2 '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['misc'][0].data is not None:
-            query += 'misc=' + str(request.inputs['misc'][0].data) + ';'
-        if request.inputs['output_path'][0].data is not None:
-            query += 'output_path=' + str(request.inputs['output_path'][0].data) + ';'
-        if request.inputs['output_name'][0].data is not None:
-            query += 'output_name=' + str(request.inputs['output_name'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['force'][0].data is not None:
-            query += 'force=' + str(request.inputs['force'][0].data) + ';'
-        if request.inputs['export_metadata'][0].data is not None:
-            query += 'export_metadata=' + str(request.inputs['export_metadata'][0].data) + ';'
+        query = "oph_exportnc2 "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["misc"][0].data is not None:
+            query += "misc=" + str(request.inputs["misc"][0].data) + ";"
+        if request.inputs["output_path"][0].data is not None:
+            query += "output_path=" + str(request.inputs["output_path"][0].data) + ";"
+        if request.inputs["output_name"][0].data is not None:
+            query += "output_name=" + str(request.inputs["output_name"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["force"][0].data is not None:
+            query += "force=" + str(request.inputs["force"][0].data) + ";"
+        if request.inputs["export_metadata"][0].data is not None:
+            query += "export_metadata=" + str(request.inputs["export_metadata"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -4846,14 +3910,14 @@ class oph_exportnc2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -4861,37 +3925,16 @@ class oph_exportnc2(Process):
 
 
 class oph_folder(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -4900,21 +3943,17 @@ class oph_folder(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         command = LiteralInput(
             identifier="command",
             title="Command",
             abstract="Command to be executed among these: 'cd' (change directory); 'mkdir' (create a new directory); 'rm' (delete an empty directory); 'mv' move/rename a folder",
-            data_type='string')
+            data_type="string",
+        )
 
         path = LiteralInput(
             identifier="path",
@@ -4923,28 +3962,21 @@ class oph_folder(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, command, path, cwd]
         outputs = [jobid, response, error]
@@ -4958,34 +3990,34 @@ class oph_folder(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_folder '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['path'][0].data is not None:
-            query += 'path=' + str(request.inputs['path'][0].data) + ';'
+        query = "oph_folder "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["path"][0].data is not None:
+            query += "path=" + str(request.inputs["path"][0].data) + ";"
 
-        query += 'command=' + str(request.inputs['command'][0].data) + ';'
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "command=" + str(request.inputs["command"][0].data) + ";"
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -5004,14 +4036,14 @@ class oph_folder(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5019,37 +4051,16 @@ class oph_folder(Process):
 
 
 class oph_fs(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -5058,15 +4069,10 @@ class oph_fs(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         command = LiteralInput(
             identifier="command",
@@ -5075,7 +4081,8 @@ class oph_fs(Process):
             min_occurs=0,
             max_occurs=1,
             default="ls",
-            data_type='string')
+            data_type="string",
+        )
 
         dpath = LiteralInput(
             identifier="dpath",
@@ -5084,16 +4091,10 @@ class oph_fs(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
-        file = LiteralInput(
-            identifier="file",
-            title="File",
-            abstract="The filter based on glob library",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+        file = LiteralInput(identifier="file", title="File", abstract="The filter based on glob library", min_occurs=0, max_occurs=1, default="-", data_type="string")
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -5102,7 +4103,8 @@ class oph_fs(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
         recursive = LiteralInput(
             identifier="recursive",
@@ -5111,7 +4113,8 @@ class oph_fs(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         depth = LiteralInput(
             identifier="depth",
@@ -5120,7 +4123,8 @@ class oph_fs(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         realpath = LiteralInput(
             identifier="realpath",
@@ -5129,22 +4133,14 @@ class oph_fs(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, command, dpath, file, cdd, recursive, depth, realpath]
         outputs = [jobid, response, error]
@@ -5158,43 +4154,43 @@ class oph_fs(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_fs '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['command'][0].data is not None:
-            query += 'command=' + str(request.inputs['command'][0].data) + ';'
-        if request.inputs['dpath'][0].data is not None:
-            query += 'dpath=' + str(request.inputs['dpath'][0].data) + ';'
-        if request.inputs['file'][0].data is not None:
-            query += 'file=' + str(request.inputs['file'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['recursive'][0].data is not None:
-            query += 'recursive=' + str(request.inputs['recursive'][0].data) + ';'
-        if request.inputs['depth'][0].data is not None:
-            query += 'depth=' + str(request.inputs['depth'][0].data) + ';'
-        if request.inputs['realpath'][0].data is not None:
-            query += 'realpath=' + str(request.inputs['realpath'][0].data) + ';'
+        query = "oph_fs "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["command"][0].data is not None:
+            query += "command=" + str(request.inputs["command"][0].data) + ";"
+        if request.inputs["dpath"][0].data is not None:
+            query += "dpath=" + str(request.inputs["dpath"][0].data) + ";"
+        if request.inputs["file"][0].data is not None:
+            query += "file=" + str(request.inputs["file"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["recursive"][0].data is not None:
+            query += "recursive=" + str(request.inputs["recursive"][0].data) + ";"
+        if request.inputs["depth"][0].data is not None:
+            query += "depth=" + str(request.inputs["depth"][0].data) + ";"
+        if request.inputs["realpath"][0].data is not None:
+            query += "realpath=" + str(request.inputs["realpath"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -5213,14 +4209,14 @@ class oph_fs(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5228,37 +4224,16 @@ class oph_fs(Process):
 
 
 class oph_get_config(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -5267,31 +4242,16 @@ class oph_get_config(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        key = LiteralInput(
-            identifier="key",
-            title="Key",
-            abstract="Name of the metadata to be requested",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+        key = LiteralInput(identifier="key", title="Key", abstract="Name of the metadata to be requested", min_occurs=0, max_occurs=1, default="all", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, key]
         outputs = [jobid, response, error]
@@ -5305,29 +4265,29 @@ class oph_get_config(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_get_config '
-        if request.inputs['key'][0].data is not None:
-            query += 'key=' + str(request.inputs['key'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
+        query = "oph_get_config "
+        if request.inputs["key"][0].data is not None:
+            query += "key=" + str(request.inputs["key"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -5346,14 +4306,14 @@ class oph_get_config(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5361,37 +4321,16 @@ class oph_get_config(Process):
 
 
 class oph_hierarchy(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -5400,15 +4339,10 @@ class oph_hierarchy(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         hierarchy = LiteralInput(
             identifier="hierarchy",
@@ -5417,7 +4351,8 @@ class oph_hierarchy(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         hierarchy_version = LiteralInput(
             identifier="hierarchy_version",
@@ -5426,22 +4361,14 @@ class oph_hierarchy(Process):
             min_occurs=0,
             max_occurs=1,
             default="latest",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, hierarchy, hierarchy_version]
         outputs = [jobid, response, error]
@@ -5455,33 +4382,33 @@ class oph_hierarchy(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_hierarchy '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['hierarchy'][0].data is not None:
-            query += 'hierarchy=' + str(request.inputs['hierarchy'][0].data) + ';'
-        if request.inputs['hierarchy_version'][0].data is not None:
-            query += 'hierarchy_version=' + str(request.inputs['hierarchy_version'][0].data) + ';'
+        query = "oph_hierarchy "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["hierarchy"][0].data is not None:
+            query += "hierarchy=" + str(request.inputs["hierarchy"][0].data) + ";"
+        if request.inputs["hierarchy_version"][0].data is not None:
+            query += "hierarchy_version=" + str(request.inputs["hierarchy_version"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -5500,14 +4427,14 @@ class oph_hierarchy(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5515,37 +4442,16 @@ class oph_hierarchy(Process):
 
 
 class oph_importfits(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -5554,30 +4460,21 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         host_partition = LiteralInput(
             identifier="host_partition",
@@ -5586,7 +4483,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         ioserver = LiteralInput(
             identifier="ioserver",
@@ -5595,7 +4493,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="mysql_table",
-            data_type='string')
+            data_type="string",
+        )
 
         import_metadata = LiteralInput(
             identifier="import_metadata",
@@ -5604,7 +4503,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
         nhost = LiteralInput(
             identifier="nhost",
@@ -5613,7 +4513,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         nfrag = LiteralInput(
             identifier="nfrag",
@@ -5622,7 +4523,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         measure = LiteralInput(
             identifier="measure",
@@ -5631,7 +4533,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="image",
-            data_type='string')
+            data_type="string",
+        )
 
         run = LiteralInput(
             identifier="run",
@@ -5640,21 +4543,14 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         src_path = LiteralInput(
-            identifier="src_path",
-            title="Path of the FITS file",
-            abstract="Path of the FITS file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders",
-            data_type='string')
+            identifier="src_path", title="Path of the FITS file", abstract="Path of the FITS file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders", data_type="string"
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -5663,7 +4559,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
         hdu = LiteralInput(
             identifier="hdu",
@@ -5672,7 +4569,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         exp_dim = LiteralInput(
             identifier="exp_dim",
@@ -5681,7 +4579,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         imp_dim = LiteralInput(
             identifier="imp_dim",
@@ -5690,14 +4589,16 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_dims = LiteralInput(
             identifier="subset_dims",
             title="Dimension names",
             abstract="Dimension names of the cube used for the subsetting. Multi value field: list of dimensions separated by '|' can be provided",
             default="none",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -5706,7 +4607,8 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         compressed = LiteralInput(
             identifier="compressed",
@@ -5715,34 +4617,45 @@ class oph_importfits(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, nhost,
-            nfrag, measure, run, schedule, src_path, cdd, hdu, exp_dim, imp_dim, subset_dims, subset_filter, compressed, description]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            cwd,
+            container,
+            host_partition,
+            ioserver,
+            import_metadata,
+            nhost,
+            nfrag,
+            measure,
+            run,
+            schedule,
+            src_path,
+            cdd,
+            hdu,
+            exp_dim,
+            imp_dim,
+            subset_dims,
+            subset_filter,
+            compressed,
+            description,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_importfits, self).__init__(
@@ -5754,66 +4667,66 @@ class oph_importfits(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_importfits '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['host_partition'][0].data is not None:
-            query += 'host_partition=' + str(request.inputs['host_partition'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['ioserver'][0].data is not None:
-            query += 'ioserver=' + str(request.inputs['ioserver'][0].data) + ';'
-        if request.inputs['import_metadata'][0].data is not None:
-            query += 'import_metadata=' + str(request.inputs['import_metadata'][0].data) + ';'
-        if request.inputs['nhost'][0].data is not None:
-            query += 'nhost=' + str(request.inputs['nhost'][0].data) + ';'
-        if request.inputs['nfrag'][0].data is not None:
-            query += 'nfrag=' + str(request.inputs['nfrag'][0].data) + ';'
-        if request.inputs['run'][0].data is not None:
-            query += 'run=' + str(request.inputs['run'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['hdu'][0].data is not None:
-            query += 'hdu=' + str(request.inputs['hdu'][0].data) + ';'
-        if request.inputs['exp_dim'][0].data is not None:
-            query += 'exp_dim=' + str(request.inputs['exp_dim'][0].data) + ';'
-        if request.inputs['imp_dim'][0].data is not None:
-            query += 'imp_dim=' + str(request.inputs['imp_dim'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['compressed'][0].data is not None:
-            query += 'compressed=' + str(request.inputs['compressed'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['measure'][0].data is not None:
-            query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
+        query = "oph_importfits "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["host_partition"][0].data is not None:
+            query += "host_partition=" + str(request.inputs["host_partition"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["ioserver"][0].data is not None:
+            query += "ioserver=" + str(request.inputs["ioserver"][0].data) + ";"
+        if request.inputs["import_metadata"][0].data is not None:
+            query += "import_metadata=" + str(request.inputs["import_metadata"][0].data) + ";"
+        if request.inputs["nhost"][0].data is not None:
+            query += "nhost=" + str(request.inputs["nhost"][0].data) + ";"
+        if request.inputs["nfrag"][0].data is not None:
+            query += "nfrag=" + str(request.inputs["nfrag"][0].data) + ";"
+        if request.inputs["run"][0].data is not None:
+            query += "run=" + str(request.inputs["run"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["hdu"][0].data is not None:
+            query += "hdu=" + str(request.inputs["hdu"][0].data) + ";"
+        if request.inputs["exp_dim"][0].data is not None:
+            query += "exp_dim=" + str(request.inputs["exp_dim"][0].data) + ";"
+        if request.inputs["imp_dim"][0].data is not None:
+            query += "imp_dim=" + str(request.inputs["imp_dim"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["compressed"][0].data is not None:
+            query += "compressed=" + str(request.inputs["compressed"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["measure"][0].data is not None:
+            query += "measure=" + str(request.inputs["measure"][0].data) + ";"
 
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
-        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
+        query += "src_path=" + str(request.inputs["src_path"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -5832,14 +4745,14 @@ class oph_importfits(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -5847,37 +4760,16 @@ class oph_importfits(Process):
 
 
 class oph_importnc(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -5886,30 +4778,21 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         host_partition = LiteralInput(
             identifier="host_partition",
@@ -5918,7 +4801,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         ioserver = LiteralInput(
             identifier="ioserver",
@@ -5927,7 +4811,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="mysql_table",
-            data_type='string')
+            data_type="string",
+        )
 
         import_metadata = LiteralInput(
             identifier="import_metadata",
@@ -5936,7 +4821,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
         check_compliance = LiteralInput(
             identifier="check_compliance",
@@ -5945,7 +4831,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         nhost = LiteralInput(
             identifier="nhost",
@@ -5954,7 +4841,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         nfrag = LiteralInput(
             identifier="nfrag",
@@ -5963,13 +4851,10 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        measure = LiteralInput(
-            identifier="measure",
-            title="Measure",
-            abstract="Name of the measure related to the NetCDF file",
-            data_type='string')
+        measure = LiteralInput(identifier="measure", title="Measure", abstract="Name of the measure related to the NetCDF file", data_type="string")
 
         run = LiteralInput(
             identifier="run",
@@ -5978,21 +4863,17 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         src_path = LiteralInput(
             identifier="src_path",
             title="Path of the NetCDF file",
             abstract="Path or OPeNDAP URL of the NetCDF file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders",
-            data_type='string')
+            data_type="string",
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -6001,7 +4882,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
         exp_dim = LiteralInput(
             identifier="exp_dim",
@@ -6010,7 +4892,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         imp_dim = LiteralInput(
             identifier="imp_dim",
@@ -6019,7 +4902,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_dims = LiteralInput(
             identifier="subset_dims",
@@ -6028,7 +4912,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="none",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -6037,7 +4922,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_type = LiteralInput(
             identifier="subset_type",
@@ -6046,16 +4932,12 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="index",
-            data_type='string')
+            data_type="string",
+        )
 
         time_filter = LiteralInput(
-            identifier="time_filter",
-            title="Time filter",
-            abstract="Enable filters using dates for time dimensions; enabled by default",
-            min_occurs=0,
-            max_occurs=1,
-            default="yes",
-            data_type='string')
+            identifier="time_filter", title="Time filter", abstract="Enable filters using dates for time dimensions; enabled by default", min_occurs=0, max_occurs=1, default="yes", data_type="string"
+        )
 
         offset = LiteralInput(
             identifier="offset",
@@ -6064,7 +4946,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='float')
+            data_type="float",
+        )
 
         exp_concept_level = LiteralInput(
             identifier="exp_concept_level",
@@ -6073,7 +4956,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="c",
-            data_type='string')
+            data_type="string",
+        )
 
         imp_concept_level = LiteralInput(
             identifier="imp_concept_level",
@@ -6082,21 +4966,20 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="c",
-            data_type='string')
+            data_type="string",
+        )
 
         compressed = LiteralInput(
             identifier="compressed",
             title="Compressed",
             abstract="Two possible values: 'yes' and 'no'.If 'yes', it will save compressed data; if 'no', it will save original data",
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         grid = LiteralInput(
-            identifier="grid",
-            title="Grid name",
-            abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created",
-            default="-",
-            data_type='string')
+            identifier="grid", title="Grid name", abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created", default="-", data_type="string"
+        )
 
         hierarchy = LiteralInput(
             identifier="hierarchy",
@@ -6105,7 +4988,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="oph_base",
-            data_type='string')
+            data_type="string",
+        )
 
         vocabulary = LiteralInput(
             identifier="vocabulary",
@@ -6114,7 +4998,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="CF",
-            data_type='string')
+            data_type="string",
+        )
 
         base_time = LiteralInput(
             identifier="base_time",
@@ -6123,7 +5008,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="1900-01-01 00:00:00",
-            data_type='string')
+            data_type="string",
+        )
 
         units = LiteralInput(
             identifier="units",
@@ -6132,16 +5018,12 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="d",
-            data_type='string')
+            data_type="string",
+        )
 
         calendar = LiteralInput(
-            identifier="calendar",
-            title="Calendar",
-            abstract="In case of time hierarchy, it indicates the calendar type",
-            min_occurs=0,
-            max_occurs=1,
-            default="standard",
-            data_type='string')
+            identifier="calendar", title="Calendar", abstract="In case of time hierarchy, it indicates the calendar type", min_occurs=0, max_occurs=1, default="standard", data_type="string"
+        )
 
         month_lenghts = LiteralInput(
             identifier="month_lenghts",
@@ -6150,7 +5032,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default="31,28,31,30,31,30,31,31,30,31,30,31",
-            data_type='string')
+            data_type="string",
+        )
 
         leap_year = LiteralInput(
             identifier="leap_year",
@@ -6159,7 +5042,8 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         leap_month = LiteralInput(
             identifier="leap_month",
@@ -6168,34 +5052,59 @@ class oph_importnc(Process):
             min_occurs=0,
             max_occurs=1,
             default=2,
-            data_type='integer')
+            data_type="integer",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, check_compliance, nhost, nfrag, measure, run, schedule, src_path, cdd, exp_dim, imp_dim, subset_dims,
-            subset_filter, subset_type, time_filter, offset, exp_concept_level, imp_concept_level, compressed, grid, hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            cwd,
+            container,
+            host_partition,
+            ioserver,
+            import_metadata,
+            check_compliance,
+            nhost,
+            nfrag,
+            measure,
+            run,
+            schedule,
+            src_path,
+            cdd,
+            exp_dim,
+            imp_dim,
+            subset_dims,
+            subset_filter,
+            subset_type,
+            time_filter,
+            offset,
+            exp_concept_level,
+            imp_concept_level,
+            compressed,
+            grid,
+            hierarchy,
+            vocabulary,
+            base_time,
+            units,
+            calendar,
+            month_lenghts,
+            leap_year,
+            leap_month,
+            description,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_importnc, self).__init__(
@@ -6207,93 +5116,93 @@ class oph_importnc(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_importnc '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['host_partition'][0].data is not None:
-            query += 'host_partition=' + str(request.inputs['host_partition'][0].data) + ';'
-        if request.inputs['check_compliance'][0].data is not None:
-            query += 'check_compliance=' + str(request.inputs['check_compliance'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['ioserver'][0].data is not None:
-            query += 'ioserver=' + str(request.inputs['ioserver'][0].data) + ';'
-        if request.inputs['import_metadata'][0].data is not None:
-            query += 'import_metadata=' + str(request.inputs['import_metadata'][0].data) + ';'
-        if request.inputs['nhost'][0].data is not None:
-            query += 'nhost=' + str(request.inputs['nhost'][0].data) + ';'
-        if request.inputs['nfrag'][0].data is not None:
-            query += 'nfrag=' + str(request.inputs['nfrag'][0].data) + ';'
-        if request.inputs['run'][0].data is not None:
-            query += 'run=' + str(request.inputs['run'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['exp_dim'][0].data is not None:
-            query += 'exp_dim=' + str(request.inputs['exp_dim'][0].data) + ';'
-        if request.inputs['imp_dim'][0].data is not None:
-            query += 'imp_dim=' + str(request.inputs['imp_dim'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['subset_type'][0].data is not None:
-            query += 'subset_type=' + str(request.inputs['subset_type'][0].data) + ';'
-        if request.inputs['time_filter'][0].data is not None:
-            query += 'time_filter=' + str(request.inputs['time_filter'][0].data) + ';'
-        if request.inputs['offset'][0].data is not None:
-            query += 'offset=' + str(request.inputs['offset'][0].data) + ';'
-        if request.inputs['exp_concept_level'][0].data is not None:
-            query += 'exp_concept_level=' + str(request.inputs['exp_concept_level'][0].data) + ';'
-        if request.inputs['imp_concept_level'][0].data is not None:
-            query += 'imp_concept_level=' + str(request.inputs['imp_concept_level'][0].data) + ';'
-        if request.inputs['compressed'][0].data is not None:
-            query += 'compressed=' + str(request.inputs['compressed'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['hierarchy'][0].data is not None:
-            query += 'hierarchy=' + str(request.inputs['hierarchy'][0].data) + ';'
-        if request.inputs['vocabulary'][0].data is not None:
-            query += 'vocabulary=' + str(request.inputs['vocabulary'][0].data) + ';'
-        if request.inputs['base_time'][0].data is not None:
-            query += 'base_time=' + str(request.inputs['base_time'][0].data) + ';'
-        if request.inputs['units'][0].data is not None:
-            query += 'units=' + str(request.inputs['units'][0].data) + ';'
-        if request.inputs['calendar'][0].data is not None:
-            query += 'calendar=' + str(request.inputs['calendar'][0].data) + ';'
-        if request.inputs['month_lenghts'][0].data is not None:
-            query += 'month_lenghts=' + str(request.inputs['month_lenghts'][0].data) + ';'
-        if request.inputs['leap_year'][0].data is not None:
-            query += 'leap_year=' + str(request.inputs['leap_year'][0].data) + ';'
-        if request.inputs['leap_month'][0].data is not None:
-            query += 'leap_month=' + str(request.inputs['leap_month'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_importnc "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["host_partition"][0].data is not None:
+            query += "host_partition=" + str(request.inputs["host_partition"][0].data) + ";"
+        if request.inputs["check_compliance"][0].data is not None:
+            query += "check_compliance=" + str(request.inputs["check_compliance"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["ioserver"][0].data is not None:
+            query += "ioserver=" + str(request.inputs["ioserver"][0].data) + ";"
+        if request.inputs["import_metadata"][0].data is not None:
+            query += "import_metadata=" + str(request.inputs["import_metadata"][0].data) + ";"
+        if request.inputs["nhost"][0].data is not None:
+            query += "nhost=" + str(request.inputs["nhost"][0].data) + ";"
+        if request.inputs["nfrag"][0].data is not None:
+            query += "nfrag=" + str(request.inputs["nfrag"][0].data) + ";"
+        if request.inputs["run"][0].data is not None:
+            query += "run=" + str(request.inputs["run"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["exp_dim"][0].data is not None:
+            query += "exp_dim=" + str(request.inputs["exp_dim"][0].data) + ";"
+        if request.inputs["imp_dim"][0].data is not None:
+            query += "imp_dim=" + str(request.inputs["imp_dim"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["subset_type"][0].data is not None:
+            query += "subset_type=" + str(request.inputs["subset_type"][0].data) + ";"
+        if request.inputs["time_filter"][0].data is not None:
+            query += "time_filter=" + str(request.inputs["time_filter"][0].data) + ";"
+        if request.inputs["offset"][0].data is not None:
+            query += "offset=" + str(request.inputs["offset"][0].data) + ";"
+        if request.inputs["exp_concept_level"][0].data is not None:
+            query += "exp_concept_level=" + str(request.inputs["exp_concept_level"][0].data) + ";"
+        if request.inputs["imp_concept_level"][0].data is not None:
+            query += "imp_concept_level=" + str(request.inputs["imp_concept_level"][0].data) + ";"
+        if request.inputs["compressed"][0].data is not None:
+            query += "compressed=" + str(request.inputs["compressed"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["hierarchy"][0].data is not None:
+            query += "hierarchy=" + str(request.inputs["hierarchy"][0].data) + ";"
+        if request.inputs["vocabulary"][0].data is not None:
+            query += "vocabulary=" + str(request.inputs["vocabulary"][0].data) + ";"
+        if request.inputs["base_time"][0].data is not None:
+            query += "base_time=" + str(request.inputs["base_time"][0].data) + ";"
+        if request.inputs["units"][0].data is not None:
+            query += "units=" + str(request.inputs["units"][0].data) + ";"
+        if request.inputs["calendar"][0].data is not None:
+            query += "calendar=" + str(request.inputs["calendar"][0].data) + ";"
+        if request.inputs["month_lenghts"][0].data is not None:
+            query += "month_lenghts=" + str(request.inputs["month_lenghts"][0].data) + ";"
+        if request.inputs["leap_year"][0].data is not None:
+            query += "leap_year=" + str(request.inputs["leap_year"][0].data) + ";"
+        if request.inputs["leap_month"][0].data is not None:
+            query += "leap_month=" + str(request.inputs["leap_month"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
-        query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
-        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
+        query += "measure=" + str(request.inputs["measure"][0].data) + ";"
+        query += "src_path=" + str(request.inputs["src_path"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -6312,14 +5221,14 @@ class oph_importnc(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -6327,46 +5236,20 @@ class oph_importnc(Process):
 
 
 class oph_importnc2(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -6375,30 +5258,21 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         host_partition = LiteralInput(
             identifier="host_partition",
@@ -6407,7 +5281,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         ioserver = LiteralInput(
             identifier="ioserver",
@@ -6416,7 +5291,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="mysql_table",
-            data_type='string')
+            data_type="string",
+        )
 
         import_metadata = LiteralInput(
             identifier="import_metadata",
@@ -6425,7 +5301,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
         check_compliance = LiteralInput(
             identifier="check_compliance",
@@ -6434,7 +5311,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         nhost = LiteralInput(
             identifier="nhost",
@@ -6443,7 +5321,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         nfrag = LiteralInput(
             identifier="nfrag",
@@ -6452,13 +5331,10 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        measure = LiteralInput(
-            identifier="measure",
-            title="Measure",
-            abstract="Name of the measure related to the NetCDF file",
-            data_type='string')
+        measure = LiteralInput(identifier="measure", title="Measure", abstract="Name of the measure related to the NetCDF file", data_type="string")
 
         run = LiteralInput(
             identifier="run",
@@ -6467,21 +5343,17 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         src_path = LiteralInput(
             identifier="src_path",
             title="Path of the NetCDF file",
             abstract="Path or OPeNDAP URL of the NetCDF file. Local files have to be stored in folder BASE_SRC_PATH or its sub-folders",
-            data_type='string')
+            data_type="string",
+        )
 
         cdd = LiteralInput(
             identifier="cdd",
@@ -6490,7 +5362,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="/",
-            data_type='string')
+            data_type="string",
+        )
 
         exp_dim = LiteralInput(
             identifier="exp_dim",
@@ -6499,7 +5372,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         imp_dim = LiteralInput(
             identifier="imp_dim",
@@ -6508,7 +5382,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_dims = LiteralInput(
             identifier="subset_dims",
@@ -6517,7 +5392,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="none",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -6526,7 +5402,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_type = LiteralInput(
             identifier="subset_type",
@@ -6535,16 +5412,12 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="index",
-            data_type='string')
+            data_type="string",
+        )
 
         time_filter = LiteralInput(
-            identifier="time_filter",
-            title="Time filter",
-            abstract="Enable filters using dates for time dimensions; enabled by default",
-            min_occurs=0,
-            max_occurs=1,
-            default="yes",
-            data_type='string')
+            identifier="time_filter", title="Time filter", abstract="Enable filters using dates for time dimensions; enabled by default", min_occurs=0, max_occurs=1, default="yes", data_type="string"
+        )
 
         offset = LiteralInput(
             identifier="offset",
@@ -6553,7 +5426,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='float')
+            data_type="float",
+        )
 
         exp_concept_level = LiteralInput(
             identifier="exp_concept_level",
@@ -6562,7 +5436,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="c",
-            data_type='string')
+            data_type="string",
+        )
 
         imp_concept_level = LiteralInput(
             identifier="imp_concept_level",
@@ -6571,21 +5446,20 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="c",
-            data_type='string')
+            data_type="string",
+        )
 
         compressed = LiteralInput(
             identifier="compressed",
             title="Compressed",
             abstract="Two possible values: 'yes' and 'no'.If 'yes', it will save compressed data; if 'no', it will save original data",
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         grid = LiteralInput(
-            identifier="grid",
-            title="Grid name",
-            abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created",
-            default="-",
-            data_type='string')
+            identifier="grid", title="Grid name", abstract="Optional argument used to identify the grid of dimensions to be used or the one to be created", default="-", data_type="string"
+        )
 
         hierarchy = LiteralInput(
             identifier="hierarchy",
@@ -6594,7 +5468,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="oph_base",
-            data_type='string')
+            data_type="string",
+        )
 
         vocabulary = LiteralInput(
             identifier="vocabulary",
@@ -6603,7 +5478,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="CF",
-            data_type='string')
+            data_type="string",
+        )
 
         base_time = LiteralInput(
             identifier="base_time",
@@ -6612,7 +5488,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="1900-01-01 00:00:00",
-            data_type='string')
+            data_type="string",
+        )
 
         units = LiteralInput(
             identifier="units",
@@ -6621,16 +5498,12 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="d",
-            data_type='string')
+            data_type="string",
+        )
 
         calendar = LiteralInput(
-            identifier="calendar",
-            title="Calendar",
-            abstract="In case of time hierarchy, it indicates the calendar type",
-            min_occurs=0,
-            max_occurs=1,
-            default="standard",
-            data_type='string')
+            identifier="calendar", title="Calendar", abstract="In case of time hierarchy, it indicates the calendar type", min_occurs=0, max_occurs=1, default="standard", data_type="string"
+        )
 
         month_lenghts = LiteralInput(
             identifier="month_lenghts",
@@ -6639,7 +5512,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default="31,28,31,30,31,30,31,31,30,31,30,31",
-            data_type='string')
+            data_type="string",
+        )
 
         leap_year = LiteralInput(
             identifier="leap_year",
@@ -6648,7 +5522,8 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         leap_month = LiteralInput(
             identifier="leap_month",
@@ -6657,34 +5532,60 @@ class oph_importnc2(Process):
             min_occurs=0,
             max_occurs=1,
             default=2,
-            data_type='integer')
+            data_type="integer",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, cwd, container, host_partition, ioserver, import_metadata, check_compliance, nhost, nfrag, measure, run, schedule, src_path, cdd, exp_dim, imp_dim,
-            subset_dims, subset_filter, subset_type, time_filter, offset, exp_concept_level, imp_concept_level, compressed, grid, hierarchy, vocabulary, base_time, units, calendar, month_lenghts, leap_year, leap_month, description]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            nthreads,
+            exec_mode,
+            sessionid,
+            cwd,
+            container,
+            host_partition,
+            ioserver,
+            import_metadata,
+            check_compliance,
+            nhost,
+            nfrag,
+            measure,
+            run,
+            schedule,
+            src_path,
+            cdd,
+            exp_dim,
+            imp_dim,
+            subset_dims,
+            subset_filter,
+            subset_type,
+            time_filter,
+            offset,
+            exp_concept_level,
+            imp_concept_level,
+            compressed,
+            grid,
+            hierarchy,
+            vocabulary,
+            base_time,
+            units,
+            calendar,
+            month_lenghts,
+            leap_year,
+            leap_month,
+            description,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_importnc2, self).__init__(
@@ -6696,95 +5597,95 @@ class oph_importnc2(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_importnc2 '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['host_partition'][0].data is not None:
-            query += 'host_partition=' + str(request.inputs['host_partition'][0].data) + ';'
-        if request.inputs['check_compliance'][0].data is not None:
-            query += 'check_compliance=' + str(request.inputs['check_compliance'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['ioserver'][0].data is not None:
-            query += 'ioserver=' + str(request.inputs['ioserver'][0].data) + ';'
-        if request.inputs['import_metadata'][0].data is not None:
-            query += 'import_metadata=' + str(request.inputs['import_metadata'][0].data) + ';'
-        if request.inputs['nhost'][0].data is not None:
-            query += 'nhost=' + str(request.inputs['nhost'][0].data) + ';'
-        if request.inputs['nfrag'][0].data is not None:
-            query += 'nfrag=' + str(request.inputs['nfrag'][0].data) + ';'
-        if request.inputs['run'][0].data is not None:
-            query += 'run=' + str(request.inputs['run'][0].data) + ';'
-        if request.inputs['cdd'][0].data is not None:
-            query += 'cdd=' + str(request.inputs['cdd'][0].data) + ';'
-        if request.inputs['exp_dim'][0].data is not None:
-            query += 'exp_dim=' + str(request.inputs['exp_dim'][0].data) + ';'
-        if request.inputs['imp_dim'][0].data is not None:
-            query += 'imp_dim=' + str(request.inputs['imp_dim'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['subset_type'][0].data is not None:
-            query += 'subset_type=' + str(request.inputs['subset_type'][0].data) + ';'
-        if request.inputs['time_filter'][0].data is not None:
-            query += 'time_filter=' + str(request.inputs['time_filter'][0].data) + ';'
-        if request.inputs['offset'][0].data is not None:
-            query += 'offset=' + str(request.inputs['offset'][0].data) + ';'
-        if request.inputs['exp_concept_level'][0].data is not None:
-            query += 'exp_concept_level=' + str(request.inputs['exp_concept_level'][0].data) + ';'
-        if request.inputs['imp_concept_level'][0].data is not None:
-            query += 'imp_concept_level=' + str(request.inputs['imp_concept_level'][0].data) + ';'
-        if request.inputs['compressed'][0].data is not None:
-            query += 'compressed=' + str(request.inputs['compressed'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['hierarchy'][0].data is not None:
-            query += 'hierarchy=' + str(request.inputs['hierarchy'][0].data) + ';'
-        if request.inputs['vocabulary'][0].data is not None:
-            query += 'vocabulary=' + str(request.inputs['vocabulary'][0].data) + ';'
-        if request.inputs['base_time'][0].data is not None:
-            query += 'base_time=' + str(request.inputs['base_time'][0].data) + ';'
-        if request.inputs['units'][0].data is not None:
-            query += 'units=' + str(request.inputs['units'][0].data) + ';'
-        if request.inputs['calendar'][0].data is not None:
-            query += 'calendar=' + str(request.inputs['calendar'][0].data) + ';'
-        if request.inputs['month_lenghts'][0].data is not None:
-            query += 'month_lenghts=' + str(request.inputs['month_lenghts'][0].data) + ';'
-        if request.inputs['leap_year'][0].data is not None:
-            query += 'leap_year=' + str(request.inputs['leap_year'][0].data) + ';'
-        if request.inputs['leap_month'][0].data is not None:
-            query += 'leap_month=' + str(request.inputs['leap_month'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_importnc2 "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["host_partition"][0].data is not None:
+            query += "host_partition=" + str(request.inputs["host_partition"][0].data) + ";"
+        if request.inputs["check_compliance"][0].data is not None:
+            query += "check_compliance=" + str(request.inputs["check_compliance"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["ioserver"][0].data is not None:
+            query += "ioserver=" + str(request.inputs["ioserver"][0].data) + ";"
+        if request.inputs["import_metadata"][0].data is not None:
+            query += "import_metadata=" + str(request.inputs["import_metadata"][0].data) + ";"
+        if request.inputs["nhost"][0].data is not None:
+            query += "nhost=" + str(request.inputs["nhost"][0].data) + ";"
+        if request.inputs["nfrag"][0].data is not None:
+            query += "nfrag=" + str(request.inputs["nfrag"][0].data) + ";"
+        if request.inputs["run"][0].data is not None:
+            query += "run=" + str(request.inputs["run"][0].data) + ";"
+        if request.inputs["cdd"][0].data is not None:
+            query += "cdd=" + str(request.inputs["cdd"][0].data) + ";"
+        if request.inputs["exp_dim"][0].data is not None:
+            query += "exp_dim=" + str(request.inputs["exp_dim"][0].data) + ";"
+        if request.inputs["imp_dim"][0].data is not None:
+            query += "imp_dim=" + str(request.inputs["imp_dim"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["subset_type"][0].data is not None:
+            query += "subset_type=" + str(request.inputs["subset_type"][0].data) + ";"
+        if request.inputs["time_filter"][0].data is not None:
+            query += "time_filter=" + str(request.inputs["time_filter"][0].data) + ";"
+        if request.inputs["offset"][0].data is not None:
+            query += "offset=" + str(request.inputs["offset"][0].data) + ";"
+        if request.inputs["exp_concept_level"][0].data is not None:
+            query += "exp_concept_level=" + str(request.inputs["exp_concept_level"][0].data) + ";"
+        if request.inputs["imp_concept_level"][0].data is not None:
+            query += "imp_concept_level=" + str(request.inputs["imp_concept_level"][0].data) + ";"
+        if request.inputs["compressed"][0].data is not None:
+            query += "compressed=" + str(request.inputs["compressed"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["hierarchy"][0].data is not None:
+            query += "hierarchy=" + str(request.inputs["hierarchy"][0].data) + ";"
+        if request.inputs["vocabulary"][0].data is not None:
+            query += "vocabulary=" + str(request.inputs["vocabulary"][0].data) + ";"
+        if request.inputs["base_time"][0].data is not None:
+            query += "base_time=" + str(request.inputs["base_time"][0].data) + ";"
+        if request.inputs["units"][0].data is not None:
+            query += "units=" + str(request.inputs["units"][0].data) + ";"
+        if request.inputs["calendar"][0].data is not None:
+            query += "calendar=" + str(request.inputs["calendar"][0].data) + ";"
+        if request.inputs["month_lenghts"][0].data is not None:
+            query += "month_lenghts=" + str(request.inputs["month_lenghts"][0].data) + ";"
+        if request.inputs["leap_year"][0].data is not None:
+            query += "leap_year=" + str(request.inputs["leap_year"][0].data) + ";"
+        if request.inputs["leap_month"][0].data is not None:
+            query += "leap_month=" + str(request.inputs["leap_month"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
-        query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
-        query += 'src_path=' + str(request.inputs['src_path'][0].data) + ';'
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
+        query += "measure=" + str(request.inputs["measure"][0].data) + ";"
+        query += "src_path=" + str(request.inputs["src_path"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -6803,14 +5704,14 @@ class oph_importnc2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -6818,37 +5719,16 @@ class oph_importnc2(Process):
 
 
 class oph_input(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -6857,7 +5737,8 @@ class oph_input(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
         id = LiteralInput(
             identifier="id",
@@ -6866,7 +5747,8 @@ class oph_input(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         taskname = LiteralInput(
             identifier="taskname",
@@ -6875,7 +5757,8 @@ class oph_input(Process):
             min_occurs=0,
             max_occurs=1,
             default="Task 0",
-            data_type='string')
+            data_type="string",
+        )
 
         action = LiteralInput(
             identifier="action",
@@ -6884,40 +5767,18 @@ class oph_input(Process):
             min_occurs=0,
             max_occurs=1,
             default="continue",
-            data_type='string')
+            data_type="string",
+        )
 
-        key = LiteralInput(
-            identifier="key",
-            title="Key",
-            abstract="Name of the parameter",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+        key = LiteralInput(identifier="key", title="Key", abstract="Name of the parameter", min_occurs=0, max_occurs=1, default="-", data_type="string")
 
-        value = LiteralInput(
-            identifier="value",
-            title="Value",
-            abstract="Value of the parameter. By default it will set to 1",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+        value = LiteralInput(identifier="value", title="Value", abstract="Value of the parameter. By default it will set to 1", min_occurs=0, max_occurs=1, default="-", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, id, taskname, action, key, value]
         outputs = [jobid, response, error]
@@ -6931,37 +5792,37 @@ class oph_input(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_input '
-        if request.inputs['id'][0].data is not None:
-            query += 'id=' + str(request.inputs['id'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['taskname'][0].data is not None:
-            query += 'taskname=' + str(request.inputs['taskname'][0].data) + ';'
-        if request.inputs['action'][0].data is not None:
-            query += 'action=' + str(request.inputs['action'][0].data) + ';'
-        if request.inputs['key'][0].data is not None:
-            query += 'key=' + str(request.inputs['key'][0].data) + ';'
-        if request.inputs['value'][0].data is not None:
-            query += 'value=' + str(request.inputs['value'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
+        query = "oph_input "
+        if request.inputs["id"][0].data is not None:
+            query += "id=" + str(request.inputs["id"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["taskname"][0].data is not None:
+            query += "taskname=" + str(request.inputs["taskname"][0].data) + ";"
+        if request.inputs["action"][0].data is not None:
+            query += "action=" + str(request.inputs["action"][0].data) + ";"
+        if request.inputs["key"][0].data is not None:
+            query += "key=" + str(request.inputs["key"][0].data) + ";"
+        if request.inputs["value"][0].data is not None:
+            query += "value=" + str(request.inputs["value"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -6980,14 +5841,14 @@ class oph_input(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -6995,37 +5856,16 @@ class oph_input(Process):
 
 
 class oph_instances(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -7034,15 +5874,10 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         action = LiteralInput(
             identifier="action",
@@ -7051,16 +5886,12 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="read",
-            data_type='string')
+            data_type="string",
+        )
 
         level = LiteralInput(
-            identifier="level",
-            title="Level",
-            abstract="Shows hosts with '1', DBMS instances with '2' or host partitions with '3'",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="level", title="Level", abstract="Shows hosts with '1', DBMS instances with '2' or host partitions with '3'", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         host_filter = LiteralInput(
             identifier="host_filter",
@@ -7069,7 +5900,8 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         nhost = LiteralInput(
             identifier="nhost",
@@ -7078,7 +5910,8 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="1",
-            data_type='integer')
+            data_type="integer",
+        )
 
         host_partition = LiteralInput(
             identifier="host_partition",
@@ -7087,7 +5920,8 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         filesystem_filter = LiteralInput(
             identifier="filesystem_filter",
@@ -7096,7 +5930,8 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         ioserver_filter = LiteralInput(
             identifier="ioserver_filter",
@@ -7105,7 +5940,8 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         host_status = LiteralInput(
             identifier="host_status",
@@ -7114,7 +5950,8 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         dbms_status = LiteralInput(
             identifier="dbms_status",
@@ -7123,22 +5960,14 @@ class oph_instances(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, action, level, host_filter, nhost, host_partition, filesystem_filter, ioserver_filter, host_status, dbms_status]
         outputs = [jobid, response, error]
@@ -7152,47 +5981,47 @@ class oph_instances(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_instances '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['host_partition'][0].data is not None:
-            query += 'host_partition=' + str(request.inputs['host_partition'][0].data) + ';'
-        if request.inputs['nhost'][0].data is not None:
-            query += 'nhost=' + str(request.inputs['nhost'][0].data) + ';'
-        if request.inputs['host_filter'][0].data is not None:
-            query += 'host_filter=' + str(request.inputs['host_filter'][0].data) + ';'
-        if request.inputs['filesystem_filter'][0].data is not None:
-            query += 'filesystem_filter=' + str(request.inputs['filesystem_filter'][0].data) + ';'
-        if request.inputs['ioserver_filter'][0].data is not None:
-            query += 'ioserver_filter=' + str(request.inputs['ioserver_filter'][0].data) + ';'
-        if request.inputs['host_status'][0].data is not None:
-            query += 'host_status=' + str(request.inputs['host_status'][0].data) + ';'
-        if request.inputs['dbms_status'][0].data is not None:
-            query += 'dbms_status=' + str(request.inputs['dbms_status'][0].data) + ';'
-        if request.inputs['level'][0].data is not None:
-            query += 'level=' + str(request.inputs['level'][0].data) + ';'
-        if request.inputs['action'][0].data is not None:
-            query += 'action=' + str(request.inputs['action'][0].data) + ';'
+        query = "oph_instances "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["host_partition"][0].data is not None:
+            query += "host_partition=" + str(request.inputs["host_partition"][0].data) + ";"
+        if request.inputs["nhost"][0].data is not None:
+            query += "nhost=" + str(request.inputs["nhost"][0].data) + ";"
+        if request.inputs["host_filter"][0].data is not None:
+            query += "host_filter=" + str(request.inputs["host_filter"][0].data) + ";"
+        if request.inputs["filesystem_filter"][0].data is not None:
+            query += "filesystem_filter=" + str(request.inputs["filesystem_filter"][0].data) + ";"
+        if request.inputs["ioserver_filter"][0].data is not None:
+            query += "ioserver_filter=" + str(request.inputs["ioserver_filter"][0].data) + ";"
+        if request.inputs["host_status"][0].data is not None:
+            query += "host_status=" + str(request.inputs["host_status"][0].data) + ";"
+        if request.inputs["dbms_status"][0].data is not None:
+            query += "dbms_status=" + str(request.inputs["dbms_status"][0].data) + ";"
+        if request.inputs["level"][0].data is not None:
+            query += "level=" + str(request.inputs["level"][0].data) + ";"
+        if request.inputs["action"][0].data is not None:
+            query += "action=" + str(request.inputs["action"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7211,14 +6040,14 @@ class oph_instances(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7226,37 +6055,16 @@ class oph_instances(Process):
 
 
 class oph_intercube(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -7265,68 +6073,35 @@ class oph_intercube(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
-        pid2 = LiteralInput(
-            identifier="cube2",
-            title="Input cube2",
-            abstract="Name of the second input datacube in PID format",
-            data_type='string')
+        pid2 = LiteralInput(identifier="cube2", title="Input cube2", abstract="Name of the second input datacube in PID format", data_type="string")
 
         pids = LiteralInput(
             identifier="cubes",
             title="Input cubes",
             abstract="Name of the input datacubes, in PID format, alternatively to parameters 'cube' and 'cube2'. Multiple-values field: list of cubes separated by '|' can be provided. Only two datacbubes shall be specified",
-            data_type='string')
+            data_type="string",
+        )
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         measure = LiteralInput(
-            identifier="measure",
-            title="Measure",
-            abstract="Name of the new measure resulting from the specified operation",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+            identifier="measure", title="Measure", abstract="Name of the new measure resulting from the specified operation", min_occurs=0, max_occurs=1, default="null", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         operation = LiteralInput(
             identifier="operation",
@@ -7335,22 +6110,14 @@ class oph_intercube(Process):
             max_occurs=1,
             default="sub",
             abstract="Indicates the operation. Possible values are: sum, sub, mul, div, abs, arg, corr, mask, max, min, arg_max, arg_min",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, pid2, container, measure, description, schedule, operation]
         outputs = [jobid, response, error]
@@ -7364,46 +6131,46 @@ class oph_intercube(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_intercube '
+        query = "oph_intercube "
 
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['operation'][0].data is not None:
-            query += 'operation=' + str(request.inputs['operation'][0].data) + ';'
-        if request.inputs['measure'][0].data is not None:
-            query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
-        if request.inputs['cube'][0].data is not None:
-            query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
-        if request.inputs['cube2'][0].data is not None:
-            query += 'cube2=' + str(request.inputs['cube2'][0].data) + ';'
-        if request.inputs['cubes'][0].data is not None:
-            query += 'cubes=' + str(request.inputs['cubes'][0].data) + ';'
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["operation"][0].data is not None:
+            query += "operation=" + str(request.inputs["operation"][0].data) + ";"
+        if request.inputs["measure"][0].data is not None:
+            query += "measure=" + str(request.inputs["measure"][0].data) + ";"
+        if request.inputs["cube"][0].data is not None:
+            query += "cube=" + str(request.inputs["cube"][0].data) + ";"
+        if request.inputs["cube2"][0].data is not None:
+            query += "cube2=" + str(request.inputs["cube2"][0].data) + ";"
+        if request.inputs["cubes"][0].data is not None:
+            query += "cubes=" + str(request.inputs["cubes"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7422,14 +6189,14 @@ class oph_intercube(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7437,37 +6204,16 @@ class oph_intercube(Process):
 
 
 class oph_list(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -7476,15 +6222,10 @@ class oph_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         level = LiteralInput(
             identifier="level",
@@ -7493,7 +6234,8 @@ class oph_list(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         path = LiteralInput(
             identifier="path",
@@ -7502,13 +6244,15 @@ class oph_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
         container_filter = LiteralInput(
             identifier="container_filter",
@@ -7517,7 +6261,8 @@ class oph_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         pid = LiteralInput(
             identifier="cube",
@@ -7526,34 +6271,16 @@ class oph_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
-        host_filter = LiteralInput(
-            identifier="host_filter",
-            title="Host filter",
-            abstract="Optional filter on hosts. Default is 'all'",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+        host_filter = LiteralInput(identifier="host_filter", title="Host filter", abstract="Optional filter on hosts. Default is 'all'", min_occurs=0, max_occurs=1, default="all", data_type="string")
 
-        dbms_filter = LiteralInput(
-            identifier="dbms_filter",
-            title="Dbms filter",
-            abstract="Optional filter on DBMSs. Default is 'all'",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        dbms_filter = LiteralInput(identifier="dbms_filter", title="Dbms filter", abstract="Optional filter on DBMSs. Default is 'all'", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         measure_filter = LiteralInput(
-            identifier="measure_filter",
-            title="Measure filter",
-            abstract="Optional filter on measure. Default is 'all'",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+            identifier="measure_filter", title="Measure filter", abstract="Optional filter on measure. Default is 'all'", min_occurs=0, max_occurs=1, default="all", data_type="string"
+        )
 
         ntransform = LiteralInput(
             identifier="ntransform",
@@ -7562,25 +6289,12 @@ class oph_list(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        src_filter = LiteralInput(
-            identifier="src_filter",
-            title="Source filter",
-            abstract="Optional filter on source. Default is 'all'",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+        src_filter = LiteralInput(identifier="src_filter", title="Source filter", abstract="Optional filter on source. Default is 'all'", min_occurs=0, max_occurs=1, default="all", data_type="string")
 
-        db_filter = LiteralInput(
-            identifier="db_filter",
-            title="Db filter",
-            abstract="Optional filter on databases. Default is 'all'",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+        db_filter = LiteralInput(identifier="db_filter", title="Db filter", abstract="Optional filter on databases. Default is 'all'", min_occurs=0, max_occurs=1, default="all", data_type="string")
 
         recursive = LiteralInput(
             identifier="recursive",
@@ -7589,22 +6303,14 @@ class oph_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, level, path, cwd, container_filter, pid, host_filter, dbms_filter, measure_filter, ntransform, src_filter, db_filter, recursive]
         outputs = [jobid, response, error]
@@ -7618,53 +6324,53 @@ class oph_list(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_list '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['path'][0].data is not None:
-            query += 'path=' + str(request.inputs['path'][0].data) + ';'
-        if request.inputs['container_filter'][0].data is not None:
-            query += 'container_filter=' + str(request.inputs['container_filter'][0].data) + ';'
-        if request.inputs['cube'][0].data is not None:
-            query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
-        if request.inputs['host_filter'][0].data is not None:
-            query += 'host_filter=' + str(request.inputs['host_filter'][0].data) + ';'
-        if request.inputs['dbms_filter'][0].data is not None:
-            query += 'dbms_filter=' + str(request.inputs['dbms_filter'][0].data) + ';'
-        if request.inputs['measure_filter'][0].data is not None:
-            query += 'measure_filter=' + str(request.inputs['measure_filter'][0].data) + ';'
-        if request.inputs['ntransform'][0].data is not None:
-            query += 'ntransform=' + str(request.inputs['ntransform'][0].data) + ';'
-        if request.inputs['src_filter'][0].data is not None:
-            query += 'src_filter=' + str(request.inputs['src_filter'][0].data) + ';'
-        if request.inputs['db_filter'][0].data is not None:
-            query += 'db_filter=' + str(request.inputs['db_filter'][0].data) + ';'
-        if request.inputs['recursive'][0].data is not None:
-            query += 'recursive=' + str(request.inputs['recursive'][0].data) + ';'
-        if request.inputs['level'][0].data is not None:
-            query += 'level=' + str(request.inputs['level'][0].data) + ';'
+        query = "oph_list "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["path"][0].data is not None:
+            query += "path=" + str(request.inputs["path"][0].data) + ";"
+        if request.inputs["container_filter"][0].data is not None:
+            query += "container_filter=" + str(request.inputs["container_filter"][0].data) + ";"
+        if request.inputs["cube"][0].data is not None:
+            query += "cube=" + str(request.inputs["cube"][0].data) + ";"
+        if request.inputs["host_filter"][0].data is not None:
+            query += "host_filter=" + str(request.inputs["host_filter"][0].data) + ";"
+        if request.inputs["dbms_filter"][0].data is not None:
+            query += "dbms_filter=" + str(request.inputs["dbms_filter"][0].data) + ";"
+        if request.inputs["measure_filter"][0].data is not None:
+            query += "measure_filter=" + str(request.inputs["measure_filter"][0].data) + ";"
+        if request.inputs["ntransform"][0].data is not None:
+            query += "ntransform=" + str(request.inputs["ntransform"][0].data) + ";"
+        if request.inputs["src_filter"][0].data is not None:
+            query += "src_filter=" + str(request.inputs["src_filter"][0].data) + ";"
+        if request.inputs["db_filter"][0].data is not None:
+            query += "db_filter=" + str(request.inputs["db_filter"][0].data) + ";"
+        if request.inputs["recursive"][0].data is not None:
+            query += "recursive=" + str(request.inputs["recursive"][0].data) + ";"
+        if request.inputs["level"][0].data is not None:
+            query += "level=" + str(request.inputs["level"][0].data) + ";"
 
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7683,14 +6389,14 @@ class oph_list(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7698,37 +6404,16 @@ class oph_list(Process):
 
 
 class oph_log_info(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -7737,15 +6422,10 @@ class oph_log_info(Process):
             min_occurs=0,
             max_occurs=1,
             default="sync",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         log_type = LiteralInput(
             identifier="log_type",
@@ -7754,16 +6434,12 @@ class oph_log_info(Process):
             min_occurs=0,
             max_occurs=1,
             default="server",
-            data_type='string')
+            data_type="string",
+        )
 
         container_id = LiteralInput(
-            identifier="container_id",
-            title="Container id",
-            abstract="Optional filter on host name. Used only with level 2",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+            identifier="container_id", title="Container id", abstract="Optional filter on host name. Used only with level 2", min_occurs=0, max_occurs=1, default=0, data_type="integer"
+        )
 
         ioserver = LiteralInput(
             identifier="ioserver",
@@ -7772,7 +6448,8 @@ class oph_log_info(Process):
             min_occurs=0,
             max_occurs=1,
             default="mysql",
-            data_type='string')
+            data_type="string",
+        )
 
         nlines = LiteralInput(
             identifier="nlines",
@@ -7781,22 +6458,14 @@ class oph_log_info(Process):
             min_occurs=0,
             max_occurs=1,
             default=10,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, log_type, container_id, ioserver, nlines]
         outputs = [jobid, response, error]
@@ -7810,37 +6479,37 @@ class oph_log_info(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_log_info '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['log_type'][0].data is not None:
-            query += 'log_type=' + str(request.inputs['log_type'][0].data) + ';'
-        if request.inputs['container_id'][0].data is not None:
-            query += 'container_id=' + str(request.inputs['container_id'][0].data) + ';'
-        if request.inputs['ioserver'][0].data is not None:
-            query += 'ioserver=' + str(request.inputs['ioserver'][0].data) + ';'
-        if request.inputs['nlines'][0].data is not None:
-            query += 'nlines=' + str(request.inputs['nlines'][0].data) + ';'
+        query = "oph_log_info "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["log_type"][0].data is not None:
+            query += "log_type=" + str(request.inputs["log_type"][0].data) + ";"
+        if request.inputs["container_id"][0].data is not None:
+            query += "container_id=" + str(request.inputs["container_id"][0].data) + ";"
+        if request.inputs["ioserver"][0].data is not None:
+            query += "ioserver=" + str(request.inputs["ioserver"][0].data) + ";"
+        if request.inputs["nlines"][0].data is not None:
+            query += "nlines=" + str(request.inputs["nlines"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -7859,14 +6528,14 @@ class oph_log_info(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -7874,37 +6543,16 @@ class oph_log_info(Process):
 
 
 class oph_loggingbk(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -7913,15 +6561,10 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         session_level = LiteralInput(
             identifier="session_level",
@@ -7930,7 +6573,8 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         job_level = LiteralInput(
             identifier="job_level",
@@ -7939,34 +6583,16 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        mask = LiteralInput(
-            identifier="mask",
-            title="Mask",
-            abstract="3-digit mask, considered if job_level is bigger than 0",
-            min_occurs=0,
-            max_occurs=1,
-            default="000",
-            data_type='string')
+        mask = LiteralInput(identifier="mask", title="Mask", abstract="3-digit mask, considered if job_level is bigger than 0", min_occurs=0, max_occurs=1, default="000", data_type="string")
 
-        session_filter = LiteralInput(
-            identifier="session_filter",
-            title="Session filter",
-            abstract="Filter on a particular sessionID",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+        session_filter = LiteralInput(identifier="session_filter", title="Session filter", abstract="Filter on a particular sessionID", min_occurs=0, max_occurs=1, default="all", data_type="string")
 
         session_label_filter = LiteralInput(
-            identifier="session_label_filter",
-            title="Session label filter",
-            abstract="Filter on a particular session label",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+            identifier="session_label_filter", title="Session label filter", abstract="Filter on a particular session label", min_occurs=0, max_occurs=1, default="all", data_type="string"
+        )
 
         session_creation_filter = LiteralInput(
             identifier="session_creation_filter",
@@ -7975,25 +6601,16 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default="1900-01-01 00:00:00,2100-01-01 00:00:00",
-            data_type='string')
+            data_type="string",
+        )
 
         workflowid_filter = LiteralInput(
-            identifier="workflowid_filter",
-            title="Workflowid filter",
-            abstract="Filter on a particular workflow ID",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+            identifier="workflowid_filter", title="Workflowid filter", abstract="Filter on a particular workflow ID", min_occurs=0, max_occurs=1, default="all", data_type="string"
+        )
 
         markerid_filter = LiteralInput(
-            identifier="markerid_filter",
-            title="Markerid filter",
-            abstract="Filter on a particular marker ID",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+            identifier="markerid_filter", title="Markerid filter", abstract="Filter on a particular marker ID", min_occurs=0, max_occurs=1, default="all", data_type="string"
+        )
 
         parent_job_filter = LiteralInput(
             identifier="parent_job_filter",
@@ -8002,7 +6619,8 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         job_creation_filter = LiteralInput(
             identifier="job_creation_filter",
@@ -8011,25 +6629,14 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default="1900-01-01 00:00:00,2100-01-01 00:00:00",
-            data_type='string')
+            data_type="string",
+        )
 
-        job_status_filter = LiteralInput(
-            identifier="job_status_filter",
-            title="Job status filter",
-            abstract="Filter on job status",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+        job_status_filter = LiteralInput(identifier="job_status_filter", title="Job status filter", abstract="Filter on job status", min_occurs=0, max_occurs=1, default="all", data_type="string")
 
         submission_string_filter = LiteralInput(
-            identifier="submission_string_filter",
-            title="Submission string filter",
-            abstract="Filter on submission string",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+            identifier="submission_string_filter", title="Submission string filter", abstract="Filter on submission string", min_occurs=0, max_occurs=1, default="all", data_type="string"
+        )
 
         job_start_filter = LiteralInput(
             identifier="job_start_filter",
@@ -8038,7 +6645,8 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default="1900-01-01 00:00:00,2100-01-01 00:00:00",
-            data_type='string')
+            data_type="string",
+        )
 
         job_end_filter = LiteralInput(
             identifier="job_end_filter",
@@ -8047,7 +6655,8 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default="1900-01-01 00:00:00,2100-01-01 00:00:00",
-            data_type='string')
+            data_type="string",
+        )
 
         nlines = LiteralInput(
             identifier="nlines",
@@ -8056,25 +6665,37 @@ class oph_loggingbk(Process):
             min_occurs=0,
             max_occurs=1,
             default=100,
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, session_level, job_level, mask, session_filter, session_label_filter, session_creation_filter,
-            workflowid_filter, markerid_filter, parent_job_filter, job_creation_filter, job_status_filter, submission_string_filter, job_start_filter, job_end_filter, nlines]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            session_level,
+            job_level,
+            mask,
+            session_filter,
+            session_label_filter,
+            session_creation_filter,
+            workflowid_filter,
+            markerid_filter,
+            parent_job_filter,
+            job_creation_filter,
+            job_status_filter,
+            submission_string_filter,
+            job_start_filter,
+            job_end_filter,
+            nlines,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_loggingbk, self).__init__(
@@ -8086,59 +6707,59 @@ class oph_loggingbk(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_loggingbk '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['session_level'][0].data is not None:
-            query += 'session_level=' + str(request.inputs['session_level'][0].data) + ';'
-        if request.inputs['job_level'][0].data is not None:
-            query += 'job_level=' + str(request.inputs['job_level'][0].data) + ';'
-        if request.inputs['mask'][0].data is not None:
-            query += 'mask=' + str(request.inputs['mask'][0].data) + ';'
-        if request.inputs['session_filter'][0].data is not None:
-            query += 'session_filter=' + str(request.inputs['session_filter'][0].data) + ';'
-        if request.inputs['session_label_filter'][0].data is not None:
-            query += 'session_label_filter=' + str(request.inputs['session_label_filter'][0].data) + ';'
-        if request.inputs['session_creation_filter'][0].data is not None:
-            query += 'session_creation_filter=' + str(request.inputs['session_creation_filter'][0].data) + ';'
-        if request.inputs['workflowid_filter'][0].data is not None:
-            query += 'workflowid_filter=' + str(request.inputs['workflowid_filter'][0].data) + ';'
-        if request.inputs['markerid_filter'][0].data is not None:
-            query += 'markerid_filter=' + str(request.inputs['markerid_filter'][0].data) + ';'
-        if request.inputs['parent_job_filter'][0].data is not None:
-            query += 'parent_job_filter=' + str(request.inputs['parent_job_filter'][0].data) + ';'
-        if request.inputs['job_creation_filter'][0].data is not None:
-            query += 'job_creation_filter=' + str(request.inputs['job_creation_filter'][0].data) + ';'
-        if request.inputs['job_status_filter'][0].data is not None:
-            query += 'job_status_filter=' + str(request.inputs['job_status_filter'][0].data) + ';'
-        if request.inputs['submission_string_filter'][0].data is not None:
-            query += 'submission_string_filter=' + str(request.inputs['submission_string_filter'][0].data) + ';'
-        if request.inputs['job_start_filter'][0].data is not None:
-            query += 'job_start_filter=' + str(request.inputs['job_start_filter'][0].data) + ';'
-        if request.inputs['job_end_filter'][0].data is not None:
-            query += 'job_end_filter=' + str(request.inputs['job_end_filter'][0].data) + ';'
-        if request.inputs['nlines'][0].data is not None:
-            query += 'nlines=' + str(request.inputs['nlines'][0].data) + ';'
+        query = "oph_loggingbk "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["session_level"][0].data is not None:
+            query += "session_level=" + str(request.inputs["session_level"][0].data) + ";"
+        if request.inputs["job_level"][0].data is not None:
+            query += "job_level=" + str(request.inputs["job_level"][0].data) + ";"
+        if request.inputs["mask"][0].data is not None:
+            query += "mask=" + str(request.inputs["mask"][0].data) + ";"
+        if request.inputs["session_filter"][0].data is not None:
+            query += "session_filter=" + str(request.inputs["session_filter"][0].data) + ";"
+        if request.inputs["session_label_filter"][0].data is not None:
+            query += "session_label_filter=" + str(request.inputs["session_label_filter"][0].data) + ";"
+        if request.inputs["session_creation_filter"][0].data is not None:
+            query += "session_creation_filter=" + str(request.inputs["session_creation_filter"][0].data) + ";"
+        if request.inputs["workflowid_filter"][0].data is not None:
+            query += "workflowid_filter=" + str(request.inputs["workflowid_filter"][0].data) + ";"
+        if request.inputs["markerid_filter"][0].data is not None:
+            query += "markerid_filter=" + str(request.inputs["markerid_filter"][0].data) + ";"
+        if request.inputs["parent_job_filter"][0].data is not None:
+            query += "parent_job_filter=" + str(request.inputs["parent_job_filter"][0].data) + ";"
+        if request.inputs["job_creation_filter"][0].data is not None:
+            query += "job_creation_filter=" + str(request.inputs["job_creation_filter"][0].data) + ";"
+        if request.inputs["job_status_filter"][0].data is not None:
+            query += "job_status_filter=" + str(request.inputs["job_status_filter"][0].data) + ";"
+        if request.inputs["submission_string_filter"][0].data is not None:
+            query += "submission_string_filter=" + str(request.inputs["submission_string_filter"][0].data) + ";"
+        if request.inputs["job_start_filter"][0].data is not None:
+            query += "job_start_filter=" + str(request.inputs["job_start_filter"][0].data) + ";"
+        if request.inputs["job_end_filter"][0].data is not None:
+            query += "job_end_filter=" + str(request.inputs["job_end_filter"][0].data) + ";"
+        if request.inputs["nlines"][0].data is not None:
+            query += "nlines=" + str(request.inputs["nlines"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8157,14 +6778,14 @@ class oph_loggingbk(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8172,37 +6793,16 @@ class oph_loggingbk(Process):
 
 
 class oph_man(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -8211,21 +6811,12 @@ class oph_man(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        function = LiteralInput(
-            identifier="function",
-            title="Function",
-            abstract="Name of the requested operator/primitive",
-            data_type='string')
+        function = LiteralInput(identifier="function", title="Function", abstract="Name of the requested operator/primitive", data_type="string")
 
         function_version = LiteralInput(
             identifier="function_version",
@@ -8234,7 +6825,8 @@ class oph_man(Process):
             min_occurs=0,
             max_occurs=1,
             default="latest",
-            data_type='string')
+            data_type="string",
+        )
 
         function_type = LiteralInput(
             identifier="function_type",
@@ -8243,22 +6835,14 @@ class oph_man(Process):
             min_occurs=0,
             max_occurs=1,
             default="operator",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, function, function_version, function_type]
         outputs = [jobid, response, error]
@@ -8272,35 +6856,35 @@ class oph_man(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_man '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['function_version'][0].data is not None:
-            query += 'function_version=' + str(request.inputs['function_version'][0].data) + ';'
-        if request.inputs['function_type'][0].data is not None:
-            query += 'function_type=' + str(request.inputs['function_type'][0].data) + ';'
+        query = "oph_man "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["function_version"][0].data is not None:
+            query += "function_version=" + str(request.inputs["function_version"][0].data) + ";"
+        if request.inputs["function_type"][0].data is not None:
+            query += "function_type=" + str(request.inputs["function_type"][0].data) + ";"
 
-        query += 'function=' + str(request.inputs['function'][0].data) + ';'
+        query += "function=" + str(request.inputs["function"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8319,14 +6903,14 @@ class oph_man(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8334,37 +6918,16 @@ class oph_man(Process):
 
 
 class oph_manage_session(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -8373,63 +6936,26 @@ class oph_manage_session(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        action = LiteralInput(
-            identifier="action",
-            title="Action",
-            abstract="Name of the action to be applied to session parameter",
-            data_type='string')
+        action = LiteralInput(identifier="action", title="Action", abstract="Name of the action to be applied to session parameter", data_type="string")
 
         session = LiteralInput(
-            identifier="session",
-            title="Session",
-            abstract="Link to intended session, by default it is the working session",
-            min_occurs=0,
-            max_occurs=1,
-            default="this",
-            data_type='string')
+            identifier="session", title="Session", abstract="Link to intended session, by default it is the working session", min_occurs=0, max_occurs=1, default="this", data_type="string"
+        )
 
-        key = LiteralInput(
-            identifier="key",
-            title="Key",
-            abstract="Name of the parameter to be get/set",
-            min_occurs=0,
-            max_occurs=1,
-            default="user",
-            data_type='string')
+        key = LiteralInput(identifier="key", title="Key", abstract="Name of the parameter to be get/set", min_occurs=0, max_occurs=1, default="user", data_type="string")
 
-        value = LiteralInput(
-            identifier="value",
-            title="Value",
-            abstract="Value of the key set with the argument 'key'",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        value = LiteralInput(identifier="value", title="Value", abstract="Value of the key set with the argument 'key'", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, action, session, key, value]
         outputs = [jobid, response, error]
@@ -8443,37 +6969,37 @@ class oph_manage_session(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_manage_session '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['session'][0].data is not None:
-            query += 'session=' + str(request.inputs['session'][0].data) + ';'
-        if request.inputs['key'][0].data is not None:
-            query += 'key=' + str(request.inputs['key'][0].data) + ';'
-        if request.inputs['value'][0].data is not None:
-            query += 'value=' + str(request.inputs['value'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
+        query = "oph_manage_session "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["session"][0].data is not None:
+            query += "session=" + str(request.inputs["session"][0].data) + ";"
+        if request.inputs["key"][0].data is not None:
+            query += "key=" + str(request.inputs["key"][0].data) + ";"
+        if request.inputs["value"][0].data is not None:
+            query += "value=" + str(request.inputs["value"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
 
-        query += 'action=' + str(request.inputs['action'][0].data) + ';'
+        query += "action=" + str(request.inputs["action"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8492,14 +7018,14 @@ class oph_manage_session(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8507,37 +7033,16 @@ class oph_manage_session(Process):
 
 
 class oph_merge(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -8546,70 +7051,30 @@ class oph_merge(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        nmerge = LiteralInput(
-            identifier="nmerge",
-            title="Number of Input Fragments",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        nmerge = LiteralInput(identifier="nmerge", title="Number of Input Fragments", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, schedule, nmerge, container, description]
         outputs = [jobid, response, error]
@@ -8623,39 +7088,39 @@ class oph_merge(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_merge '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['nmerge'][0].data is not None:
-            query += 'nmerge=' + str(request.inputs['nmerge'][0].data) + ';'
+        query = "oph_merge "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["nmerge"][0].data is not None:
+            query += "nmerge=" + str(request.inputs["nmerge"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8674,14 +7139,14 @@ class oph_merge(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8689,37 +7154,16 @@ class oph_merge(Process):
 
 
 class oph_mergecubes(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -8728,38 +7172,23 @@ class oph_mergecubes(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         pids = LiteralInput(
             identifier="cubes",
             title="Input cubes",
             abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         mode = LiteralInput(
-            identifier="mode",
-            title="Mode",
-            abstract="Possible values are 'i' (default) to interlace, 'a' to append input measures",
-            min_occurs=0,
-            max_occurs=1,
-            default="i",
-            data_type='string')
+            identifier="mode", title="Mode", abstract="Possible values are 'i' (default) to interlace, 'a' to append input measures", min_occurs=0, max_occurs=1, default="i", data_type="string"
+        )
 
         hold_values = LiteralInput(
             identifier="hold_values",
@@ -8768,7 +7197,8 @@ class oph_mergecubes(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         number = LiteralInput(
             identifier="number",
@@ -8777,40 +7207,22 @@ class oph_mergecubes(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pids, schedule, mode, hold_values, number, container, description]
         outputs = [jobid, response, error]
@@ -8824,43 +7236,43 @@ class oph_mergecubes(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_mergecubes '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['mode'][0].data is not None:
-            query += 'mode=' + str(request.inputs['mode'][0].data) + ';'
-        if request.inputs['hold_values'][0].data is not None:
-            query += 'hold_values=' + str(request.inputs['hold_values'][0].data) + ';'
-        if request.inputs['number'][0].data is not None:
-            query += 'number=' + str(request.inputs['number'][0].data) + ';'
+        query = "oph_mergecubes "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["mode"][0].data is not None:
+            query += "mode=" + str(request.inputs["mode"][0].data) + ";"
+        if request.inputs["hold_values"][0].data is not None:
+            query += "hold_values=" + str(request.inputs["hold_values"][0].data) + ";"
+        if request.inputs["number"][0].data is not None:
+            query += "number=" + str(request.inputs["number"][0].data) + ";"
 
-        query += 'cubes=' + str(request.inputs['cubes'][0].data) + ';'
+        query += "cubes=" + str(request.inputs["cubes"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -8879,14 +7291,14 @@ class oph_mergecubes(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -8894,37 +7306,16 @@ class oph_mergecubes(Process):
 
 
 class oph_mergecubes2(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -8933,29 +7324,19 @@ class oph_mergecubes2(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         pids = LiteralInput(
             identifier="cubes",
             title="Input cubes",
             abstract="Name of the input datacubes, in PID format, to merge. Multiple-values field: list of cubes separated by '|' can be provided",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         dim = LiteralInput(
             identifier="dim",
@@ -8964,16 +7345,10 @@ class oph_mergecubes2(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
-        dim_type = LiteralInput(
-            identifier="dim_type",
-            title="Dimension type",
-            abstract="Data type associated with the new dimension",
-            min_occurs=0,
-            max_occurs=1,
-            default="long",
-            data_type='string')
+        dim_type = LiteralInput(identifier="dim_type", title="Dimension type", abstract="Data type associated with the new dimension", min_occurs=0, max_occurs=1, default="long", data_type="string")
 
         number = LiteralInput(
             identifier="number",
@@ -8982,40 +7357,22 @@ class oph_mergecubes2(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pids, schedule, dim, dim_type, number, container, description]
         outputs = [jobid, response, error]
@@ -9029,43 +7386,43 @@ class oph_mergecubes2(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_mergecubes2 '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['dim'][0].data is not None:
-            query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
-        if request.inputs['dim_type'][0].data is not None:
-            query += 'dim_type=' + str(request.inputs['dim_type'][0].data) + ';'
-        if request.inputs['number'][0].data is not None:
-            query += 'number=' + str(request.inputs['number'][0].data) + ';'
+        query = "oph_mergecubes2 "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["dim"][0].data is not None:
+            query += "dim=" + str(request.inputs["dim"][0].data) + ";"
+        if request.inputs["dim_type"][0].data is not None:
+            query += "dim_type=" + str(request.inputs["dim_type"][0].data) + ";"
+        if request.inputs["number"][0].data is not None:
+            query += "number=" + str(request.inputs["number"][0].data) + ";"
 
-        query += 'cubes=' + str(request.inputs['cubes'][0].data) + ';'
+        query += "cubes=" + str(request.inputs["cubes"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9084,14 +7441,14 @@ class oph_mergecubes2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9099,37 +7456,16 @@ class oph_mergecubes2(Process):
 
 
 class oph_metadata(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -9138,30 +7474,16 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         mode = LiteralInput(
-            identifier="mode",
-            title="Mode",
-            abstract="Set the appropiate operation among: insert, read, update, delete",
-            min_occurs=0,
-            max_occurs=1,
-            default="read",
-            data_type='string')
+            identifier="mode", title="Mode", abstract="Set the appropiate operation among: insert, read, update, delete", min_occurs=0, max_occurs=1, default="read", data_type="string"
+        )
 
         metadata_key = LiteralInput(
             identifier="metadata_key",
@@ -9170,7 +7492,8 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         variable = LiteralInput(
             identifier="variable",
@@ -9179,7 +7502,8 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="global",
-            data_type='string')
+            data_type="string",
+        )
 
         metadata_id = LiteralInput(
             identifier="metadata_id",
@@ -9188,7 +7512,8 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         metadata_type = LiteralInput(
             identifier="metadata_type",
@@ -9197,7 +7522,8 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="text",
-            data_type='string')
+            data_type="string",
+        )
 
         metadata_value = LiteralInput(
             identifier="metadata_value",
@@ -9206,7 +7532,8 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         variable_filter = LiteralInput(
             identifier="variable_filter",
@@ -9215,7 +7542,8 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         metadata_type_filter = LiteralInput(
             identifier="metadata_type_filter",
@@ -9224,7 +7552,8 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         metadata_value_filter = LiteralInput(
             identifier="metadata_value_filter",
@@ -9233,7 +7562,8 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         force = LiteralInput(
             identifier="force",
@@ -9242,25 +7572,33 @@ class oph_metadata(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, mode, metadata_key, variable, metadata_id,
-            metadata_type, metadata_value, variable_filter, metadata_type_filter, metadata_value_filter, force]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            pid,
+            mode,
+            metadata_key,
+            variable,
+            metadata_id,
+            metadata_type,
+            metadata_value,
+            variable_filter,
+            metadata_type_filter,
+            metadata_value_filter,
+            force,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_metadata, self).__init__(
@@ -9272,51 +7610,51 @@ class oph_metadata(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_metadata '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['mode'][0].data is not None:
-            query += 'mode=' + str(request.inputs['mode'][0].data) + ';'
-        if request.inputs['metadata_key'][0].data is not None:
-            query += 'metadata_key=' + str(request.inputs['metadata_key'][0].data) + ';'
-        if request.inputs['variable'][0].data is not None:
-            query += 'variable=' + str(request.inputs['variable'][0].data) + ';'
-        if request.inputs['metadata_id'][0].data is not None:
-            query += 'metadata_id=' + str(request.inputs['metadata_id'][0].data) + ';'
-        if request.inputs['metadata_type'][0].data is not None:
-            query += 'metadata_type=' + str(request.inputs['metadata_type'][0].data) + ';'
-        if request.inputs['metadata_value'][0].data is not None:
-            query += 'metadata_value=' + str(request.inputs['metadata_value'][0].data) + ';'
-        if request.inputs['variable_filter'][0].data is not None:
-            query += 'variable_filter=' + str(request.inputs['variable_filter'][0].data) + ';'
-        if request.inputs['metadata_type_filter'][0].data is not None:
-            query += 'metadata_type_filter=' + str(request.inputs['metadata_type_filter'][0].data) + ';'
-        if request.inputs['metadata_value_filter'][0].data is not None:
-            query += 'metadata_value_filter=' + str(request.inputs['metadata_value_filter'][0].data) + ';'
-        if request.inputs['force'][0].data is not None:
-            query += 'force=' + str(request.inputs['force'][0].data) + ';'
+        query = "oph_metadata "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["mode"][0].data is not None:
+            query += "mode=" + str(request.inputs["mode"][0].data) + ";"
+        if request.inputs["metadata_key"][0].data is not None:
+            query += "metadata_key=" + str(request.inputs["metadata_key"][0].data) + ";"
+        if request.inputs["variable"][0].data is not None:
+            query += "variable=" + str(request.inputs["variable"][0].data) + ";"
+        if request.inputs["metadata_id"][0].data is not None:
+            query += "metadata_id=" + str(request.inputs["metadata_id"][0].data) + ";"
+        if request.inputs["metadata_type"][0].data is not None:
+            query += "metadata_type=" + str(request.inputs["metadata_type"][0].data) + ";"
+        if request.inputs["metadata_value"][0].data is not None:
+            query += "metadata_value=" + str(request.inputs["metadata_value"][0].data) + ";"
+        if request.inputs["variable_filter"][0].data is not None:
+            query += "variable_filter=" + str(request.inputs["variable_filter"][0].data) + ";"
+        if request.inputs["metadata_type_filter"][0].data is not None:
+            query += "metadata_type_filter=" + str(request.inputs["metadata_type_filter"][0].data) + ";"
+        if request.inputs["metadata_value_filter"][0].data is not None:
+            query += "metadata_value_filter=" + str(request.inputs["metadata_value_filter"][0].data) + ";"
+        if request.inputs["force"][0].data is not None:
+            query += "force=" + str(request.inputs["force"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9335,14 +7673,14 @@ class oph_metadata(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9350,37 +7688,16 @@ class oph_metadata(Process):
 
 
 class oph_movecontainer(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -9389,42 +7706,27 @@ class oph_movecontainer(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Container",
-            abstract="Exactly 2 paths (separated by |) for the input and the ouput containers (with his ordering) must be specified",
-            data_type='string')
+            identifier="container", title="Container", abstract="Exactly 2 paths (separated by |) for the input and the ouput containers (with his ordering) must be specified", data_type="string"
+        )
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, container, cwd]
         outputs = [jobid, response, error]
@@ -9438,32 +7740,32 @@ class oph_movecontainer(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_movecontainer '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
+        query = "oph_movecontainer "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
 
-        query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "container=" + str(request.inputs["container"][0].data) + ";"
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9482,14 +7784,14 @@ class oph_movecontainer(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9497,37 +7799,16 @@ class oph_movecontainer(Process):
 
 
 class oph_operators_list(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -9536,15 +7817,10 @@ class oph_operators_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         operator_filter = LiteralInput(
             identifier="operator_filter",
@@ -9553,7 +7829,8 @@ class oph_operators_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="operator",
-            data_type='string')
+            data_type="string",
+        )
 
         limit_filter = LiteralInput(
             identifier="limit_filter",
@@ -9562,22 +7839,14 @@ class oph_operators_list(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, operator_filter, limit_filter]
         outputs = [jobid, response, error]
@@ -9591,33 +7860,33 @@ class oph_operators_list(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_operators_list '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['operator_filter'][0].data is not None:
-            query += 'operator_filter=' + str(request.inputs['operator_filter'][0].data) + ';'
-        if request.inputs['limit_filter'][0].data is not None:
-            query += 'limit_filter=' + str(request.inputs['limit_filter'][0].data) + ';'
+        query = "oph_operators_list "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["operator_filter"][0].data is not None:
+            query += "operator_filter=" + str(request.inputs["operator_filter"][0].data) + ";"
+        if request.inputs["limit_filter"][0].data is not None:
+            query += "limit_filter=" + str(request.inputs["limit_filter"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9636,14 +7905,14 @@ class oph_operators_list(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9651,46 +7920,20 @@ class oph_operators_list(Process):
 
 
 class oph_permute(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -9699,68 +7942,35 @@ class oph_permute(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         dim_pos = LiteralInput(
             identifier="dim_pos",
             title="Dim pos",
             abstract="Permutation of implicit dimensions as a comma-separated list of dimension levels. Number of elements in the list must be equal to the number of implicit dimensions of input datacube. Each element indicates the new level of the implicit dimension, drom the outermost to the innermost, in the output datacube",
-            data_type='string')
+            data_type="string",
+        )
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, dim_pos, container, description]
         outputs = [jobid, response, error]
@@ -9774,40 +7984,40 @@ class oph_permute(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_permute '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_permute "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'dim_pos=' + str(request.inputs['dim_pos'][0].data) + ';'
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "dim_pos=" + str(request.inputs["dim_pos"][0].data) + ";"
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -9826,14 +8036,14 @@ class oph_permute(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -9841,37 +8051,16 @@ class oph_permute(Process):
 
 
 class oph_primitives_list(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -9880,15 +8069,10 @@ class oph_primitives_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         level = LiteralInput(
             identifier="level",
@@ -9897,7 +8081,8 @@ class oph_primitives_list(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         dbms_filter = LiteralInput(
             identifier="dbms_filter",
@@ -9906,7 +8091,8 @@ class oph_primitives_list(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
         return_type = LiteralInput(
             identifier="return_type",
@@ -9915,7 +8101,8 @@ class oph_primitives_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         primitive_type = LiteralInput(
             identifier="primitive_type",
@@ -9924,7 +8111,8 @@ class oph_primitives_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         primitive_filter = LiteralInput(
             identifier="primitive_filter",
@@ -9933,7 +8121,8 @@ class oph_primitives_list(Process):
             min_occurs=0,
             max_occurs=1,
             default="",
-            data_type='string')
+            data_type="string",
+        )
 
         limit_filter = LiteralInput(
             identifier="limit_filter",
@@ -9942,22 +8131,14 @@ class oph_primitives_list(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, level, dbms_filter, return_type, primitive_type, primitive_filter, limit_filter]
         outputs = [jobid, response, error]
@@ -9971,41 +8152,41 @@ class oph_primitives_list(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_primitives_list '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['level'][0].data is not None:
-            query += 'level=' + str(request.inputs['level'][0].data) + ';'
-        if request.inputs['dbms_filter'][0].data is not None:
-            query += 'dbms_filter=' + str(request.inputs['dbms_filter'][0].data) + ';'
-        if request.inputs['return_type'][0].data is not None:
-            query += 'return_type=' + str(request.inputs['return_type'][0].data) + ';'
-        if request.inputs['primitive_type'][0].data is not None:
-            query += 'primitive_type=' + str(request.inputs['primitive_type'][0].data) + ';'
-        if request.inputs['primitive_filter'][0].data is not None:
-            query += 'primitive_filter=' + str(request.inputs['primitive_filter'][0].data) + ';'
-        if request.inputs['limit_filter'][0].data is not None:
-            query += 'limit_filter=' + str(request.inputs['limit_filter'][0].data) + ';'
+        query = "oph_primitives_list "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["level"][0].data is not None:
+            query += "level=" + str(request.inputs["level"][0].data) + ";"
+        if request.inputs["dbms_filter"][0].data is not None:
+            query += "dbms_filter=" + str(request.inputs["dbms_filter"][0].data) + ";"
+        if request.inputs["return_type"][0].data is not None:
+            query += "return_type=" + str(request.inputs["return_type"][0].data) + ";"
+        if request.inputs["primitive_type"][0].data is not None:
+            query += "primitive_type=" + str(request.inputs["primitive_type"][0].data) + ";"
+        if request.inputs["primitive_filter"][0].data is not None:
+            query += "primitive_filter=" + str(request.inputs["primitive_filter"][0].data) + ";"
+        if request.inputs["limit_filter"][0].data is not None:
+            query += "limit_filter=" + str(request.inputs["limit_filter"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10024,14 +8205,14 @@ class oph_primitives_list(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -10039,37 +8220,16 @@ class oph_primitives_list(Process):
 
 
 class oph_publish(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -10078,21 +8238,12 @@ class oph_publish(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         show_index = LiteralInput(
             identifier="show_index",
@@ -10101,7 +8252,8 @@ class oph_publish(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         show_id = LiteralInput(
             identifier="show_id",
@@ -10110,7 +8262,8 @@ class oph_publish(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         show_time = LiteralInput(
             identifier="show_time",
@@ -10119,7 +8272,8 @@ class oph_publish(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         content = LiteralInput(
             identifier="content",
@@ -10128,30 +8282,16 @@ class oph_publish(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, show_index, show_id, show_time, content, schedule]
         outputs = [jobid, response, error]
@@ -10165,41 +8305,41 @@ class oph_publish(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_publish '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['show_index'][0].data is not None:
-            query += 'show_index=' + str(request.inputs['show_index'][0].data) + ';'
-        if request.inputs['show_id'][0].data is not None:
-            query += 'show_id=' + str(request.inputs['show_id'][0].data) + ';'
-        if request.inputs['show_time'][0].data is not None:
-            query += 'show_time=' + str(request.inputs['show_time'][0].data) + ';'
-        if request.inputs['content'][0].data is not None:
-            query += 'content=' + str(request.inputs['content'][0].data) + ';'
+        query = "oph_publish "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["show_index"][0].data is not None:
+            query += "show_index=" + str(request.inputs["show_index"][0].data) + ";"
+        if request.inputs["show_id"][0].data is not None:
+            query += "show_id=" + str(request.inputs["show_id"][0].data) + ";"
+        if request.inputs["show_time"][0].data is not None:
+            query += "show_time=" + str(request.inputs["show_time"][0].data) + ";"
+        if request.inputs["content"][0].data is not None:
+            query += "content=" + str(request.inputs["content"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10218,14 +8358,14 @@ class oph_publish(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -10233,37 +8373,16 @@ class oph_publish(Process):
 
 
 class oph_randcube(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -10272,27 +8391,19 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
-        container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            data_type='string')
+        container = LiteralInput(identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", data_type="string")
 
         host_partition = LiteralInput(
             identifier="host_partition",
@@ -10301,7 +8412,8 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         ioserver = LiteralInput(
             identifier="ioserver",
@@ -10310,7 +8422,8 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default="mysql_table",
-            data_type='string')
+            data_type="string",
+        )
 
         nhost = LiteralInput(
             identifier="nhost",
@@ -10319,43 +8432,25 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        nfrag = LiteralInput(
-            identifier="nfrag",
-            title="Number of fragments per database",
-            abstract="Number of fragments per database",
-            data_type='integer')
+        nfrag = LiteralInput(identifier="nfrag", title="Number of fragments per database", abstract="Number of fragments per database", data_type="integer")
 
-        ntuple = LiteralInput(
-            identifier="ntuple",
-            title="Number of tuples per fragment",
-            abstract="Number of tuples per fragment",
-            data_type='integer')
+        ntuple = LiteralInput(identifier="ntuple", title="Number of tuples per fragment", abstract="Number of tuples per fragment", data_type="integer")
 
-        measure = LiteralInput(
-            identifier="measure",
-            title="Measure",
-            abstract="Name of the measure used in the datacube",
-            data_type='string')
+        measure = LiteralInput(identifier="measure", title="Measure", abstract="Name of the measure used in the datacube", data_type="string")
 
-        measure_type = LiteralInput(
-            identifier="measure_type",
-            title="Measure type",
-            abstract="Type of measures. Possible values are 'double', 'float' or 'int'",
-            data_type='string')
+        measure_type = LiteralInput(identifier="measure_type", title="Measure type", abstract="Type of measures. Possible values are 'double', 'float' or 'int'", data_type="string")
 
         exp_ndim = LiteralInput(
             identifier="exp_ndim",
             title="Exp ndim",
             abstract="Used to specify how many dimensions in dim argument, starting from the first one, must be considered as explicit dimensions",
-            data_type='integer')
+            data_type="integer",
+        )
 
-        dim = LiteralInput(
-            identifier="dim",
-            title="Dim",
-            abstract="Name of the dimension. Multi-value field: list of dimensions separated by '|' can be provided",
-            data_type='string')
+        dim = LiteralInput(identifier="dim", title="Dim", abstract="Name of the dimension. Multi-value field: list of dimensions separated by '|' can be provided", data_type="string")
 
         concept_level = LiteralInput(
             identifier="concept_level",
@@ -10364,13 +8459,12 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default="c",
-            data_type='string')
+            data_type="string",
+        )
 
         dim_size = LiteralInput(
-            identifier="dim_size",
-            title="Dim size",
-            abstract="Size of random dimension. Multi-value field: list of dimensions separated by '|' can be provided",
-            data_type='string')
+            identifier="dim_size", title="Dim size", abstract="Size of random dimension. Multi-value field: list of dimensions separated by '|' can be provided", data_type="string"
+        )
 
         run = LiteralInput(
             identifier="run",
@@ -10379,15 +8473,10 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         compressed = LiteralInput(
             identifier="compressed",
@@ -10396,7 +8485,8 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         grid = LiteralInput(
             identifier="grid",
@@ -10405,16 +8495,12 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         algorithm = LiteralInput(
             identifier="algorithm",
@@ -10423,25 +8509,41 @@ class oph_randcube(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, exec_mode, sessionid, cwd, container, host_partition, ioserver, nhost, nfrag, ntuple,
-            measure, measure_type, exp_ndim, dim, concept_level, dim_size, run, schedule, compressed, grid, description, algorithm]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            exec_mode,
+            sessionid,
+            cwd,
+            container,
+            host_partition,
+            ioserver,
+            nhost,
+            nfrag,
+            ntuple,
+            measure,
+            measure_type,
+            exp_ndim,
+            dim,
+            concept_level,
+            dim_size,
+            run,
+            schedule,
+            compressed,
+            grid,
+            description,
+            algorithm,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_randcube, self).__init__(
@@ -10453,59 +8555,59 @@ class oph_randcube(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_randcube '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['host_partition'][0].data is not None:
-            query += 'host_partition=' + str(request.inputs['host_partition'][0].data) + ';'
-        if request.inputs['ioserver'][0].data is not None:
-            query += 'ioserver=' + str(request.inputs['ioserver'][0].data) + ';'
-        if request.inputs['nhost'][0].data is not None:
-            query += 'nhost=' + str(request.inputs['nhost'][0].data) + ';'
-        if request.inputs['run'][0].data is not None:
-            query += 'run=' + str(request.inputs['run'][0].data) + ';'
-        if request.inputs['concept_level'][0].data is not None:
-            query += 'concept_level=' + str(request.inputs['concept_level'][0].data) + ';'
-        if request.inputs['compressed'][0].data is not None:
-            query += 'compressed=' + str(request.inputs['compressed'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['algorithm'][0].data is not None:
-            query += 'algorithm=' + str(request.inputs['algorithm'][0].data) + ';'
+        query = "oph_randcube "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["host_partition"][0].data is not None:
+            query += "host_partition=" + str(request.inputs["host_partition"][0].data) + ";"
+        if request.inputs["ioserver"][0].data is not None:
+            query += "ioserver=" + str(request.inputs["ioserver"][0].data) + ";"
+        if request.inputs["nhost"][0].data is not None:
+            query += "nhost=" + str(request.inputs["nhost"][0].data) + ";"
+        if request.inputs["run"][0].data is not None:
+            query += "run=" + str(request.inputs["run"][0].data) + ";"
+        if request.inputs["concept_level"][0].data is not None:
+            query += "concept_level=" + str(request.inputs["concept_level"][0].data) + ";"
+        if request.inputs["compressed"][0].data is not None:
+            query += "compressed=" + str(request.inputs["compressed"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["algorithm"][0].data is not None:
+            query += "algorithm=" + str(request.inputs["algorithm"][0].data) + ";"
 
-        query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        query += 'nfrag=' + str(request.inputs['nfrag'][0].data) + ';'
-        query += 'ntuple=' + str(request.inputs['ntuple'][0].data) + ';'
-        query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
-        query += 'measure_type=' + str(request.inputs['measure_type'][0].data) + ';'
-        query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
-        query += 'exp_ndim=' + str(request.inputs['exp_ndim'][0].data) + ';'
-        query += 'dim_size=' + str(request.inputs['dim_size'][0].data) + ';'
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "container=" + str(request.inputs["container"][0].data) + ";"
+        query += "nfrag=" + str(request.inputs["nfrag"][0].data) + ";"
+        query += "ntuple=" + str(request.inputs["ntuple"][0].data) + ";"
+        query += "measure=" + str(request.inputs["measure"][0].data) + ";"
+        query += "measure_type=" + str(request.inputs["measure_type"][0].data) + ";"
+        query += "dim=" + str(request.inputs["dim"][0].data) + ";"
+        query += "exp_ndim=" + str(request.inputs["exp_ndim"][0].data) + ";"
+        query += "dim_size=" + str(request.inputs["dim_size"][0].data) + ";"
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10524,14 +8626,14 @@ class oph_randcube(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -10539,46 +8641,20 @@ class oph_randcube(Process):
 
 
 class oph_randcube2(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -10587,27 +8663,19 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, used to select the folder where the container is located",
-            data_type='string')
+            data_type="string",
+        )
 
-        container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            data_type='string')
+        container = LiteralInput(identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", data_type="string")
 
         host_partition = LiteralInput(
             identifier="host_partition",
@@ -10616,7 +8684,8 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default="auto",
-            data_type='string')
+            data_type="string",
+        )
 
         ioserver = LiteralInput(
             identifier="ioserver",
@@ -10625,7 +8694,8 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default="mysql_table",
-            data_type='string')
+            data_type="string",
+        )
 
         nhost = LiteralInput(
             identifier="nhost",
@@ -10634,43 +8704,25 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        nfrag = LiteralInput(
-            identifier="nfrag",
-            title="Number of fragments per database",
-            abstract="Number of fragments per database",
-            data_type='integer')
+        nfrag = LiteralInput(identifier="nfrag", title="Number of fragments per database", abstract="Number of fragments per database", data_type="integer")
 
-        ntuple = LiteralInput(
-            identifier="ntuple",
-            title="Number of tuples per fragment",
-            abstract="Number of tuples per fragment",
-            data_type='integer')
+        ntuple = LiteralInput(identifier="ntuple", title="Number of tuples per fragment", abstract="Number of tuples per fragment", data_type="integer")
 
-        measure = LiteralInput(
-            identifier="measure",
-            title="Measure",
-            abstract="Name of the measure used in the datacube",
-            data_type='string')
+        measure = LiteralInput(identifier="measure", title="Measure", abstract="Name of the measure used in the datacube", data_type="string")
 
-        measure_type = LiteralInput(
-            identifier="measure_type",
-            title="Measure type",
-            abstract="Type of measures. Possible values are 'double', 'float' or 'int'",
-            data_type='string')
+        measure_type = LiteralInput(identifier="measure_type", title="Measure type", abstract="Type of measures. Possible values are 'double', 'float' or 'int'", data_type="string")
 
         exp_ndim = LiteralInput(
             identifier="exp_ndim",
             title="Exp ndim",
             abstract="Used to specify how many dimensions in dim argument, starting from the first one, must be considered as explicit dimensions",
-            data_type='integer')
+            data_type="integer",
+        )
 
-        dim = LiteralInput(
-            identifier="dim",
-            title="Dim",
-            abstract="Name of the dimension. Multi-value field: list of dimensions separated by '|' can be provided",
-            data_type='string')
+        dim = LiteralInput(identifier="dim", title="Dim", abstract="Name of the dimension. Multi-value field: list of dimensions separated by '|' can be provided", data_type="string")
 
         concept_level = LiteralInput(
             identifier="concept_level",
@@ -10679,13 +8731,12 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default="c",
-            data_type='string')
+            data_type="string",
+        )
 
         dim_size = LiteralInput(
-            identifier="dim_size",
-            title="Dim size",
-            abstract="Size of random dimension. Multi-value field: list of dimensions separated by '|' can be provided",
-            data_type='string')
+            identifier="dim_size", title="Dim size", abstract="Size of random dimension. Multi-value field: list of dimensions separated by '|' can be provided", data_type="string"
+        )
 
         run = LiteralInput(
             identifier="run",
@@ -10694,15 +8745,10 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default="yes",
-            data_type='string')
+            data_type="string",
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         compressed = LiteralInput(
             identifier="compressed",
@@ -10711,7 +8757,8 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         grid = LiteralInput(
             identifier="grid",
@@ -10720,16 +8767,12 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         algorithm = LiteralInput(
             identifier="algorithm",
@@ -10738,25 +8781,42 @@ class oph_randcube2(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
-        inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, cwd, container, host_partition, ioserver, nhost, nfrag, ntuple,
-            measure, measure_type, exp_ndim, dim, concept_level, dim_size, run, schedule, compressed, grid, description, algorithm]
+        inputs = [
+            userid,
+            passwd,
+            ncores,
+            nthreads,
+            exec_mode,
+            sessionid,
+            cwd,
+            container,
+            host_partition,
+            ioserver,
+            nhost,
+            nfrag,
+            ntuple,
+            measure,
+            measure_type,
+            exp_ndim,
+            dim,
+            concept_level,
+            dim_size,
+            run,
+            schedule,
+            compressed,
+            grid,
+            description,
+            algorithm,
+        ]
         outputs = [jobid, response, error]
 
         super(oph_randcube2, self).__init__(
@@ -10768,61 +8828,61 @@ class oph_randcube2(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_randcube2 '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['host_partition'][0].data is not None:
-            query += 'host_partition=' + str(request.inputs['host_partition'][0].data) + ';'
-        if request.inputs['ioserver'][0].data is not None:
-            query += 'ioserver=' + str(request.inputs['ioserver'][0].data) + ';'
-        if request.inputs['nhost'][0].data is not None:
-            query += 'nhost=' + str(request.inputs['nhost'][0].data) + ';'
-        if request.inputs['run'][0].data is not None:
-            query += 'run=' + str(request.inputs['run'][0].data) + ';'
-        if request.inputs['concept_level'][0].data is not None:
-            query += 'concept_level=' + str(request.inputs['concept_level'][0].data) + ';'
-        if request.inputs['compressed'][0].data is not None:
-            query += 'compressed=' + str(request.inputs['compressed'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['algorithm'][0].data is not None:
-            query += 'algorithm=' + str(request.inputs['algorithm'][0].data) + ';'
+        query = "oph_randcube2 "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["host_partition"][0].data is not None:
+            query += "host_partition=" + str(request.inputs["host_partition"][0].data) + ";"
+        if request.inputs["ioserver"][0].data is not None:
+            query += "ioserver=" + str(request.inputs["ioserver"][0].data) + ";"
+        if request.inputs["nhost"][0].data is not None:
+            query += "nhost=" + str(request.inputs["nhost"][0].data) + ";"
+        if request.inputs["run"][0].data is not None:
+            query += "run=" + str(request.inputs["run"][0].data) + ";"
+        if request.inputs["concept_level"][0].data is not None:
+            query += "concept_level=" + str(request.inputs["concept_level"][0].data) + ";"
+        if request.inputs["compressed"][0].data is not None:
+            query += "compressed=" + str(request.inputs["compressed"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["algorithm"][0].data is not None:
+            query += "algorithm=" + str(request.inputs["algorithm"][0].data) + ";"
 
-        query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        query += 'nfrag=' + str(request.inputs['nfrag'][0].data) + ';'
-        query += 'ntuple=' + str(request.inputs['ntuple'][0].data) + ';'
-        query += 'measure=' + str(request.inputs['measure'][0].data) + ';'
-        query += 'measure_type=' + str(request.inputs['measure_type'][0].data) + ';'
-        query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
-        query += 'exp_ndim=' + str(request.inputs['exp_ndim'][0].data) + ';'
-        query += 'dim_size=' + str(request.inputs['dim_size'][0].data) + ';'
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "container=" + str(request.inputs["container"][0].data) + ";"
+        query += "nfrag=" + str(request.inputs["nfrag"][0].data) + ";"
+        query += "ntuple=" + str(request.inputs["ntuple"][0].data) + ";"
+        query += "measure=" + str(request.inputs["measure"][0].data) + ";"
+        query += "measure_type=" + str(request.inputs["measure_type"][0].data) + ";"
+        query += "dim=" + str(request.inputs["dim"][0].data) + ";"
+        query += "exp_ndim=" + str(request.inputs["exp_ndim"][0].data) + ";"
+        query += "dim_size=" + str(request.inputs["dim_size"][0].data) + ";"
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -10841,14 +8901,14 @@ class oph_randcube2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -10856,46 +8916,20 @@ class oph_randcube2(Process):
 
 
 class oph_reduce(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -10904,30 +8938,16 @@ class oph_reduce(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         grid = LiteralInput(
             identifier="grid",
@@ -10936,24 +8956,14 @@ class oph_reduce(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         group_size = LiteralInput(
             identifier="group_size",
@@ -10962,44 +8972,25 @@ class oph_reduce(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         operation = LiteralInput(
             identifier="operation",
             title="Operation",
             abstract="Indicates the reduction operation. Possible values are count, max, min, avg, sum, std, var, cmoment, acmoment, rmoment, armoment, quantile, arg_max, arg_min",
-            data_type='string')
+            data_type="string",
+        )
 
-        order = LiteralInput(
-            identifier="order",
-            title="Order",
-            min_occurs=0,
-            max_occurs=1,
-            default=2,
-            data_type='float')
+        order = LiteralInput(identifier="order", title="Order", min_occurs=0, max_occurs=1, default=2, data_type="float")
 
-        missingvalue = LiteralInput(
-            identifier="missingvalue",
-            title="Missing value",
-            min_occurs=0,
-            max_occurs=1,
-            default="NAN",
-            data_type='float')
+        missingvalue = LiteralInput(identifier="missingvalue", title="Missing value", min_occurs=0, max_occurs=1, default="NAN", data_type="float")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, group_size, operation, order, missingvalue]
         outputs = [jobid, response, error]
@@ -11013,48 +9004,48 @@ class oph_reduce(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_reduce '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['group_size'][0].data is not None:
-            query += 'group_size=' + str(request.inputs['group_size'][0].data) + ';'
-        if request.inputs['order'][0].data is not None:
-            query += 'order=' + str(request.inputs['order'][0].data) + ';'
-        if request.inputs['missingvalue'][0].data is not None:
-            query += 'missingvalue=' + str(request.inputs['missingvalue'][0].data) + ';'
+        query = "oph_reduce "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["group_size"][0].data is not None:
+            query += "group_size=" + str(request.inputs["group_size"][0].data) + ";"
+        if request.inputs["order"][0].data is not None:
+            query += "order=" + str(request.inputs["order"][0].data) + ";"
+        if request.inputs["missingvalue"][0].data is not None:
+            query += "missingvalue=" + str(request.inputs["missingvalue"][0].data) + ";"
 
-        query += 'operation=' + str(request.inputs['operation'][0].data) + ';'
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "operation=" + str(request.inputs["operation"][0].data) + ";"
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11073,14 +9064,14 @@ class oph_reduce(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11088,46 +9079,20 @@ class oph_reduce(Process):
 
 
 class oph_reduce2(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -11136,30 +9101,16 @@ class oph_reduce2(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         grid = LiteralInput(
             identifier="grid",
@@ -11168,39 +9119,20 @@ class oph_reduce2(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        dim = LiteralInput(
-            identifier="dim",
-            title="Dim",
-            abstract="Name of dimension on which the operation will be applied",
-            data_type='string')
+        dim = LiteralInput(identifier="dim", title="Dim", abstract="Name of dimension on which the operation will be applied", data_type="string")
 
         concept_level = LiteralInput(
-            identifier="concept_level",
-            title="Concept Level",
-            abstract="Concept level inside the hierarchy used for the operation",
-            min_occurs=0,
-            max_occurs=1,
-            default="A",
-            data_type='string')
+            identifier="concept_level", title="Concept Level", abstract="Concept level inside the hierarchy used for the operation", min_occurs=0, max_occurs=1, default="A", data_type="string"
+        )
 
         midnight = LiteralInput(
             identifier="midnight",
@@ -11209,45 +9141,27 @@ class oph_reduce2(Process):
             min_occurs=0,
             max_occurs=1,
             default="24",
-            data_type='string')
+            data_type="string",
+        )
 
         order = LiteralInput(
-            identifier="order",
-            title="Order",
-            abstract="Order used in evaluation of the moments or value of the quantile in range [0,1]",
-            min_occurs=0,
-            max_occurs=1,
-            default=2,
-            data_type='float')
+            identifier="order", title="Order", abstract="Order used in evaluation of the moments or value of the quantile in range [0,1]", min_occurs=0, max_occurs=1, default=2, data_type="float"
+        )
 
-        missingvalue = LiteralInput(
-            identifier="missingvalue",
-            title="Missing value",
-            min_occurs=0,
-            max_occurs=1,
-            default="NAN",
-            data_type='float')
+        missingvalue = LiteralInput(identifier="missingvalue", title="Missing value", min_occurs=0, max_occurs=1, default="NAN", data_type="float")
 
         operation = LiteralInput(
             identifier="operation",
             title="Operation",
             abstract="Indicates the reduction operation. Possible values are count, max, min, avg, sum, std, var, cmoment, acmoment, rmoment, armoment, quantile, arg_max, arg_min",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, grid, description, schedule, dim, concept_level, midnight, order, missingvalue, operation]
         outputs = [jobid, response, error]
@@ -11261,51 +9175,51 @@ class oph_reduce2(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_reduce2 '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['concept_level'][0].data is not None:
-            query += 'concept_level=' + str(request.inputs['concept_level'][0].data) + ';'
-        if request.inputs['midnight'][0].data is not None:
-            query += 'midnight=' + str(request.inputs['midnight'][0].data) + ';'
-        if request.inputs['order'][0].data is not None:
-            query += 'order=' + str(request.inputs['order'][0].data) + ';'
-        if request.inputs['missingvalue'][0].data is not None:
-            query += 'missingvalue=' + str(request.inputs['missingvalue'][0].data) + ';'
+        query = "oph_reduce2 "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["concept_level"][0].data is not None:
+            query += "concept_level=" + str(request.inputs["concept_level"][0].data) + ";"
+        if request.inputs["midnight"][0].data is not None:
+            query += "midnight=" + str(request.inputs["midnight"][0].data) + ";"
+        if request.inputs["order"][0].data is not None:
+            query += "order=" + str(request.inputs["order"][0].data) + ";"
+        if request.inputs["missingvalue"][0].data is not None:
+            query += "missingvalue=" + str(request.inputs["missingvalue"][0].data) + ";"
 
-        query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
-        query += 'operation=' + str(request.inputs['operation'][0].data) + ';'
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "dim=" + str(request.inputs["dim"][0].data) + ";"
+        query += "operation=" + str(request.inputs["operation"][0].data) + ";"
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11324,14 +9238,14 @@ class oph_reduce2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11339,37 +9253,16 @@ class oph_reduce2(Process):
 
 
 class oph_resume(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -11378,51 +9271,26 @@ class oph_resume(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         session = LiteralInput(
-            identifier="session",
-            title="Session",
-            abstract="Identifier of the intended session; by default, it is the working session",
-            min_occurs=0,
-            max_occurs=1,
-            default="this",
-            data_type='string')
+            identifier="session", title="Session", abstract="Identifier of the intended session; by default, it is the working session", min_occurs=0, max_occurs=1, default="this", data_type="string"
+        )
 
         id = LiteralInput(
-            identifier="id",
-            title="Id",
-            abstract="Identifier of the intended workflow or marker; by default, no filter is applied",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+            identifier="id", title="Id", abstract="Identifier of the intended workflow or marker; by default, no filter is applied", min_occurs=0, max_occurs=1, default=0, data_type="integer"
+        )
 
         id_type = LiteralInput(
-            identifier="id_type",
-            title="Id type",
-            abstract="Use 'workflow' (default) or 'marker' to set the filter 'id'",
-            min_occurs=0,
-            max_occurs=1,
-            default="workflow",
-            data_type='string')
+            identifier="id_type", title="Id type", abstract="Use 'workflow' (default) or 'marker' to set the filter 'id'", min_occurs=0, max_occurs=1, default="workflow", data_type="string"
+        )
 
         document_type = LiteralInput(
-            identifier="document_type",
-            title="Document type",
-            abstract="Document type, 'request' or 'response'",
-            min_occurs=0,
-            max_occurs=1,
-            default="response",
-            data_type='string')
+            identifier="document_type", title="Document type", abstract="Document type, 'request' or 'response'", min_occurs=0, max_occurs=1, default="response", data_type="string"
+        )
 
         level = LiteralInput(
             identifier="level",
@@ -11431,7 +9299,8 @@ class oph_resume(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         user = LiteralInput(
             identifier="user",
@@ -11440,7 +9309,8 @@ class oph_resume(Process):
             min_occurs=0,
             max_occurs=1,
             default="",
-            data_type='string')
+            data_type="string",
+        )
 
         status_filter = LiteralInput(
             identifier="status_filter",
@@ -11449,31 +9319,16 @@ class oph_resume(Process):
             min_occurs=0,
             max_occurs=1,
             default=11111111,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        save = LiteralInput(
-            identifier="save",
-            title="Save",
-            abstract="Used to save session identifier on server",
-            min_occurs=0,
-            max_occurs=1,
-            default="no",
-            data_type='string')
+        save = LiteralInput(identifier="save", title="Save", abstract="Used to save session identifier on server", min_occurs=0, max_occurs=1, default="no", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, session, id, id_type, document_type, level, user, status_filter, save]
         outputs = [jobid, response, error]
@@ -11487,45 +9342,45 @@ class oph_resume(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_resume '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['session'][0].data is not None:
-            query += 'session=' + str(request.inputs['session'][0].data) + ';'
-        if request.inputs['id'][0].data is not None:
-            query += 'id=' + str(request.inputs['id'][0].data) + ';'
-        if request.inputs['id_type'][0].data is not None:
-            query += 'id_type=' + str(request.inputs['id_type'][0].data) + ';'
-        if request.inputs['document_type'][0].data is not None:
-            query += 'document_type=' + str(request.inputs['document_type'][0].data) + ';'
-        if request.inputs['level'][0].data is not None:
-            query += 'level=' + str(request.inputs['level'][0].data) + ';'
-        if request.inputs['user'][0].data is not None:
-            query += 'user=' + str(request.inputs['user'][0].data) + ';'
-        if request.inputs['status_filter'][0].data is not None:
-            query += 'status_filter=' + str(request.inputs['status_filter'][0].data) + ';'
-        if request.inputs['save'][0].data is not None:
-            query += 'save=' + str(request.inputs['save'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
+        query = "oph_resume "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["session"][0].data is not None:
+            query += "session=" + str(request.inputs["session"][0].data) + ";"
+        if request.inputs["id"][0].data is not None:
+            query += "id=" + str(request.inputs["id"][0].data) + ";"
+        if request.inputs["id_type"][0].data is not None:
+            query += "id_type=" + str(request.inputs["id_type"][0].data) + ";"
+        if request.inputs["document_type"][0].data is not None:
+            query += "document_type=" + str(request.inputs["document_type"][0].data) + ";"
+        if request.inputs["level"][0].data is not None:
+            query += "level=" + str(request.inputs["level"][0].data) + ";"
+        if request.inputs["user"][0].data is not None:
+            query += "user=" + str(request.inputs["user"][0].data) + ";"
+        if request.inputs["status_filter"][0].data is not None:
+            query += "status_filter=" + str(request.inputs["status_filter"][0].data) + ";"
+        if request.inputs["save"][0].data is not None:
+            query += "save=" + str(request.inputs["save"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11544,14 +9399,14 @@ class oph_resume(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11559,46 +9414,20 @@ class oph_resume(Process):
 
 
 class oph_rollup(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -11607,47 +9436,22 @@ class oph_rollup(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         ndim = LiteralInput(
             identifier="ndim",
@@ -11656,22 +9460,14 @@ class oph_rollup(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, schedule, container, description, ndim]
         outputs = [jobid, response, error]
@@ -11685,41 +9481,41 @@ class oph_rollup(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_rollup '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['ndim'][0].data is not None:
-            query += 'ndim=' + str(request.inputs['ndim'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_rollup "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["ndim"][0].data is not None:
+            query += "ndim=" + str(request.inputs["ndim"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11738,14 +9534,14 @@ class oph_rollup(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11753,46 +9549,20 @@ class oph_rollup(Process):
 
 
 class oph_script(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -11801,15 +9571,10 @@ class oph_script(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         script = LiteralInput(
             identifier="script",
@@ -11818,16 +9583,12 @@ class oph_script(Process):
             min_occurs=0,
             max_occurs=1,
             default=":",
-            data_type='string')
+            data_type="string",
+        )
 
         args = LiteralInput(
-            identifier="args",
-            title="Input arguments",
-            abstract="List of pipe-separated arguments to be passed to te script",
-            min_occurs=0,
-            max_occurs=1,
-            default="",
-            data_type='string')
+            identifier="args", title="Input arguments", abstract="List of pipe-separated arguments to be passed to te script", min_occurs=0, max_occurs=1, default="", data_type="string"
+        )
 
         stdout = LiteralInput(
             identifier="stdout",
@@ -11836,7 +9597,8 @@ class oph_script(Process):
             min_occurs=0,
             max_occurs=1,
             default="stdout",
-            data_type='string')
+            data_type="string",
+        )
 
         stderr = LiteralInput(
             identifier="stderr",
@@ -11845,31 +9607,16 @@ class oph_script(Process):
             min_occurs=0,
             max_occurs=1,
             default="stderr",
-            data_type='string')
+            data_type="string",
+        )
 
-        list = LiteralInput(
-            identifier="list",
-            title="List",
-            abstract="Get the available scripts. You can choose 'yes' or 'no'",
-            min_occurs=0,
-            max_occurs=1,
-            default="no",
-            data_type='string')
+        list = LiteralInput(identifier="list", title="List", abstract="Get the available scripts. You can choose 'yes' or 'no'", min_occurs=0, max_occurs=1, default="no", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, script, args, stdout, stderr, list]
         outputs = [jobid, response, error]
@@ -11883,41 +9630,41 @@ class oph_script(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_script '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['script'][0].data is not None:
-            query += 'script=' + str(request.inputs['script'][0].data) + ';'
-        if request.inputs['args'][0].data is not None:
-            query += 'args=' + str(request.inputs['args'][0].data) + ';'
-        if request.inputs['stdout'][0].data is not None:
-            query += 'stdout=' + str(request.inputs['stdout'][0].data) + ';'
-        if request.inputs['stderr'][0].data is not None:
-            query += 'stderr=' + str(request.inputs['stderr'][0].data) + ';'
-        if request.inputs['list'][0].data is not None:
-            query += 'list=' + str(request.inputs['list'][0].data) + ';'
+        query = "oph_script "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["script"][0].data is not None:
+            query += "script=" + str(request.inputs["script"][0].data) + ";"
+        if request.inputs["args"][0].data is not None:
+            query += "args=" + str(request.inputs["args"][0].data) + ";"
+        if request.inputs["stdout"][0].data is not None:
+            query += "stdout=" + str(request.inputs["stdout"][0].data) + ";"
+        if request.inputs["stderr"][0].data is not None:
+            query += "stderr=" + str(request.inputs["stderr"][0].data) + ";"
+        if request.inputs["list"][0].data is not None:
+            query += "list=" + str(request.inputs["list"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -11936,14 +9683,14 @@ class oph_script(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -11951,37 +9698,16 @@ class oph_script(Process):
 
 
 class oph_search(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -11990,15 +9716,10 @@ class oph_search(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         container_filter = LiteralInput(
             identifier="container_filter",
@@ -12007,7 +9728,8 @@ class oph_search(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         metadata_key_filter = LiteralInput(
             identifier="metadata_key_filter",
@@ -12016,7 +9738,8 @@ class oph_search(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         metadata_value_filter = LiteralInput(
             identifier="metadata_value_filter",
@@ -12025,7 +9748,8 @@ class oph_search(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         path = LiteralInput(
             identifier="pathr",
@@ -12034,28 +9758,21 @@ class oph_search(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, necessary to correctly parse paths. ALl resolved paths must be associated to the calling session",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, container_filter, metadata_key_filter, metadata_value_filter, path, cwd]
         outputs = [jobid, response, error]
@@ -12069,39 +9786,39 @@ class oph_search(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_search '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['container_filter'][0].data is not None:
-            query += 'container_filter=' + str(request.inputs['container_filter'][0].data) + ';'
-        if request.inputs['metadata_key_filter'][0].data is not None:
-            query += 'metadata_key_filter=' + str(request.inputs['metadata_key_filter'][0].data) + ';'
-        if request.inputs['metadata_value_filter'][0].data is not None:
-            query += 'metadata_value_filter=' + str(request.inputs['metadata_value_filter'][0].data) + ';'
-        if request.inputs['path'][0].data is not None:
-            query += 'path=' + str(request.inputs['path'][0].data) + ';'
+        query = "oph_search "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["container_filter"][0].data is not None:
+            query += "container_filter=" + str(request.inputs["container_filter"][0].data) + ";"
+        if request.inputs["metadata_key_filter"][0].data is not None:
+            query += "metadata_key_filter=" + str(request.inputs["metadata_key_filter"][0].data) + ";"
+        if request.inputs["metadata_value_filter"][0].data is not None:
+            query += "metadata_value_filter=" + str(request.inputs["metadata_value_filter"][0].data) + ";"
+        if request.inputs["path"][0].data is not None:
+            query += "path=" + str(request.inputs["path"][0].data) + ";"
 
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -12120,14 +9837,14 @@ class oph_search(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12135,37 +9852,16 @@ class oph_search(Process):
 
 
 class oph_service(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -12174,16 +9870,10 @@ class oph_service(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        state = LiteralInput(
-            identifier="status",
-            title="Status",
-            abstract="New service status, 'up' or 'down'",
-            min_occurs=0,
-            max_occurs=1,
-            default="",
-            data_type='string')
+        state = LiteralInput(identifier="status", title="Status", abstract="New service status, 'up' or 'down'", min_occurs=0, max_occurs=1, default="", data_type="string")
 
         level = LiteralInput(
             identifier="level",
@@ -12192,22 +9882,14 @@ class oph_service(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, state, level]
         outputs = [jobid, response, error]
@@ -12221,31 +9903,31 @@ class oph_service(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_service '
-        if request.inputs['state'][0].data is not None:
-            query += 'status=' + str(request.inputs['state'][0].data) + ';'
-        if request.inputs['level'][0].data is not None:
-            query += 'level=' + str(request.inputs['level'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
+        query = "oph_service "
+        if request.inputs["state"][0].data is not None:
+            query += "status=" + str(request.inputs["state"][0].data) + ";"
+        if request.inputs["level"][0].data is not None:
+            query += "level=" + str(request.inputs["level"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -12264,14 +9946,14 @@ class oph_service(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12279,37 +9961,16 @@ class oph_service(Process):
 
 
 class oph_set(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -12318,7 +9979,8 @@ class oph_set(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -12327,7 +9989,8 @@ class oph_set(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         offset = LiteralInput(
             identifier="offset",
@@ -12336,7 +9999,8 @@ class oph_set(Process):
             min_occurs=0,
             max_occurs=1,
             default=1,
-            data_type='float')
+            data_type="float",
+        )
 
         id = LiteralInput(
             identifier="id",
@@ -12345,37 +10009,18 @@ class oph_set(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='integer')
+            data_type="integer",
+        )
 
-        key = LiteralInput(
-            identifier="key",
-            title="Key",
-            abstract="Name of the parameter",
-            data_type='string')
+        key = LiteralInput(identifier="key", title="Key", abstract="Name of the parameter", data_type="string")
 
-        value = LiteralInput(
-            identifier="value",
-            title="Value",
-            abstract="Value of the parameter. By default it will set to 1",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+        value = LiteralInput(identifier="value", title="Value", abstract="Value of the parameter. By default it will set to 1", min_occurs=0, max_occurs=1, default="-", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, subset_filter, offset, id, key, value]
         outputs = [jobid, response, error]
@@ -12389,37 +10034,37 @@ class oph_set(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_set '
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['id'][0].data is not None:
-            query += 'id=' + str(request.inputs['id'][0].data) + ';'
-        if request.inputs['value'][0].data is not None:
-            query += 'value=' + str(request.inputs['value'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['offset'][0].data is not None:
-            query += 'offset=' + str(request.inputs['offset'][0].data) + ';'
+        query = "oph_set "
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["id"][0].data is not None:
+            query += "id=" + str(request.inputs["id"][0].data) + ";"
+        if request.inputs["value"][0].data is not None:
+            query += "value=" + str(request.inputs["value"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["offset"][0].data is not None:
+            query += "offset=" + str(request.inputs["offset"][0].data) + ";"
 
-        query += 'key=' + str(request.inputs['key'][0].data) + ';'
+        query += "key=" + str(request.inputs["key"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -12438,14 +10083,14 @@ class oph_set(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12453,37 +10098,16 @@ class oph_set(Process):
 
 
 class oph_showgrid(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -12492,30 +10116,16 @@ class oph_showgrid(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        container = LiteralInput(
-            identifier="container",
-            title="Input container",
-            abstract="Name of the input container",
-            data_type='string')
+        container = LiteralInput(identifier="container", title="Input container", abstract="Name of the input container", data_type="string")
 
         grid = LiteralInput(
-            identifier="grid",
-            title="Grid name",
-            abstract="Name of the grid to visualize. With no name, all grids are shown",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+            identifier="grid", title="Grid name", abstract="Name of the grid to visualize. With no name, all grids are shown", min_occurs=0, max_occurs=1, default="all", data_type="string"
+        )
 
         dim = LiteralInput(
             identifier="dim",
@@ -12524,7 +10134,8 @@ class oph_showgrid(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         show_index = LiteralInput(
             identifier="show_index",
@@ -12533,28 +10144,21 @@ class oph_showgrid(Process):
             min_occurs=0,
             max_occurs=1,
             default="no",
-            data_type='string')
+            data_type="string",
+        )
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, necessary to correctly parse paths. ALl resolved paths must be associated to the calling session",
-            data_type='string')
+            data_type="string",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, container, grid, dim, show_index, cwd]
         outputs = [jobid, response, error]
@@ -12568,38 +10172,38 @@ class oph_showgrid(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_showgrid '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['dim'][0].data is not None:
-            query += 'dim=' + str(request.inputs['dim'][0].data) + ';'
-        if request.inputs['show_index'][0].data is not None:
-            query += 'show_index=' + str(request.inputs['show_index'][0].data) + ';'
+        query = "oph_showgrid "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["dim"][0].data is not None:
+            query += "dim=" + str(request.inputs["dim"][0].data) + ";"
+        if request.inputs["show_index"][0].data is not None:
+            query += "show_index=" + str(request.inputs["show_index"][0].data) + ";"
 
-        query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "container=" + str(request.inputs["container"][0].data) + ";"
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -12618,14 +10222,14 @@ class oph_showgrid(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12633,46 +10237,20 @@ class oph_showgrid(Process):
 
 
 class oph_split(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         nthreads = LiteralInput(
-            identifier="nthreads",
-            title="Number of threads",
-            abstract="Number of parallel threads per process to be used",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+            identifier="nthreads", title="Number of threads", abstract="Number of parallel threads per process to be used", min_occurs=0, max_occurs=1, default=1, data_type="integer"
+        )
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -12681,68 +10259,30 @@ class oph_split(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        nsplit = LiteralInput(
-            identifier="nsplit",
-            title="Nsplit",
-            abstract="Number of output fragments per input fragment",
-            data_type='integer')
+        nsplit = LiteralInput(identifier="nsplit", title="Nsplit", abstract="Number of output fragments per input fragment", data_type="integer")
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, nthreads, exec_mode, sessionid, pid, container, nsplit, description, schedule]
         outputs = [jobid, response, error]
@@ -12756,41 +10296,41 @@ class oph_split(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_split '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['nthreads'][0].data is not None:
-            query += 'nthreads=' + str(request.inputs['nthreads'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['nsplit'][0].data is not None:
-            query += 'nsplit=' + str(request.inputs['nsplit'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
+        query = "oph_split "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["nthreads"][0].data is not None:
+            query += "nthreads=" + str(request.inputs["nthreads"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["nsplit"][0].data is not None:
+            query += "nsplit=" + str(request.inputs["nsplit"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -12809,14 +10349,14 @@ class oph_split(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -12824,37 +10364,16 @@ class oph_split(Process):
 
 
 class oph_subset(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -12863,30 +10382,16 @@ class oph_subset(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         grid = LiteralInput(
             identifier="grid",
@@ -12895,16 +10400,12 @@ class oph_subset(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_dims = LiteralInput(
-            identifier="subset_dims",
-            title="Dimension names",
-            abstract="Dimension names of the cube used for the subsetting",
-            min_occurs=0,
-            max_occurs=1,
-            default="none",
-            data_type='string')
+            identifier="subset_dims", title="Dimension names", abstract="Dimension names of the cube used for the subsetting", min_occurs=0, max_occurs=1, default="none", data_type="string"
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -12913,121 +10414,74 @@ class oph_subset(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        subset_type = LiteralInput(
-            identifier="subset_type",
-            title="Subset Type",
-            abstract="Possibile values are: index, coord",
-            min_occurs=0,
-            max_occurs=1,
-            default="index",
-            data_type='string')
+        subset_type = LiteralInput(identifier="subset_type", title="Subset Type", abstract="Possibile values are: index, coord", min_occurs=0, max_occurs=1, default="index", data_type="string")
 
-        time_filter = LiteralInput(
-            identifier="time_filter",
-            title="Time Filter",
-            abstract="Possibile values are: yes, no",
-            min_occurs=0,
-            max_occurs=1,
-            default="yes",
-            data_type='string')
+        time_filter = LiteralInput(identifier="time_filter", title="Time Filter", abstract="Possibile values are: yes, no", min_occurs=0, max_occurs=1, default="yes", data_type="string")
 
-        offset = LiteralInput(
-            identifier="offset",
-            title="Offset",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='float')
+        offset = LiteralInput(identifier="offset", title="Offset", min_occurs=0, max_occurs=1, default=0, data_type="float")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, container, grid, subset_dims, subset_filter, description, schedule, subset_type, time_filter, offset]
         outputs = [jobid, response, error]
 
         super(oph_subset, self).__init__(
-            self._handler,
-            identifier="oph_subset",
-            title="Ophidia subset",
-            version=_version,
-            abstract="Subset a cube",
-            inputs=inputs,
-            outputs=outputs,
-            store_supported=True,
-            status_supported=True
+            self._handler, identifier="oph_subset", title="Ophidia subset", version=_version, abstract="Subset a cube", inputs=inputs, outputs=outputs, store_supported=True, status_supported=True
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_subset '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['subset_type'][0].data is not None:
-            query += 'subset_type=' + str(request.inputs['subset_type'][0].data) + ';'
-        if request.inputs['time_filter'][0].data is not None:
-            query += 'time_filter=' + str(request.inputs['time_filter'][0].data) + ';'
-        if request.inputs['offset'][0].data is not None:
-            query += 'offset=' + str(request.inputs['offset'][0].data) + ';'
+        query = "oph_subset "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["subset_type"][0].data is not None:
+            query += "subset_type=" + str(request.inputs["subset_type"][0].data) + ";"
+        if request.inputs["time_filter"][0].data is not None:
+            query += "time_filter=" + str(request.inputs["time_filter"][0].data) + ";"
+        if request.inputs["offset"][0].data is not None:
+            query += "offset=" + str(request.inputs["offset"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -13046,14 +10500,14 @@ class oph_subset(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -13061,37 +10515,16 @@ class oph_subset(Process):
 
 
 class oph_subset2(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -13100,30 +10533,16 @@ class oph_subset2(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
         container = LiteralInput(
-            identifier="container",
-            title="Output container",
-            abstract="PID of the container to be used to store the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="container", title="Output container", abstract="PID of the container to be used to store the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
         grid = LiteralInput(
             identifier="grid",
@@ -13132,16 +10551,12 @@ class oph_subset2(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         subset_dims = LiteralInput(
-            identifier="subset_dims",
-            title="Dimension names",
-            abstract="Dimension names of the cube used for the subsetting",
-            min_occurs=0,
-            max_occurs=1,
-            default="none",
-            data_type='string')
+            identifier="subset_dims", title="Dimension names", abstract="Dimension names of the cube used for the subsetting", min_occurs=0, max_occurs=1, default="none", data_type="string"
+        )
 
         subset_filter = LiteralInput(
             identifier="subset_filter",
@@ -13150,33 +10565,16 @@ class oph_subset2(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         description = LiteralInput(
-            identifier="description",
-            title="Output description",
-            abstract="Additional description to be associated with the output cube",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+            identifier="description", title="Output description", abstract="Additional description to be associated with the output cube", min_occurs=0, max_occurs=1, default="-", data_type="string"
+        )
 
-        schedule = LiteralInput(
-            identifier="schedule",
-            title="Schedule",
-            min_occurs=0,
-            max_occurs=1,
-            default=0,
-            data_type='integer')
+        schedule = LiteralInput(identifier="schedule", title="Schedule", min_occurs=0, max_occurs=1, default=0, data_type="integer")
 
-        time_filter = LiteralInput(
-            identifier="time_filter",
-            title="Time Filter",
-            abstract="Possibile values are: yes, no",
-            min_occurs=0,
-            max_occurs=1,
-            default="yes",
-            data_type='string')
+        time_filter = LiteralInput(identifier="time_filter", title="Time Filter", abstract="Possibile values are: yes, no", min_occurs=0, max_occurs=1, default="yes", data_type="string")
 
         offset = LiteralInput(
             identifier="offset",
@@ -13185,22 +10583,14 @@ class oph_subset2(Process):
             min_occurs=0,
             max_occurs=1,
             default=0,
-            data_type='float')
+            data_type="float",
+        )
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid, container, grid, subset_dims, subset_filter, description, schedule, time_filter, offset]
         outputs = [jobid, response, error]
@@ -13214,47 +10604,47 @@ class oph_subset2(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_subset2 '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['schedule'][0].data is not None:
-            query += 'schedule=' + str(request.inputs['schedule'][0].data) + ';'
-        if request.inputs['subset_dims'][0].data is not None:
-            query += 'subset_dims=' + str(request.inputs['subset_dims'][0].data) + ';'
-        if request.inputs['subset_filter'][0].data is not None:
-            query += 'subset_filter=' + str(request.inputs['subset_filter'][0].data) + ';'
-        if request.inputs['grid'][0].data is not None:
-            query += 'grid=' + str(request.inputs['grid'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['description'][0].data is not None:
-            query += 'description=' + str(request.inputs['description'][0].data) + ';'
-        if request.inputs['time_filter'][0].data is not None:
-            query += 'time_filter=' + str(request.inputs['time_filter'][0].data) + ';'
-        if request.inputs['offset'][0].data is not None:
-            query += 'offset=' + str(request.inputs['offset'][0].data) + ';'
+        query = "oph_subset2 "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["schedule"][0].data is not None:
+            query += "schedule=" + str(request.inputs["schedule"][0].data) + ";"
+        if request.inputs["subset_dims"][0].data is not None:
+            query += "subset_dims=" + str(request.inputs["subset_dims"][0].data) + ";"
+        if request.inputs["subset_filter"][0].data is not None:
+            query += "subset_filter=" + str(request.inputs["subset_filter"][0].data) + ";"
+        if request.inputs["grid"][0].data is not None:
+            query += "grid=" + str(request.inputs["grid"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["description"][0].data is not None:
+            query += "description=" + str(request.inputs["description"][0].data) + ";"
+        if request.inputs["time_filter"][0].data is not None:
+            query += "time_filter=" + str(request.inputs["time_filter"][0].data) + ";"
+        if request.inputs["offset"][0].data is not None:
+            query += "offset=" + str(request.inputs["offset"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -13273,14 +10663,14 @@ class oph_subset2(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -13288,37 +10678,16 @@ class oph_subset2(Process):
 
 
 class oph_tasks(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -13327,15 +10696,10 @@ class oph_tasks(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
         cube_filter = LiteralInput(
             identifier="cube_filter",
@@ -13344,7 +10708,8 @@ class oph_tasks(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         operator_filter = LiteralInput(
             identifier="operator_filter",
@@ -13353,7 +10718,8 @@ class oph_tasks(Process):
             min_occurs=0,
             max_occurs=1,
             default="all",
-            data_type='string')
+            data_type="string",
+        )
 
         path = LiteralInput(
             identifier="pathr",
@@ -13362,37 +10728,23 @@ class oph_tasks(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         cwd = LiteralInput(
             identifier="cwd",
             title="Absolute path of the current working directory",
             abstract="Absolute path corresponding to the current working directory, necessary to correctly parse paths. ALl resolved paths must be associated to the calling session",
-            data_type='string')
+            data_type="string",
+        )
 
-        container = LiteralInput(
-            identifier="container",
-            title="Input container",
-            abstract="Name of the input container",
-            min_occurs=0,
-            max_occurs=1,
-            default="all",
-            data_type='string')
+        container = LiteralInput(identifier="container", title="Input container", abstract="Name of the input container", min_occurs=0, max_occurs=1, default="all", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, cube_filter, operator_filter, path, cwd, container]
         outputs = [jobid, response, error]
@@ -13406,39 +10758,39 @@ class oph_tasks(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_tasks '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['container'][0].data is not None:
-            query += 'container=' + str(request.inputs['container'][0].data) + ';'
-        if request.inputs['cube_filter'][0].data is not None:
-            query += 'cube_filter=' + str(request.inputs['cube_filter'][0].data) + ';'
-        if request.inputs['operator_filter'][0].data is not None:
-            query += 'operator_filter=' + str(request.inputs['operator_filter'][0].data) + ';'
-        if request.inputs['path'][0].data is not None:
-            query += 'path=' + str(request.inputs['path'][0].data) + ';'
+        query = "oph_tasks "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["container"][0].data is not None:
+            query += "container=" + str(request.inputs["container"][0].data) + ";"
+        if request.inputs["cube_filter"][0].data is not None:
+            query += "cube_filter=" + str(request.inputs["cube_filter"][0].data) + ";"
+        if request.inputs["operator_filter"][0].data is not None:
+            query += "operator_filter=" + str(request.inputs["operator_filter"][0].data) + ";"
+        if request.inputs["path"][0].data is not None:
+            query += "path=" + str(request.inputs["path"][0].data) + ";"
 
-        query += 'cwd=' + str(request.inputs['cwd'][0].data) + ';'
+        query += "cwd=" + str(request.inputs["cwd"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -13457,14 +10809,14 @@ class oph_tasks(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -13472,37 +10824,16 @@ class oph_tasks(Process):
 
 
 class oph_unpublish(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -13511,36 +10842,18 @@ class oph_unpublish(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
-        sessionid = LiteralInput(
-            identifier="sessionid",
-            title="Session identifier",
-            min_occurs=0,
-            max_occurs=1,
-            default="null",
-            data_type='string')
+        sessionid = LiteralInput(identifier="sessionid", title="Session identifier", min_occurs=0, max_occurs=1, default="null", data_type="string")
 
-        pid = LiteralInput(
-            identifier="cube",
-            title="Input cube",
-            abstract="Name of the input datacube in PID format",
-            data_type='string')
+        pid = LiteralInput(identifier="cube", title="Input cube", abstract="Name of the input datacube in PID format", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, sessionid, pid]
         outputs = [jobid, response, error]
@@ -13554,31 +10867,31 @@ class oph_unpublish(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_unpublish '
-        if request.inputs['sessionid'][0].data is not None:
-            query += 'sessionid=' + str(request.inputs['sessionid'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
+        query = "oph_unpublish "
+        if request.inputs["sessionid"][0].data is not None:
+            query += "sessionid=" + str(request.inputs["sessionid"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
 
-        query += 'cube=' + str(request.inputs['cube'][0].data) + ';'
+        query += "cube=" + str(request.inputs["cube"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -13597,14 +10910,14 @@ class oph_unpublish(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
@@ -13612,37 +10925,16 @@ class oph_unpublish(Process):
 
 
 class oph_wait(Process):
-
     def __init__(self):
 
         inputs = []
         outputs = []
 
-        userid = LiteralInput(
-            identifier="userid",
-            title="Username",
-            abstract="User identifier for Ophidia system",
-            min_occurs=0,
-            max_occurs=1,
-            default=_user,
-            data_type='string')
+        userid = LiteralInput(identifier="userid", title="Username", abstract="User identifier for Ophidia system", min_occurs=0, max_occurs=1, default=_user, data_type="string")
 
-        passwd = LiteralInput(
-            identifier="passwd",
-            title="Password",
-            abstract="Password to access Ophidia",
-            min_occurs=0,
-            max_occurs=1,
-            default=_passwd,
-            data_type='string')
+        passwd = LiteralInput(identifier="passwd", title="Password", abstract="Password to access Ophidia", min_occurs=0, max_occurs=1, default=_passwd, data_type="string")
 
-        ncores = LiteralInput(
-            identifier="ncores",
-            title="Number of cores",
-            min_occurs=0,
-            max_occurs=1,
-            default=1,
-            data_type='integer')
+        ncores = LiteralInput(identifier="ncores", title="Number of cores", min_occurs=0, max_occurs=1, default=1, data_type="integer")
 
         exec_mode = LiteralInput(
             identifier="exec_mode",
@@ -13651,7 +10943,8 @@ class oph_wait(Process):
             min_occurs=0,
             max_occurs=1,
             default="async",
-            data_type='string')
+            data_type="string",
+        )
 
         type = LiteralInput(
             identifier="type",
@@ -13660,7 +10953,8 @@ class oph_wait(Process):
             min_occurs=0,
             max_occurs=1,
             default="clock",
-            data_type='string')
+            data_type="string",
+        )
 
         timeout = LiteralInput(
             identifier="timeout",
@@ -13669,7 +10963,8 @@ class oph_wait(Process):
             min_occurs=0,
             max_occurs=1,
             default=-1,
-            data_type='integer')
+            data_type="integer",
+        )
 
         timeout_type = LiteralInput(
             identifier="timeout_type",
@@ -13678,25 +10973,12 @@ class oph_wait(Process):
             min_occurs=0,
             max_occurs=1,
             default="duration",
-            data_type='string')
+            data_type="string",
+        )
 
-        key = LiteralInput(
-            identifier="key",
-            title="Key",
-            abstract="Name of the parameter",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+        key = LiteralInput(identifier="key", title="Key", abstract="Name of the parameter", min_occurs=0, max_occurs=1, default="-", data_type="string")
 
-        value = LiteralInput(
-            identifier="value",
-            title="Value",
-            abstract="Value of the parameter. By default it will set to 1",
-            min_occurs=0,
-            max_occurs=1,
-            default="-",
-            data_type='string')
+        value = LiteralInput(identifier="value", title="Value", abstract="Value of the parameter. By default it will set to 1", min_occurs=0, max_occurs=1, default="-", data_type="string")
 
         filename = LiteralInput(
             identifier="filename",
@@ -13705,7 +10987,8 @@ class oph_wait(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
         message = LiteralInput(
             identifier="message",
@@ -13714,31 +10997,16 @@ class oph_wait(Process):
             min_occurs=0,
             max_occurs=1,
             default="-",
-            data_type='string')
+            data_type="string",
+        )
 
-        run = LiteralInput(
-            identifier="run",
-            title="Run",
-            abstract="Set to 'yes' (default) to wait effectively",
-            min_occurs=0,
-            max_occurs=1,
-            default="yes",
-            data_type='string')
+        run = LiteralInput(identifier="run", title="Run", abstract="Set to 'yes' (default) to wait effectively", min_occurs=0, max_occurs=1, default="yes", data_type="string")
 
-        jobid = LiteralOutput(
-            identifier="jobid",
-            title="Ophidia JobID",
-            data_type='string')
+        jobid = LiteralOutput(identifier="jobid", title="Ophidia JobID", data_type="string")
 
-        response = ComplexOutput(
-            identifier="response",
-            title="JSON Response",
-            supported_formats=[Format('application/json', encoding='utf-8')])
+        response = ComplexOutput(identifier="response", title="JSON Response", supported_formats=[Format("application/json", encoding="utf-8")])
 
-        error = LiteralOutput(
-            identifier="return_code",
-            title="Return code",
-            data_type='integer')
+        error = LiteralOutput(identifier="return_code", title="Return code", data_type="integer")
 
         inputs = [userid, passwd, ncores, exec_mode, type, timeout, timeout_type, key, value, filename, message, run]
         outputs = [jobid, response, error]
@@ -13752,43 +11020,43 @@ class oph_wait(Process):
             inputs=inputs,
             outputs=outputs,
             store_supported=True,
-            status_supported=True
+            status_supported=True,
         )
 
     def _handler(self, request, response):
 
         response.update_status("Pre-processing", 1)
 
-        response.outputs['jobid'].data = ""
-        response.outputs['return_code'].data = 1
+        response.outputs["jobid"].data = ""
+        response.outputs["return_code"].data = 1
 
         response.update_status("Running", 2)
 
         LOGGER.debug("Build the query")
-        query = 'oph_wait '
-        if request.inputs['type'][0].data is not None:
-            query += 'type=' + str(request.inputs['type'][0].data) + ';'
-        if request.inputs['exec_mode'][0].data is not None:
-            query += 'exec_mode=' + str(request.inputs['exec_mode'][0].data) + ';'
-        if request.inputs['timeout'][0].data is not None:
-            query += 'timeout=' + str(request.inputs['timeout'][0].data) + ';'
-        if request.inputs['timeout_type'][0].data is not None:
-            query += 'timeout_type=' + str(request.inputs['timeout_type'][0].data) + ';'
-        if request.inputs['key'][0].data is not None:
-            query += 'key=' + str(request.inputs['key'][0].data) + ';'
-        if request.inputs['value'][0].data is not None:
-            query += 'value=' + str(request.inputs['value'][0].data) + ';'
-        if request.inputs['filename'][0].data is not None:
-            query += 'filename=' + str(request.inputs['filename'][0].data) + ';'
-        if request.inputs['message'][0].data is not None:
-            query += 'message=' + str(request.inputs['message'][0].data) + ';'
-        if request.inputs['run'][0].data is not None:
-            query += 'run=' + str(request.inputs['run'][0].data) + ';'
-        if request.inputs['ncores'][0].data is not None:
-            query += 'ncores=' + str(request.inputs['ncores'][0].data) + ';'
+        query = "oph_wait "
+        if request.inputs["type"][0].data is not None:
+            query += "type=" + str(request.inputs["type"][0].data) + ";"
+        if request.inputs["exec_mode"][0].data is not None:
+            query += "exec_mode=" + str(request.inputs["exec_mode"][0].data) + ";"
+        if request.inputs["timeout"][0].data is not None:
+            query += "timeout=" + str(request.inputs["timeout"][0].data) + ";"
+        if request.inputs["timeout_type"][0].data is not None:
+            query += "timeout_type=" + str(request.inputs["timeout_type"][0].data) + ";"
+        if request.inputs["key"][0].data is not None:
+            query += "key=" + str(request.inputs["key"][0].data) + ";"
+        if request.inputs["value"][0].data is not None:
+            query += "value=" + str(request.inputs["value"][0].data) + ";"
+        if request.inputs["filename"][0].data is not None:
+            query += "filename=" + str(request.inputs["filename"][0].data) + ";"
+        if request.inputs["message"][0].data is not None:
+            query += "message=" + str(request.inputs["message"][0].data) + ";"
+        if request.inputs["run"][0].data is not None:
+            query += "run=" + str(request.inputs["run"][0].data) + ";"
+        if request.inputs["ncores"][0].data is not None:
+            query += "ncores=" + str(request.inputs["ncores"][0].data) + ";"
 
         LOGGER.debug("Create Ophidia client")
-        oph_client = _client.Client(request.inputs['userid'][0].data, request.inputs['passwd'][0].data, _host, _port)
+        oph_client = _client.Client(request.inputs["userid"][0].data, request.inputs["passwd"][0].data, _host, _port)
         oph_client.api_mode = False
 
         LOGGER.debug("Submit the query: " + query)
@@ -13807,14 +11075,14 @@ class oph_wait(Process):
 
         response.update_status("Post-processing", 99)
 
-        response.outputs['return_code'].data = return_value
+        response.outputs["return_code"].data = return_value
         response_data = ""
         if return_value == 0:
             if jobid is not None:
-                response.outputs['jobid'].data = jobid
-            if request.inputs['exec_mode'][0].data == "sync" and len(last_response) > 0:
+                response.outputs["jobid"].data = jobid
+            if request.inputs["exec_mode"][0].data == "sync" and len(last_response) > 0:
                 response_data = last_response
-        response.outputs['response'].data = response_data
+        response.outputs["response"].data = response_data
 
         response.update_status("Succeded", 100)
 
